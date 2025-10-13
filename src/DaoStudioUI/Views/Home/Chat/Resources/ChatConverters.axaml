@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="using:DaoStudioUI.Converters">
+	<converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
+	<converters:MessageToAlignmentConverter x:Key="MessageToAlignmentConverter"/>
+	<converters:MessageToColorConverter x:Key="MessageToColorConverter"/>
+	<converters:MessageTypeToVisibilityConverter x:Key="MessageTypeToVisibilityConverter"/>
+	<converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+	<converters:RecordingButtonTooltipConverter x:Key="RecordingButtonTooltipConverter"/>
+	<converters:CountNotEqualsConverter x:Key="CountNotEqualsConverter"/>
+	<converters:CountGreaterThanConverter x:Key="CountGreaterThanConverter"/>
+</ResourceDictionary>

@@ -1,0 +1,246 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:res="clr-namespace:BrowserTool.Properties"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="BrowserTool.BrowserWindow"
+        Title="{x:Static res:Resources.BrowserToolDisplayName}"
+        Width="1024" Height="768"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+        <!-- Navigation Bar -->
+        <Border Grid.Row="0" 
+                Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}" 
+                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" 
+                BorderThickness="0,0,0,1" 
+                Padding="10,8">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="BackButton" 
+                            Classes="toolbar" 
+                            ToolTip.Tip="{x:Static res:Resources.ToolTip_Back}" 
+                            Click="BackButton_Click"
+                            Width="38" Height="38">
+                        <ui:SymbolIcon Symbol="Back" FontSize="16"/>
+                    </Button>
+                    <Button x:Name="ForwardButton" 
+                            Classes="toolbar" 
+                            ToolTip.Tip="{x:Static res:Resources.ToolTip_Forward}" 
+                            Click="ForwardButton_Click"
+                            Width="38" Height="38">
+                        <ui:SymbolIcon Symbol="Forward" FontSize="16"/>
+                    </Button>
+                    <Button x:Name="RefreshButton" 
+                            Classes="toolbar" 
+                            ToolTip.Tip="{x:Static res:Resources.ToolTip_Refresh}" 
+                            Click="RefreshButton_Click"
+                            Width="38" Height="38">
+                        <ui:SymbolIcon Symbol="Refresh" FontSize="16"/>
+                    </Button>
+                </StackPanel>
+                
+                <Grid Grid.Column="1" Margin="16,0">
+                    <TextBox x:Name="AddressBar" 
+                             VerticalAlignment="Center" 
+                             KeyDown="AddressBar_KeyDown" 
+                             Padding="12,8" 
+                             CornerRadius="6"
+                             FontSize="14"
+                             Watermark="{x:Static res:Resources.Watermark_AddressBar}" />
+                </Grid>
+                
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="NewTabButton" 
+                            Classes="toolbar" 
+                            ToolTip.Tip="{x:Static res:Resources.ToolTip_NewTab}" 
+                            Click="NewTabButton_Click"
+                            Width="38" Height="38">
+                        <ui:SymbolIcon Symbol="Add" FontSize="16"/>
+                    </Button>
+                    <Button x:Name="DevToolsButton" 
+                            Classes="toolbar" 
+                            ToolTip.Tip="{x:Static res:Resources.ToolTip_DeveloperTools}" 
+                            Click="DevToolsButton_Click"
+                            Width="38" Height="38">
+                        <ui:SymbolIcon Symbol="Settings" FontSize="16"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Tab Bar -->
+        <Border Grid.Row="1" 
+                Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" 
+                BorderThickness="0,0,0,1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                          VerticalScrollBarVisibility="Disabled"
+                          Padding="8,0">
+                <StackPanel x:Name="TabContainer" 
+                            Orientation="Horizontal" 
+                            Spacing="2"
+                            Height="40">
+                    <!-- New Tab Button in Tab Bar -->
+                    <Button x:Name="NewTabInTabBar" 
+                            Classes="new-tab" 
+                            ToolTip.Tip="{x:Static res:Resources.ToolTip_NewTab}" 
+                            Click="NewTabButton_Click"
+                            VerticalAlignment="Center">
+                        <ui:SymbolIcon Symbol="Add" FontSize="14"/>
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Content Area -->
+        <Grid Grid.Row="2">
+            <Decorator x:Name="browserWrapper"/>
+            <!-- Welcome Screen -->
+            <Grid x:Name="WelcomeScreen" 
+                  Background="{DynamicResource LayerFillColorDefaultBrush}"
+                  IsVisible="True">
+                <StackPanel VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            Spacing="24">
+                    <ui:SymbolIcon Symbol="Globe" 
+                                   FontSize="72" 
+                                   Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"/>
+                    <TextBlock Text="{x:Static res:Resources.Welcome_Title}" 
+                               FontSize="24" 
+                               FontWeight="SemiBold" 
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="{x:Static res:Resources.Welcome_Subtitle}" 
+                               FontSize="14" 
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
+                               HorizontalAlignment="Center"/>
+                    <Button Classes="accent" 
+                            Content="{x:Static res:Resources.Button_NewTab}" 
+                            Click="NewTabButton_Click"
+                            HorizontalAlignment="Center"
+                            Padding="24,12">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Border Background="{DynamicResource AccentFillColorDefaultBrush}"
+                                        CornerRadius="6"
+                                        Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalContentAlignment="Center"
+                                                      VerticalContentAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+    
+    <Window.Styles>
+        <!-- Toolbar Button Style -->
+        <Style Selector="Button.toolbar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Duration="0:0:0.1" Property="RenderTransform"/>
+                    <BrushTransition Duration="0:0:0.15" Property="Background"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.toolbar:pointerover">
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}"/>
+            <Setter Property="RenderTransform" Value="scale(1.05)"/>
+        </Style>
+        <Style Selector="Button.toolbar:pressed">
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}"/>
+            <Setter Property="RenderTransform" Value="scale(0.95)"/>
+        </Style>
+        
+        <!-- Tab Style -->
+        <Style Selector="Button.tab">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="8,8,0,0"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="MinWidth" Value="160"/>
+            <Setter Property="MaxWidth" Value="240"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Duration="0:0:0.2" Property="Background"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.tab:pointerover">
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}"/>
+        </Style>
+        <Style Selector="Button.tab.active">
+            <Setter Property="Background" Value="{DynamicResource LayerFillColorDefaultBrush}"/>
+            <Setter Property="BorderThickness" Value="1,1,1,0"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}"/>
+        </Style>
+        
+        <!-- Tab Close Button -->
+        <Style Selector="Button.tab-close">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="4,0,0,0"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Duration="0:0:0.15" Property="Background"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.tab-close:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SystemFillColorCriticalBrush}"/>
+        </Style>
+        
+        <!-- Address Bar Style -->
+        <Style Selector="TextBox">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefaultBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Duration="0:0:0.2" Property="BorderBrush"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="TextBox:focus">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+        </Style>
+        
+        <!-- New Tab Button Special Style -->
+        <Style Selector="Button.new-tab">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Margin" Value="4,4,8,4"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Duration="0:0:0.15" Property="Background"/>
+                    <TransformOperationsTransition Duration="0:0:0.1" Property="RenderTransform"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.new-tab:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentFillColorSecondaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <Setter Property="RenderTransform" Value="scale(1.1)"/>
+        </Style>
+    </Window.Styles>
+</Window>

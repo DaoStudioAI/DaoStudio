@@ -1,0 +1,126 @@
+<UserControl x:Class="Naming.AdvConfig.Tabs.InputParametersTab"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:Naming.AdvConfig.Controls"
+             xmlns:fluent="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:Naming.AdvConfig.ViewModels"
+             xmlns:naming="using:Naming"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Name="Root"
+             x:DataType="vm:InputParametersTabViewModel">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <!-- Parameter list item template -->
+            <DataTemplate x:Key="ParameterItemTemplate" x:DataType="naming:ParameterConfig">
+                <controls:ParameterTypeEditor Parameter="{Binding}"
+                                         Margin="0,5"
+                                         ParameterChanged="ParameterEditor_ParameterChanged"
+                                         RemoveRequested="ParameterEditor_RemoveRequested" />
+            </DataTemplate>
+            
+            <!-- Empty state template -->
+            <DataTemplate x:Key="EmptyStateTemplate" x:DataType="vm:InputParametersTabViewModel">
+                <Border CornerRadius="8"
+                        Padding="40"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Vertical" Spacing="16" HorizontalAlignment="Center">
+                        <fluent:SymbolIcon Symbol="{x:Static fluent:Symbol.Add}" FontSize="48" Foreground="{DynamicResource AccentTextFillColorSecondaryBrush}" />
+                        <TextBlock Text="No Parameters Configured"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        <TextBlock Text="Add input parameters to define the data your tool accepts"
+                                   FontSize="14"
+                                   HorizontalAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   MaxWidth="300"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                        <Button Content="Add First Parameter"
+                                Classes="accent"
+                                Command="{Binding AddParameterCommand}"
+                                HorizontalAlignment="Center"
+                                Padding="20,10" />
+                    </StackPanel>
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                CornerRadius="8,8,0,0"
+                Padding="24,16"
+                BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1,1,1,0">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Orientation="Vertical" Spacing="8">
+                    <TextBlock Text="Input Parameters"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource TextFillColorPrimaryBrush}" />
+                </StackPanel>
+                
+                <!-- Header Actions -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <Button Content="Add Parameter"
+                            Classes="accent"
+                            Command="{Binding AddParameterCommand}"
+                            ToolTip.Tip="Add a new input parameter">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <fluent:SymbolIcon Symbol="{x:Static fluent:Symbol.Add}" FontSize="16" />
+                            <TextBlock Text="Add Parameter" />
+                        </StackPanel>
+                    </Button>
+                    
+                    <Button Command="{Binding ClearAllParametersCommand}"
+                            IsEnabled="{Binding HasParameters}"
+                            ToolTip.Tip="Clear all parameters">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <fluent:SymbolIcon Symbol="{x:Static fluent:Symbol.Delete}" FontSize="14" />
+                            <TextBlock Text="Clear All" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <Border Grid.Row="1"
+                BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1,0,1,1"
+                CornerRadius="0,0,8,8">
+            
+            <!-- Content based on parameter count -->
+            <Grid>
+                <!-- Empty State -->
+                <ContentControl Content="{Binding}"
+                                ContentTemplate="{StaticResource EmptyStateTemplate}"
+                                IsVisible="{Binding HasNoParameters}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center" />
+                
+                <!-- Parameters List -->
+                <ScrollViewer IsVisible="{Binding HasParameters}"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="24" Spacing="16">
+                        <ItemsControl ItemsSource="{Binding Parameters}"
+                                      ItemTemplate="{StaticResource ParameterItemTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="16" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

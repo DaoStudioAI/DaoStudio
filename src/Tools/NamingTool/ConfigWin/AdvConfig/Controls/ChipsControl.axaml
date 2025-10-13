@@ -1,0 +1,79 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:system="using:System"
+             xmlns:controls="using:Naming.AdvConfig.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Naming.AdvConfig.Controls.ChipsControl">
+
+  <UserControl.Styles>
+    <Style Selector="Border.chip">
+      <Setter Property="Background" Value="{StaticResource AccentFillColorDefaultBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource AccentFillColorDefaultBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="8,4" />
+      <Setter Property="Margin" Value="2" />
+    </Style>
+    
+    <Style Selector="Border.chip:pointerover">
+      <Setter Property="Background" Value="{StaticResource AccentFillColorSecondaryBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource AccentFillColorSecondaryBrush}" />
+    </Style>
+    
+    <Style Selector="Button.chip-remove">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="{StaticResource TextOnAccentFillColorPrimaryBrush}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Padding" Value="4,0" />
+      <Setter Property="Margin" Value="4,0,0,0" />
+      <Setter Property="MinWidth" Value="20" />
+      <Setter Property="MinHeight" Value="20" />
+      <Setter Property="CornerRadius" Value="10" />
+    </Style>
+    
+    <Style Selector="Button.chip-remove:pointerover">
+      <Setter Property="Background" Value="{StaticResource TextOnAccentFillColorPrimaryBrush}" />
+      <Setter Property="Foreground" Value="{StaticResource AccentFillColorDefaultBrush}" />
+    </Style>
+    
+    <Style Selector="TextBlock.chip-text">
+      <Setter Property="Foreground" Value="{StaticResource TextOnAccentFillColorPrimaryBrush}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+  </UserControl.Styles>
+
+  <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                VerticalScrollBarVisibility="Disabled">
+    <ItemsControl Name="ChipsItemsControl" 
+                  ItemsSource="{Binding Items, RelativeSource={RelativeSource AncestorType={x:Type controls:ChipsControl}}}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <WrapPanel Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      
+      <ItemsControl.ItemTemplate>
+        <DataTemplate x:DataType="system:String">
+          <Border Classes="chip">
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBlock Grid.Column="0" 
+                         Classes="chip-text"
+                         Text="{Binding}" />
+              <Button Grid.Column="1"
+                      Classes="chip-remove"
+                      Content="×"
+                      Command="{Binding $parent[controls:ChipsControl].RemoveItemCommand}"
+                      CommandParameter="{Binding}" />
+            </Grid>
+          </Border>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </ScrollViewer>
+
+</UserControl>

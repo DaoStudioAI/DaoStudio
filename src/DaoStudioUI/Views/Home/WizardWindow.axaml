@@ -1,0 +1,33 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:res="using:DaoStudioUI.Resources"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
+        x:Class="DaoStudioUI.WizardWindow"
+        Title="{res:Localization Wizard_Title}"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+        Width="600" Height="450">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+    <!-- Title bar with close button -->
+    <Grid Grid.Row="0" Height="40" >
+      <Button x:Name="CloseButton"
+              HorizontalAlignment="Right" 
+              VerticalAlignment="Center"
+              Width="30" Height="30"
+              Background="Transparent"
+              BorderThickness="0"
+              ClickMode="Release" Click="Button_Click"
+              Margin="0,0,10,0"
+              Cursor="Hand">
+        <ui:SymbolIcon Symbol="Dismiss" FontSize="16"/>
+      </Button>
+    </Grid>
+
+  </Grid>
+</Window>

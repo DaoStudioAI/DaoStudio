@@ -1,0 +1,205 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:tabs="using:Naming.AdvConfig.Tabs"
+        xmlns:local="clr-namespace:Naming.AdvConfig"
+        xmlns:res="clr-namespace:NamingTool.Properties"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        x:Class="Naming.AdvConfig.AdvancedNamingConfigWindow"
+        x:DataType="local:AdvancedNamingConfigWindow"
+        Title="{Binding DisplayName, StringFormat='Advanced Naming Tool Configuration - {0}'}"
+        Width="1200" Height="800"
+        MinWidth="900" MinHeight="600"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        CanResize="True">
+
+    <Window.Styles>
+        <Style Selector="Button.accent">
+            <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        <Style Selector="Button.secondary">
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefaultBrush}"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        <Style Selector="Button.export">
+            <Setter Property="Background" Value="{DynamicResource SystemFillColorSuccessBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        <Style Selector="Button.import">
+            <Setter Property="Background" Value="{DynamicResource SystemFillColorCautionBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        <Style Selector="TabControl">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>      <!-- Main Content -->
+			<RowDefinition Height="16"/>
+			<RowDefinition Height="Auto"/>   <!-- Action Buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- Main Content with Tabs -->
+        <Border Grid.Row="0" 
+                CornerRadius="8"
+                Padding="16">
+            <TabControl Name="MainTabView" 
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+            
+            <!-- Basic Information Tab -->
+            <TabItem Name="BaseInfoTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <ui:FontIcon Glyph="&#xE946;" FontSize="16"/>
+                        <TextBlock Text="{x:Static res:Resources.AdvConfig_BasicInformation}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <tabs:BaseInfoTab Name="BaseInfoTab" 
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"/>
+            </TabItem>
+
+            <!-- Input Parameters Tab -->
+            <TabItem Name="InputParametersTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <ui:SymbolIcon Symbol="{x:Static ui:Symbol.Setting}" FontSize="16"/>
+                        <TextBlock Text="{x:Static res:Resources.AdvConfig_InputParameters}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <tabs:InputParametersTab Name="InputParametersTab" 
+                                         HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"/>
+            </TabItem>
+
+            <!-- Parallel Configuration Tab -->
+            <TabItem Name="ParallelConfigTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <ui:SymbolIcon Symbol="{x:Static ui:Symbol.Forward}" FontSize="16"/>
+                        <TextBlock Text="{x:Static res:Resources.AdvConfig_ParallelConfig}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <tabs:ParallelConfigTab Name="ParallelConfigTab" 
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"/>
+            </TabItem>
+
+            
+            <!-- Prompt Template Tab -->
+            <TabItem Name="PromptTemplateTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <ui:SymbolIcon Symbol="{x:Static ui:Symbol.Code}" FontSize="16"/>
+                        <TextBlock Text="{x:Static res:Resources.AdvConfig_PromptTemplate}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <tabs:PromptTemplateTab Name="PromptTemplateTab" 
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"/>
+            </TabItem>
+
+            <!-- Output Parameters Tab -->
+            <TabItem Name="OutputParametersTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <ui:SymbolIcon Symbol="{x:Static ui:Symbol.List}" FontSize="16"/>
+                        <TextBlock Text="{x:Static res:Resources.AdvConfig_OutputParameters}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <tabs:OutputParametersTab Name="OutputParametersTab" 
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch"/>
+            </TabItem>
+
+            <!-- Error Handling Tab -->
+            <TabItem Name="ErrorHandlingTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <ui:SymbolIcon Symbol="{x:Static ui:Symbol.ReportHacked}" FontSize="16"/>
+                        <TextBlock Text="{x:Static res:Resources.ErrorHandling_TabTitle}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <tabs:ErrorHandlingTab Name="ErrorHandlingTab" 
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"/>
+            </TabItem>
+
+        </TabControl>
+        </Border>
+
+        <!-- Action Buttons -->
+        <Border Grid.Row="2" 
+                BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="24,16">
+            <Grid ColumnDefinitions="*,Auto">
+                <!-- Left side - Import/Export Actions -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                    <Button Name="ExportButton" ToolTip.Tip="{x:Static res:Resources.AdvConfig_Export_Tooltip}" MinWidth="100">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <ui:SymbolIcon Symbol="{x:Static ui:Symbol.SaveLocal}"/>
+                            <TextBlock Text="{x:Static res:Resources.AdvConfig_Export}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Name="ImportButton" ToolTip.Tip="{x:Static res:Resources.AdvConfig_Import_Tooltip}" MinWidth="100">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <ui:SymbolIcon Symbol="{x:Static ui:Symbol.OpenFile}"/>
+                            <TextBlock Text="{x:Static res:Resources.AdvConfig_Import}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Name="SimpleModeButton" ToolTip.Tip="{x:Static res:Resources.AdvConfig_SimpleMode_Tooltip}" MinWidth="100">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <ui:SymbolIcon Symbol="{x:Static ui:Symbol.Page}"/>
+                            <TextBlock Text="{x:Static res:Resources.AdvConfig_SimpleMode}"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                
+                <!-- Right side - Primary Actions -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <Button Name="SaveAndCloseButton" Classes="accent" IsDefault="True" ToolTip.Tip="{x:Static res:Resources.AdvConfig_SaveAndClose_Tooltip}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <ui:SymbolIcon Symbol="{x:Static ui:Symbol.Save}"/>
+                            <TextBlock Text="{x:Static res:Resources.AdvConfig_SaveAndClose}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Name="CancelButton" Classes="secondary" IsCancel="True" ToolTip.Tip="Cancel without saving" MinWidth="100">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <ui:SymbolIcon Symbol="{x:Static ui:Symbol.Cancel}"/>
+                            <TextBlock Text="Cancel"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,277 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:Naming.AdvConfig.ViewModels"
+             xmlns:pe="using:Naming.ParallelExecution"
+             xmlns:controls="using:Naming.AdvConfig.Controls"
+             xmlns:local="using:Naming.AdvConfig.Tabs"
+             xmlns:system="using:System"
+             xmlns:naming="using:Naming"
+             xmlns:res="clr-namespace:NamingTool.Properties"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="Naming.AdvConfig.Tabs.ParallelConfigTab"
+             x:DataType="vm:ParallelConfigTabViewModel">
+
+  <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                HorizontalScrollBarVisibility="Disabled"
+                Padding="24">
+    <StackPanel Spacing="24" MaxWidth="750">
+
+
+      <!-- Execution Type Configuration -->
+      <ui:SettingsExpander Header="{x:Static res:Resources.ParallelConfig_ExecutionType_Header}"
+                           Description="{x:Static res:Resources.ParallelConfig_ExecutionType_Description}"
+                           IconSource="Play"
+                           IsExpanded="True">
+        
+        <StackPanel Spacing="12" Margin="0,12,0,0">
+          <!-- Radio Button Options -->
+          <RadioButton GroupName="ExecutionType"
+                       IsChecked="{Binding ExecutionType, Converter={x:Static local:EnumEqualsConverter.Instance}, ConverterParameter=None, Mode=TwoWay}"
+                       Content="{x:Static res:Resources.ParallelConfig_ExecutionType_None}"
+                       Margin="0,8" />
+
+          <RadioButton GroupName="ExecutionType"
+                       IsChecked="{Binding ExecutionType, Converter={x:Static local:EnumEqualsConverter.Instance}, ConverterParameter=ParameterBased, Mode=TwoWay}"
+                       Content="{x:Static res:Resources.ParallelConfig_ExecutionType_ParameterBased}"
+                       Margin="0,8" />
+
+          <RadioButton GroupName="ExecutionType"
+                       IsChecked="{Binding ExecutionType, Converter={x:Static local:EnumEqualsConverter.Instance}, ConverterParameter=ListBased, Mode=TwoWay}"
+                       Content="{x:Static res:Resources.ParallelConfig_ExecutionType_ListBased}"
+                       Margin="0,8" />
+
+          <RadioButton GroupName="ExecutionType"
+                       IsChecked="{Binding ExecutionType, Converter={x:Static local:EnumEqualsConverter.Instance}, ConverterParameter=ExternalList, Mode=TwoWay}"
+                       Content="{x:Static res:Resources.ParallelConfig_ExecutionType_ExternalList}"
+                       Margin="0,8" />
+          
+          <TextBlock TextWrapping="Wrap"
+                     Text="{Binding ExecutionType, Converter={x:Static local:ExecutionTypeToDescriptionConverter.Instance}}" />
+        </StackPanel>
+      </ui:SettingsExpander>
+
+
+      <!-- List-Based Configuration -->
+      <ui:SettingsExpander Header="{x:Static res:Resources.ParallelConfig_ListParameter_Header}"
+                           Description="{x:Static res:Resources.ParallelConfig_ListParameter_Description}"
+                           IconSource="List"
+                           IsExpanded="True"
+                           IsVisible="{Binding IsListBasedExecution}">
+        
+          <StackPanel Spacing="16" Margin="0,12,0,0">
+            
+            <StackPanel Spacing="8">
+              <TextBlock Text="{x:Static res:Resources.ParallelConfig_SelectListParameter}" FontWeight="SemiBold" />
+              <TextBlock Text="{x:Static res:Resources.ParallelConfig_SelectListParameter_Description}"
+                         FontSize="12"
+                         Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+              
+              <ComboBox ItemsSource="{Binding AvailableArrayParameters}"
+                        SelectedItem="{Binding SelectedListParameter}"
+                        PlaceholderText="{x:Static res:Resources.ParallelConfig_SelectListParameter_Placeholder}"
+                        HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                  <DataTemplate x:DataType="naming:ParameterConfig">
+                    <StackPanel Spacing="2">
+                      <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                      <TextBlock Text="{Binding Description}" 
+                                 FontSize="11" 
+                                 Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                  </DataTemplate>
+                </ComboBox.ItemTemplate>
+              </ComboBox>
+            </StackPanel>
+
+          </StackPanel>
+        
+      </ui:SettingsExpander>
+
+      <!-- External List Configuration -->
+      <ui:SettingsExpander Header="{x:Static res:Resources.ParallelConfig_ExternalList_Header}"
+                           Description="{x:Static res:Resources.ParallelConfig_ExternalList_Description}"
+                           IconSource="Add"
+                           IsExpanded="True"
+                           IsVisible="{Binding IsExternalListExecution}">
+        
+          <StackPanel Spacing="16" Margin="0,12,0,0">
+            
+            <!-- Direct input area -->
+            <StackPanel Spacing="8">
+              <TextBlock Text="{x:Static res:Resources.ParallelConfig_EnterParameters}" FontWeight="SemiBold" />
+              <TextBlock Text="{x:Static res:Resources.ParallelConfig_EnterParameters_Description}"
+                         FontSize="12"
+                         Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+              <TextBox Text="{Binding ExternalListText}"
+                       Watermark="{x:Static res:Resources.ParallelConfig_EnterParameters_Watermark}"
+                       AcceptsReturn="True"
+                       TextWrapping="Wrap"
+                       MinHeight="120" />
+            </StackPanel>
+
+          </StackPanel>
+        
+      </ui:SettingsExpander>
+
+      <!-- Input Parameters Based Settings -->
+      <ui:SettingsExpander Header="{x:Static res:Resources.ParallelConfig_InputParametersBased_Header}"
+                           Description="{x:Static res:Resources.ParallelConfig_InputParametersBased_Description}"
+                           IconSource="MoreOptions"
+                           IsExpanded="True"
+                           IsVisible="{Binding IsParameterBasedExecution}">
+        
+          <StackPanel Spacing="16" Margin="0,12,0,0">
+            
+            <!-- Excluded Parameters -->
+            <StackPanel Spacing="12">
+              <TextBlock Text="{x:Static res:Resources.ParallelConfig_ExcludedParameters}" FontWeight="SemiBold" />
+              <TextBlock Text="{x:Static res:Resources.ParallelConfig_ExcludedParameters_Description}" 
+                         FontSize="12"
+                         Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+              
+              <Grid ColumnDefinitions="*,Auto">
+                <ComboBox Grid.Column="0" 
+                          ItemsSource="{Binding AvailableInputParameters}"
+                          SelectedItem="{Binding SelectedExcludedParameter, Mode=TwoWay}"
+                          PlaceholderText="{x:Static res:Resources.ParallelConfig_SelectParameter_Placeholder}"
+                          HorizontalAlignment="Stretch">
+                  <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="naming:ParameterConfig">
+                      <StackPanel Spacing="2">
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding Description}" 
+                                   FontSize="11" 
+                                   Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </ComboBox.ItemTemplate>
+                </ComboBox>
+                
+                <Button Grid.Column="1"
+                        Content="{x:Static res:Resources.ParallelConfig_Add}"
+                        Command="{Binding AddSelectedExcludedParameterCommand}"
+                        IsEnabled="{Binding SelectedExcludedParameter, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        Margin="8,0,0,0" />
+              </Grid>
+
+              <!-- Excluded parameters chips display -->
+              <Border CornerRadius="8"
+                      Padding="12"
+                      Background="{StaticResource LayerFillColorDefaultBrush}"
+                      BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
+                      BorderThickness="1"
+                      IsVisible="{Binding ExcludedParameters.Count}">
+                <StackPanel Spacing="8">
+                  <TextBlock Text="{x:Static res:Resources.ParallelConfig_ExcludedParameters_Label}" FontWeight="SemiBold" />
+                  <controls:ChipsControl Items="{Binding ExcludedParameters}"
+                                         RemoveItemCommand="{Binding RemoveExcludedParameterCommand}" />
+                </StackPanel>
+              </Border>
+            </StackPanel>
+
+          </StackPanel>
+        
+      </ui:SettingsExpander>
+
+      <!-- Basic Settings - Only visible when parallel execution is enabled -->
+      <ui:SettingsExpander Header="{x:Static res:Resources.ParallelConfig_BasicSettings_Header}"
+                           Description="{x:Static res:Resources.ParallelConfig_BasicSettings_Description}"
+                           IconSource="Settings"
+                           IsExpanded="True"
+                           IsVisible="{Binding IsParallelExecutionEnabled}">
+        <StackPanel Spacing="12" Margin="0,12,0,0">
+          <!-- Maximum Concurrency -->
+          <Border CornerRadius="8"
+                  Padding="12"
+                  Background="{StaticResource LayerFillColorDefaultBrush}"
+                  BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel Grid.Column="0" Spacing="4">
+                <TextBlock Text="{x:Static res:Resources.ParallelConfig_MaxConcurrency}" FontWeight="SemiBold" />
+                <TextBlock Text="{x:Static res:Resources.ParallelConfig_MaxConcurrency_Description}"
+                           FontSize="12"
+                           Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <NumericUpDown Value="{Binding MaxConcurrency}"
+                               Minimum="1"
+                               Width="100"
+                               HorizontalContentAlignment="Center"
+                               ToolTip.Tip="{x:Static res:Resources.ParallelConfig_MaxConcurrency_Tooltip}" />
+              </StackPanel>
+            </Grid>
+          </Border>
+
+          <!-- Result Strategy -->
+          <Border CornerRadius="8"
+                  Padding="12"
+                  Background="{StaticResource LayerFillColorDefaultBrush}"
+                  BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel Grid.Column="0" Spacing="4">
+                <TextBlock Text="{x:Static res:Resources.ParallelConfig_ResultStrategy}" FontWeight="SemiBold" />
+                <TextBlock Text="{x:Static res:Resources.ParallelConfig_ResultStrategy_Description}"
+                           FontSize="12"
+                           Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+              </StackPanel>
+              <ComboBox Grid.Column="1"
+                        ItemsSource="{Binding AvailableResultStrategies}"
+                        SelectedItem="{Binding ResultStrategy}"
+                        MinWidth="260"
+                        HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                  <DataTemplate x:DataType="pe:ParallelResultStrategy">
+                    <StackPanel Spacing="4">
+                      <TextBlock Text="{Binding Converter={x:Static local:ResultStrategyToDisplayNameConverter.Instance}}"
+                                 FontWeight="SemiBold" />
+                      <TextBlock Text="{Binding Converter={x:Static local:ResultStrategyToDescriptionConverter.Instance}}"
+                                 FontSize="12"
+                                 Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                  </DataTemplate>
+                </ComboBox.ItemTemplate>
+              </ComboBox>
+            </Grid>
+          </Border>
+
+          <!-- Session Timeout -->
+          <Border CornerRadius="8"
+				  IsVisible="False"
+                  Padding="12"
+                  Background="{StaticResource LayerFillColorDefaultBrush}"
+                  BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel Grid.Column="0" Spacing="4">
+                <TextBlock Text="{x:Static res:Resources.ParallelConfig_SessionTimeout}" FontWeight="SemiBold" />
+                <TextBlock Text="{x:Static res:Resources.ParallelConfig_SessionTimeout_Description}"
+                           FontSize="12"
+                           Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <Slider Value="{Binding SessionTimeoutMs}"
+                        Minimum="60000"
+                        Maximum="3600000"
+                        Width="220"
+                        TickFrequency="300000"
+                        IsSnapToTickEnabled="True" />
+                <TextBlock Text="{Binding SessionTimeoutDisplay}"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+            </Grid>
+          </Border>
+
+        </StackPanel>
+        
+      </ui:SettingsExpander>
+      
+    </StackPanel>
+  </ScrollViewer>
+
+</UserControl>

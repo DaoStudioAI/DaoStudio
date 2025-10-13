@@ -1,0 +1,168 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DaoStudioUI.ViewModels"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:res="using:DaoStudioUI.Resources"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="500"
+             x:Class="DaoStudioUI.Views.Dialogs.Tabs.UsageTabView"
+             x:DataType="vm:UsageTabViewModel">
+
+    <Design.DataContext>
+        <vm:UsageTabViewModel />
+    </Design.DataContext>
+
+    <Border Background="Transparent"
+            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+            BorderThickness="1,0,0,0">
+        <Grid RowDefinitions="Auto,*" Margin="20,16,20,12">
+            <!-- Header -->
+            <TextBlock Grid.Row="0"
+                       Text="{res:Localization Usage_Title}"
+                       FontWeight="SemiBold"
+                       FontSize="16"
+                       Margin="0,0,0,16"/>
+
+            <!-- Content -->
+            <ScrollViewer Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Spacing="16">
+                    <!-- Token Usage Card -->
+                    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource ControlStrokeColorSecondaryBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="16"
+                            BoxShadow="0 2 8 0 #25000000">
+                        <StackPanel Spacing="12">
+
+                            <!-- Current Round Tokens Section -->
+                            <TextBlock Text="{res:Localization Usage_CurrentRoundTokens}"
+                                       FontWeight="SemiBold"
+                                       Margin="0,4,0,0"/>
+                            
+                            <!-- Current Round Total Tokens -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0"
+                                           Text="{res:Localization Usage_TotalTokens}"
+                                           VerticalAlignment="Center"
+                                           Margin="8,0,0,0"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding CurrentRoundTotalTokens}"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                            
+                            <!-- Current Round Input Tokens -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0"
+                                           Text="{res:Localization Usage_InputTokens}"
+                                           VerticalAlignment="Center"
+                                           Margin="8,0,0,0"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding CurrentRoundInputTokens}"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                            
+                            <!-- Current Round Output Tokens -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0"
+                                           Text="{res:Localization Usage_OutputTokens}"
+                                           VerticalAlignment="Center"
+                                           Margin="8,0,0,0"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding CurrentRoundOutputTokens}"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <!-- Accumulated Session Tokens Section -->
+                            <TextBlock Text="{res:Localization Usage_AccumulatedTokens}"
+                                       FontWeight="SemiBold"
+                                       Margin="0,12,0,0"/>
+                            
+                            <!-- Total Session Tokens -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0"
+                                           Text="{res:Localization Usage_TotalTokens}"
+                                           VerticalAlignment="Center"
+                                           Margin="8,0,0,0"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding TotalTokenCount}"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                            
+                            <!-- Total Session Input Tokens -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0"
+                                           Text="{res:Localization Usage_InputTokens}"
+                                           VerticalAlignment="Center"
+                                           Margin="8,0,0,0"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding InputTokenCount}"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                            
+                            <!-- Total Session Output Tokens -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0"
+                                           Text="{res:Localization Usage_OutputTokens}"
+                                           VerticalAlignment="Center"
+                                           Margin="8,0,0,0"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding OutputTokenCount}"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Additional Counts Card (if any) -->
+                    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource ControlStrokeColorSecondaryBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="16"
+                            BoxShadow="0 2 8 0 #25000000"
+                            IsVisible="{Binding AdditionalCounts.Count}"
+                            Margin="0,0,0,16">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="{res:Localization Usage_AdditionalCounts}"
+                                       FontWeight="SemiBold"
+                                       FontSize="14"/>
+                            
+                            <!-- Additional counts will be added dynamically -->
+                            <ItemsControl ItemsSource="{Binding AdditionalCounts}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ColumnDefinitions="*,Auto" Margin="0,4">
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Key}"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Value}"
+                                                       FontWeight="SemiBold"
+                                                       VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Usage information -->
+                    <TextBlock Text="{res:Localization Usage_Information}"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               FontSize="12"
+                               Margin="0,8,0,0"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Border>
+</UserControl>

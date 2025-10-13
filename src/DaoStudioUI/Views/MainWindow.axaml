@@ -1,0 +1,111 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DaoStudioUI.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:res="using:DaoStudioUI.Resources"
+        xmlns:views="using:DaoStudioUI.Views"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="DaoStudioUI.Views.MainWindow"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/logo.ico"
+        Title="{res:Localization MainWindow_Title}"
+        TransparencyLevelHint="AcrylicBlur"
+		     ExtendClientAreaToDecorationsHint="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen">
+
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+	<Panel>
+		<!-- <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>-->
+
+		<ui:NavigationView x:Name="NavView"
+                          PaneDisplayMode="Auto"
+                          IsPaneOpen="{Binding IsPaneOpen}"
+                          OpenPaneLength="250"
+						   IsSettingsVisible="False">
+			
+			<ui:NavigationView.MenuItems>
+				<ui:NavigationViewItem Content="{res:Localization NavItem_Home}" Tag="0">
+					<ui:NavigationViewItem.IconSource>
+						<ui:SymbolIconSource Symbol="{x:Static ui:Symbol.Home}" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+
+
+			</ui:NavigationView.MenuItems>
+
+			<ui:NavigationView.FooterMenuItems>
+				<ui:NavigationViewItem Content="{res:Localization NavItem_Tools}" Tag="5">
+					<ui:NavigationViewItem.IconSource>
+						<ui:SymbolIconSource Symbol="{x:Static ui:Symbol.Repair}" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Content="{res:Localization NavItem_People}" Tag="4">
+					<ui:NavigationViewItem.IconSource>
+						<ui:SymbolIconSource Symbol="{x:Static ui:Symbol.People}" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Content="{res:Localization NavItem_Settings}" Tag="2">
+					<ui:NavigationViewItem.IconSource>
+						<ui:SymbolIconSource Symbol="{x:Static ui:Symbol.Settings}" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+			</ui:NavigationView.FooterMenuItems>
+
+			<Panel>
+				<!-- Custom title bar integrated into NavigationView content area -->
+				<Border x:Name="TitleBar" 
+				        Height="40" 
+				        VerticalAlignment="Top"
+				        Background="Transparent"
+				        PointerPressed="OnTitleBarPointerPressed"
+				        ZIndex="1000">
+					<TextBlock Text="{res:Localization MainWindow_Title}" 
+					           VerticalAlignment="Center"
+					           HorizontalAlignment="Center"
+					           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+					           FontSize="16"
+					           FontWeight="SemiBold"/>
+				</Border>
+
+				<TransitioningContentControl x:Name="TransitionHost" 
+				                           Content="{Binding CurrentViewModel}"
+				                           Margin="0,40,0,0">
+					<TransitioningContentControl.PageTransition>
+						<CrossFade Duration="0:0:0.3" />
+					</TransitioningContentControl.PageTransition>
+					<TransitioningContentControl.DataTemplates>
+						<DataTemplate DataType="{x:Type vm:HomeViewModel}">
+							<views:HomeView />
+						</DataTemplate>
+						<DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+							<views:SettingsView />
+						</DataTemplate>
+						<DataTemplate DataType="{x:Type vm:PeopleViewModel}">
+							<views:ModelsView />
+						</DataTemplate>
+						<DataTemplate DataType="{x:Type vm:ToolsViewModel}">
+							<views:ToolsView />
+						</DataTemplate>
+					</TransitioningContentControl.DataTemplates>
+				</TransitioningContentControl>
+			</Panel>
+		</ui:NavigationView>
+	</Panel>
+</Window>

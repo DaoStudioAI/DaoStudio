@@ -1,0 +1,802 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="NamingConfiguration" xml:space="preserve">
+    <value>Naming Tool - Configuration</value>
+  </data>
+  <data name="SelectAIAssistants" xml:space="preserve">
+    <value>Select People for Subtasks</value>
+  </data>
+  <data name="SelectAIAssistantsDescription" xml:space="preserve">
+    <value>Choose which people should be available for subtask delegation.</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="DeselectAll" xml:space="preserve">
+    <value>Deselect All</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ErrorHandling_ErrorMessageHint" xml:space="preserve">
+    <value>If left blank, a default error message will be used.</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="NoAIAssistantsAvailable" xml:space="preserve">
+    <value>No people are currently available.</value>
+  </data>
+  <data name="DelegateSubtasks" xml:space="preserve">
+    <value>Arbitrarily redefining a concept and acting on the new definition</value>
+  </data>
+  <data name="NamingDisplayName" xml:space="preserve">
+    <value>Naming Tool</value>
+  </data>
+  <data name="NamingFunctionDescription" xml:space="preserve">
+    <value>Create a subtask or a function call.</value>
+  </data>
+  <data name="AvailableAssistants" xml:space="preserve">
+    <value>Available people:</value>
+  </data>
+  <data name="ErrorSubtaskEmpty" xml:space="preserve">
+    <value>Error: Subtask description is required.</value>
+  </data>
+  <data name="ErrorNoAssistantsConfigured" xml:space="preserve">
+    <value>Error: No people are configured for subtask delegation. Please configure the tool to allow specific people.</value>
+  </data>
+  <data name="ErrorNoAssistantsAvailable" xml:space="preserve">
+    <value>Error: No people are available in the system.</value>
+  </data>
+  <data name="ErrorConfiguredAssistantsNotAvailable" xml:space="preserve">
+    <value>Error: None of the configured people ({0}) are currently available.</value>
+  </data>
+  <data name="ErrorSpecifiedAssistantNotAvailable" xml:space="preserve">
+    <value>Error: The specified person '{0}' is either not available or not configured. Available people: {1}</value>
+  </data>
+  <data name="HelpSessionStarted" xml:space="preserve">
+    <value>Subtask delegated to {0}: {1}</value>
+  </data>
+  <data name="ErrorStartingHelpSession" xml:space="preserve">
+    <value>Error delegating subtask: {0}</value>
+  </data>
+  <data name="ErrorMaxRecursionLevelReached" xml:space="preserve">
+    <value>Error: Maximum delegation level ({0}) reached. Current level: {1}. Further delegation not allowed.</value>
+  </data>
+  <data name="MaxRecursionLevel" xml:space="preserve">
+    <value>Maximum Delegation Level</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ConfigurationError" xml:space="preserve">
+    <value>Configuration Error</value>
+    <comment>s</comment>
+  </data>
+  <data name="Field_DisplayName" xml:space="preserve">
+    <value>Display Name</value>
+  </data>
+  <data name="Error_CalculatingRecursionLevel" xml:space="preserve">
+    <value>Error calculating recursion level</value>
+  </data>
+  <data name="Error_ShowingDialog" xml:space="preserve">
+    <value>Error showing dialog</value>
+  </data>
+  <data name="Error_ChildSessionTimeout" xml:space="preserve">
+    <value>Child session failed to provide a result after {0} attempts.</value>
+  </data>
+  <data name="Error_UnhandledInWaitChildSession" xml:space="preserve">
+    <value>Unhandled error in WaitChildSessionAsync</value>
+  </data>
+  <data name="Log_SendingInitialMessage" xml:space="preserve">
+    <value>Sending initial message to child session {0}</value>
+  </data>
+  <data name="Log_ChildSessionCompleted" xml:space="preserve">
+    <value>Child session {0} completed. Success: {1}</value>
+  </data>
+  <data name="Log_ChildSessionTimeout" xml:space="preserve">
+    <value>Child session {0} ended due to timeout/cancellation</value>
+  </data>
+  <data name="Log_CustomReturnToolRegistered" xml:space="preserve">
+    <value>CustomReturnResultTool registered for child session {0}</value>
+  </data>
+  <data name="Message_FinalizeTaskReminder" xml:space="preserve">
+    <value>Please finalize your task by submitting your results ONLY through the {{_Config.ReturnToolName}} tool. Do not respond with additional conversation or explanations. When invoking the {{_Config.ReturnToolName}} tool, ensure all required parameters are included along with any relevant data.</value>
+  </data>
+  <data name="Log_ResultNotProvided" xml:space="preserve">
+    <value>Result not provided yet – retry {0}/{1}</value>
+  </data>
+  <data name="Error_ChildSessionFailedResult" xml:space="preserve">
+    <value>Child session failed to provide a result after {0} attempts.</value>
+  </data>
+  <data name="Error_HostMustBeSet" xml:space="preserve">
+    <value>Host must be set before creating plugin instances</value>
+  </data>
+  <data name="Field_MaxRecursionLevel" xml:space="preserve">
+    <value>Max Recursion Level:</value>
+  </data>
+  <data name="Field_ExecutivePerson" xml:space="preserve">
+    <value>Executive Person:</value>
+  </data>
+  <data name="Field_ExecutivePerson_Placeholder" xml:space="preserve">
+    <value>Select a person</value>
+  </data>
+  <data name="ErrorHandling_TabDescription" xml:space="preserve">
+    <value>Configure how child sessions handle errors and return tool behavior.</value>
+  </data>
+  <data name="ErrorHandling_BehaviorDescription" xml:space="preserve">
+    <value>Choose what happens when a child session fails to call the return tool.</value>
+  </data>
+  <data name="ErrorHandling_Info_UrgeTitle" xml:space="preserve">
+    <value>Urge child session</value>
+  </data>
+  <data name="ErrorHandling_Info_UrgeDescription" xml:space="preserve">
+    <value>Send up to three reminders and give the child session more time to finish.</value>
+  </data>
+  <data name="ErrorHandling_Info_UrgeNote" xml:space="preserve">
+    <value>If the child session still does not respond, it will be marked as failed.</value>
+  </data>
+  <data name="ErrorHandling_Info_ReportErrorTitle" xml:space="preserve">
+    <value>Report error immediately</value>
+  </data>
+  <data name="ErrorHandling_Info_ReportErrorDescription" xml:space="preserve">
+    <value>Stop waiting and report an error back to the parent session right away.</value>
+  </data>
+  <data name="ErrorHandling_Info_ReportErrorNote" xml:space="preserve">
+    <value>Provide a clear message so the parent session understands what went wrong.</value>
+  </data>
+  <data name="ErrorHandling_Info_PauseTitle" xml:space="preserve">
+    <value>Pause for manual intervention</value>
+  </data>
+  <data name="ErrorHandling_Info_PauseDescription" xml:space="preserve">
+    <value>Suspend the workflow and wait for a human decision.</value>
+  </data>
+  <data name="ErrorHandling_Info_PauseNote" xml:space="preserve">
+    <value>Use this when oversight is required before continuing.</value>
+  </data>
+  <data name="ErrorHandling_Info_PauseWarning" xml:space="preserve">
+    <value>The workflow will remain paused until someone takes action.</value>
+  </data>
+  <data name="Field_SubtaskName" xml:space="preserve">
+    <value>Subtask Name:</value>
+  </data>
+  <data name="Field_SubtaskName_Validation" xml:space="preserve">
+    <value>Subtask name must contain only lowercase letters and underscores</value>
+  </data>
+  <data name="Field_SubtaskDescription" xml:space="preserve">
+    <value>Subtask Description:</value>
+  </data>
+  <data name="ErrorReporting_Info_PauseTitle" xml:space="preserve">
+    <value>Pause when error reported</value>
+  </data>
+  <data name="ErrorReporting_Info_PauseDescription" xml:space="preserve">
+    <value>Hold the parent session until the reported error is reviewed.</value>
+  </data>
+  <data name="ErrorReporting_Info_ReportErrorTitle" xml:space="preserve">
+    <value>Report error to parent</value>
+  </data>
+  <data name="ErrorReporting_Info_ReportErrorDescription" xml:space="preserve">
+    <value>Send error details to the parent session and mark the workflow as failed.</value>
+  </data>
+  <data name="ErrorReporting_ClearAll" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="Section_RequiredInformation_Description" xml:space="preserve">
+    <value>Configure required information that provides background context and task details:</value>
+  </data>
+  <data name="Section_RequiredInformation_Empty" xml:space="preserve">
+    <value>No required information configured</value>
+  </data>
+  <data name="Section_RequiredInformation_EmptyDescription" xml:space="preserve">
+    <value>Click 'Add Information' to define information that provides background context, task details, and other data needed for the subtask execution.</value>
+  </data>
+  <data name="Field_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Field_Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Field_Required" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="Section_PromptMessage_Description" xml:space="preserve">
+    <value>Configure the prompt message that will be sent to the executive person:</value>
+  </data>
+  <data name="Section_ReturnParameters_Description" xml:space="preserve">
+    <value>Define the required information items that the subtask must report back upon completion:</value>
+  </data>
+  <data name="Section_ReturnParameters_Empty" xml:space="preserve">
+    <value>No required response items configured</value>
+  </data>
+  <data name="Section_ReturnParameters_EmptyDescription" xml:space="preserve">
+    <value>Click 'Add Response Item' to specify the required information that the subtask must report back. These items define the structured data that the executive person must provide upon task completion.</value>
+  </data>
+  <data name="Button_Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Button_Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="Button_SaveAndClose" xml:space="preserve">
+    <value>Save and Close</value>
+  </data>
+  <data name="Window_Title" xml:space="preserve">
+    <value>Naming Configuration</value>
+  </data>
+  <data name="Section_BasicSettings" xml:space="preserve">
+    <value>Basic Settings</value>
+  </data>
+  <data name="Error_InvalidRecursionLevel" xml:space="preserve">
+    <value>Error: Invalid recursion level configuration. Maximum level cannot be negative.</value>
+  </data>
+  <data name="Error_MissingRequiredParameters" xml:space="preserve">
+    <value>Missing required parameters: {0}</value>
+  </data>
+  <data name="Status_Succeeded" xml:space="preserve">
+    <value>Succeeded</value>
+  </data>
+  <data name="Status_Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="ErrorNoValidParametersForParallelExecution" xml:space="preserve">
+    <value>Error: No valid parameters found for parallel execution.</value>
+  </data>
+  <data name="ErrorParallelExecution" xml:space="preserve">
+    <value>Error during parallel execution: {0}</value>
+  </data>
+  <data name="Status_ParallelStreamingCompleted" xml:space="preserve">
+    <value>Parallel execution completed with streaming results: {0}/{1} sessions succeeded</value>
+  </data>
+  <data name="Status_ParallelWaitForAllCompleted" xml:space="preserve">
+    <value>Parallel execution completed: {0}/{1} sessions succeeded. Results:{2}</value>
+  </data>
+  <data name="Status_ParallelFirstWinsCompleted" xml:space="preserve">
+    <value>Parallel execution completed with first result: {0}</value>
+  </data>
+  <data name="Status_NoResult" xml:space="preserve">
+    <value>No result available</value>
+  </data>
+  <data name="Error_ParallelExecutionDetails" xml:space="preserve">
+    <value>{0}/{1} sessions completed successfully, {2} failed</value>
+  </data>
+  <data name="Status_ParallelFailed" xml:space="preserve">
+    <value>Parallel execution failed: {0}</value>
+  </data>
+  <data name="Status_NoResults" xml:space="preserve">
+    <value>No results available</value>
+  </data>
+  <data name="Status_NoSuccessfulResults" xml:space="preserve">
+    <value>No successful results available</value>
+  </data>
+  <data name="Field_ExecutivePerson_UseCurrentSession" xml:space="preserve">
+    <value>Use Current Session Person</value>
+  </data>
+  <data name="Field_ExecutivePerson_UseCurrentSession_Description" xml:space="preserve">
+    <value>Delegate to the person from the active session</value>
+  </data>
+  <data name="ParallelConfig_ExecutionType_Header" xml:space="preserve">
+    <value>Execution Type</value>
+  </data>
+  <data name="ParallelConfig_ExecutionType_Description" xml:space="preserve">
+    <value>Choose how parallel execution should be handled</value>
+  </data>
+  <data name="ParallelConfig_ExecutionType_None" xml:space="preserve">
+    <value>None - No parallel execution</value>
+  </data>
+  <data name="ParallelConfig_ExecutionType_ParameterBased" xml:space="preserve">
+    <value>Parameter Based - Use POCO parameters</value>
+  </data>
+  <data name="ParallelConfig_ExecutionType_ListBased" xml:space="preserve">
+    <value>List Based - Use specific array/list parameter</value>
+  </data>
+  <data name="ParallelConfig_ExecutionType_ExternalList" xml:space="preserve">
+    <value>External List - Use custom string list</value>
+  </data>
+  <data name="ParallelConfig_ListParameter_Header" xml:space="preserve">
+    <value>List Parameter Configuration</value>
+  </data>
+  <data name="ParallelConfig_ListParameter_Description" xml:space="preserve">
+    <value>Configure the parameter that contains the list for parallel processing</value>
+  </data>
+  <data name="ParallelConfig_SelectListParameter" xml:space="preserve">
+    <value>Select List Parameter</value>
+  </data>
+  <data name="ParallelConfig_SelectListParameter_Description" xml:space="preserve">
+    <value>Choose an array parameter from your input parameters to use for parallel processing</value>
+  </data>
+  <data name="ParallelConfig_SelectListParameter_Placeholder" xml:space="preserve">
+    <value>Select an array parameter...</value>
+  </data>
+  <data name="ParallelConfig_ExternalList_Header" xml:space="preserve">
+    <value>External List Configuration</value>
+  </data>
+  <data name="ParallelConfig_ExternalList_Description" xml:space="preserve">
+    <value>Manage the external list of items for parallel processing</value>
+  </data>
+  <data name="ParallelConfig_EnterParameters" xml:space="preserve">
+    <value>Enter Parameters</value>
+  </data>
+  <data name="ParallelConfig_EnterParameters_Description" xml:space="preserve">
+    <value>Enter parameters directly, one per line.</value>
+  </data>
+  <data name="ParallelConfig_EnterParameters_Watermark" xml:space="preserve">
+    <value>Enter each parameter on a new line...</value>
+  </data>
+  <data name="ParallelConfig_InputParametersBased_Header" xml:space="preserve">
+    <value>Input Parameters Based Settings</value>
+  </data>
+  <data name="ParallelConfig_InputParametersBased_Description" xml:space="preserve">
+    <value>Configure input parameters for parallel execution</value>
+  </data>
+  <data name="ParallelConfig_ExcludedParameters" xml:space="preserve">
+    <value>Excluded Parameters</value>
+  </data>
+  <data name="ParallelConfig_ExcludedParameters_Description" xml:space="preserve">
+    <value>Select parameters to exclude from parameter-based parallel execution</value>
+  </data>
+  <data name="ParallelConfig_SelectParameter_Placeholder" xml:space="preserve">
+    <value>Select a parameter...</value>
+  </data>
+  <data name="ParallelConfig_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="ParallelConfig_ExcludedParameters_Label" xml:space="preserve">
+    <value>Excluded Parameters:</value>
+  </data>
+  <data name="ParallelConfig_BasicSettings_Header" xml:space="preserve">
+    <value>Basic Settings</value>
+  </data>
+  <data name="ParallelConfig_BasicSettings_Description" xml:space="preserve">
+    <value>Configure basic parallel execution parameters</value>
+  </data>
+  <data name="ParallelConfig_MaxConcurrency" xml:space="preserve">
+    <value>Maximum Concurrency</value>
+  </data>
+  <data name="ParallelConfig_MaxConcurrency_Description" xml:space="preserve">
+    <value>Number of parallel sessions to run simultaneously</value>
+  </data>
+  <data name="ParallelConfig_MaxConcurrency_Tooltip" xml:space="preserve">
+    <value>Maximum number of concurrent sessions (must be &gt; 0)</value>
+  </data>
+  <data name="ParallelConfig_ResultStrategy" xml:space="preserve">
+    <value>Result Strategy</value>
+  </data>
+  <data name="ParallelConfig_ResultStrategy_Description" xml:space="preserve">
+    <value>How to handle results from parallel sessions</value>
+  </data>
+  <data name="ParallelConfig_SessionTimeout" xml:space="preserve">
+    <value>Session Timeout</value>
+  </data>
+  <data name="ParallelConfig_SessionTimeout_Description" xml:space="preserve">
+    <value>Maximum time to wait for each parallel session</value>
+  </data>
+  <data name="Config_DisplayName_Watermark" xml:space="preserve">
+    <value>Enter a display name for this tool...</value>
+  </data>
+  <data name="Config_Separator" xml:space="preserve">
+    <value>-</value>
+  </data>
+  <data name="Config_SubtaskName_Watermark" xml:space="preserve">
+    <value>Only lowercase letters and underscores (e.g., create_subtask)</value>
+  </data>
+  <data name="Config_SubtaskName_Tooltip" xml:space="preserve">
+    <value>Subtask name must contain only lowercase letters (a-z) and underscores (_). No spaces, numbers, or uppercase letters allowed.</value>
+  </data>
+  <data name="Config_Description_Watermark" xml:space="preserve">
+    <value>Describe what this subtask does</value>
+  </data>
+  <data name="Config_RequiredInformation_Header" xml:space="preserve">
+    <value>Required Information</value>
+  </data>
+  <data name="Config_AddInformation" xml:space="preserve">
+    <value>Add Information</value>
+  </data>
+  <data name="Config_RemoveItem_Tooltip" xml:space="preserve">
+    <value>Remove this item</value>
+  </data>
+  <data name="Config_PromptMessage_Header" xml:space="preserve">
+    <value>Prompt Message</value>
+  </data>
+  <data name="Config_RequiredResponseItems_Header" xml:space="preserve">
+    <value>Required Response Items</value>
+  </data>
+  <data name="Config_AddResponseItem" xml:space="preserve">
+    <value>Add Response Item</value>
+  </data>
+  <data name="Config_RequiredResponseItems_Description" xml:space="preserve">
+    <value>Click 'Add Response Item' to specify the required information that the subtask must report back. These items define the structured data that the executive person must provide upon task completion.</value>
+  </data>
+  <data name="Config_InformationName_Watermark" xml:space="preserve">
+    <value>Information name</value>
+  </data>
+  <data name="Config_InformationDescription_Watermark" xml:space="preserve">
+    <value>Information description</value>
+  </data>
+  <data name="Config_PromptMessage_Watermark" xml:space="preserve">
+    <value>Enter the prompt message for the subtask. Reference required information using double brackets, e.g., {{task}}, {{background}}, {{requirements}}.</value>
+  </data>
+  <data name="Config_RequiredInformationName_Watermark" xml:space="preserve">
+    <value>Required information name</value>
+  </data>
+  <data name="Config_RequiredInformationDescription_Watermark" xml:space="preserve">
+    <value>Describe the required information to be provided</value>
+  </data>
+  <data name="Config_Export_Tooltip" xml:space="preserve">
+    <value>Export settings to JSON file</value>
+  </data>
+  <data name="Config_Import_Tooltip" xml:space="preserve">
+    <value>Import settings from JSON file</value>
+  </data>
+  <data name="Config_AdvancedMode_Tooltip" xml:space="preserve">
+    <value>Switch to advanced configuration mode</value>
+  </data>
+  <data name="Config_AdvancedMode" xml:space="preserve">
+    <value>Advanced Mode</value>
+  </data>
+  <data name="AdvConfig_BasicInformation" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="AdvConfig_InputParameters" xml:space="preserve">
+    <value>Input Parameters</value>
+  </data>
+  <data name="AdvConfig_ParallelConfig" xml:space="preserve">
+    <value>Parallel Config</value>
+  </data>
+  <data name="AdvConfig_PromptTemplate" xml:space="preserve">
+    <value>Prompt Template</value>
+  </data>
+  <data name="AdvConfig_OutputParameters" xml:space="preserve">
+    <value>Output Parameters</value>
+  </data>
+  <data name="AdvConfig_Export_Tooltip" xml:space="preserve">
+    <value>Export current configuration</value>
+  </data>
+  <data name="AdvConfig_Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="AdvConfig_Import_Tooltip" xml:space="preserve">
+    <value>Import configuration from file</value>
+  </data>
+  <data name="AdvConfig_Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="AdvConfig_SimpleMode_Tooltip" xml:space="preserve">
+    <value>Switch to simple configuration mode</value>
+  </data>
+  <data name="AdvConfig_SimpleMode" xml:space="preserve">
+    <value>Simple Mode</value>
+  </data>
+  <data name="AdvConfig_SaveAndClose_Tooltip" xml:space="preserve">
+    <value>Save and close</value>
+  </data>
+  <data name="AdvConfig_SaveAndClose" xml:space="preserve">
+    <value>Save and Close</value>
+  </data>
+  <data name="PromptTemplate_Header" xml:space="preserve">
+    <value>Prompt Template</value>
+  </data>
+  <data name="PromptTemplate_InsertParameters" xml:space="preserve">
+    <value>Insert Parameters</value>
+  </data>
+  <data name="PromptTemplate_InsertParameters_Tooltip" xml:space="preserve">
+    <value>Insert input parameters into template</value>
+  </data>
+  <data name="PromptTemplate_Watermark" xml:space="preserve">
+    <value>Enter your prompt template here. Use {{parameter}} syntax for placeholders...</value>
+  </data>
+  <data name="BaseInfo_DisplayName_Watermark" xml:space="preserve">
+    <value>Enter a display name for this tool instance...</value>
+  </data>
+  <data name="BaseInfo_SubtaskName_Watermark" xml:space="preserve">
+    <value>Only lowercase letters and underscores (e.g., create_subtask)</value>
+  </data>
+  <data name="BaseInfo_Description_Watermark" xml:space="preserve">
+    <value>Describe what this function does...</value>
+  </data>
+  <data name="InputParams_NoParameters" xml:space="preserve">
+    <value>No Parameters Configured</value>
+  </data>
+  <data name="InputParams_NoParameters_Description" xml:space="preserve">
+    <value>Add input parameters to define the data your tool accepts</value>
+  </data>
+  <data name="InputParams_AddFirstParameter" xml:space="preserve">
+    <value>Add First Parameter</value>
+  </data>
+  <data name="InputParams_Header" xml:space="preserve">
+    <value>Input Parameters</value>
+  </data>
+  <data name="InputParams_AddParameter" xml:space="preserve">
+    <value>Add Parameter</value>
+  </data>
+  <data name="InputParams_AddParameter_Tooltip" xml:space="preserve">
+    <value>Add a new input parameter</value>
+  </data>
+  <data name="InputParams_ClearAll_Tooltip" xml:space="preserve">
+    <value>Clear all parameters</value>
+  </data>
+  <data name="InputParams_ClearAll" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="OutputParams_NoParameters" xml:space="preserve">
+    <value>No Return Parameters Configured</value>
+  </data>
+  <data name="OutputParams_NoParameters_Description" xml:space="preserve">
+    <value>Configure return parameters to define the data your tool returns</value>
+  </data>
+  <data name="OutputParams_Header" xml:space="preserve">
+    <value>Output Parameters</value>
+  </data>
+  <data name="OutputParams_ToolName" xml:space="preserve">
+    <value>Tool Name:</value>
+  </data>
+  <data name="OutputParams_ToolName_Watermark" xml:space="preserve">
+    <value>e.g., set_result, complete_task</value>
+  </data>
+  <data name="OutputParams_ToolDescription_Watermark" xml:space="preserve">
+    <value>Describe what this tool does...</value>
+  </data>
+  <data name="OutputParams_UrgingMessage" xml:space="preserve">
+    <value>Urging Message:</value>
+  </data>
+  <data name="OutputParams_UrgingMessage_Watermark" xml:space="preserve">
+    <value>Message to show when waiting for completion (optional)...</value>
+  </data>
+  <data name="OutputParams_ReturnParameters" xml:space="preserve">
+    <value>Return Parameters</value>
+  </data>
+  <data name="OutputParams_ClearAll" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="OutputParams_ClearAll_Tooltip" xml:space="preserve">
+    <value>Remove all parameters</value>
+  </data>
+  <data name="DanglingBehavior_Urge" xml:space="preserve">
+    <value>Urge (send reminders)</value>
+  </data>
+  <data name="DanglingBehavior_ReportError" xml:space="preserve">
+    <value>Report error</value>
+  </data>
+  <data name="DanglingBehavior_Pause" xml:space="preserve">
+    <value>Pause and wait</value>
+  </data>
+  <data name="ErrorHandling_TabTitle" xml:space="preserve">
+    <value>Error Handling</value>
+  </data>
+  <data name="ErrorHandling_BehaviorLabel" xml:space="preserve">
+    <value>When return tool is not called:</value>
+  </data>
+  <data name="ErrorHandling_ErrorMessageLabel" xml:space="preserve">
+    <value>Error message:</value>
+  </data>
+  <data name="ErrorHandling_ErrorMessagePlaceholder" xml:space="preserve">
+    <value>Enter custom error message...</value>
+  </data>
+  <data name="ErrorHandling_DefaultErrorMessage" xml:space="preserve">
+    <value>Child session failed to call the return tool</value>
+  </data>
+  <data name="ErrorReporting_Validation_ToolNameRequired" xml:space="preserve">
+    <value>LLM error reporting tool name is required when error reporting is enabled.</value>
+  </data>
+  <data name="ErrorReporting_Validation_ToolNameConflict" xml:space="preserve">
+    <value>LLM error reporting tool name must be different from the return tool name.</value>
+  </data>
+  <data name="ErrorReporting_Validation_InvalidParameterName" xml:space="preserve">
+    <value>LLM error reporting parameters must have non-empty names.</value>
+  </data>
+  <data name="ErrorReporting_Validation_DuplicateParameters" xml:space="preserve">
+    <value>LLM error reporting parameters contain duplicates: {0}.</value>
+  </data>
+  <data name="ErrorReporting_DefaultParentMessage" xml:space="preserve">
+    <value>A child session's LLM actively reported an error.</value>
+  </data>
+  <data name="ErrorReporting_SectionTitle" xml:space="preserve">
+    <value>LLM Error Reporting Tool</value>
+  </data>
+  <data name="ErrorReporting_SectionDescription" xml:space="preserve">
+    <value>Enable LLMs to actively report errors using a dedicated tool (distinct from timeout handling).</value>
+  </data>
+  <data name="ErrorReporting_EnableOn" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="ErrorReporting_EnableOff" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="ErrorReporting_EnableLabel" xml:space="preserve">
+    <value>Enable LLM error reporting tool</value>
+  </data>
+  <data name="ErrorReporting_EnableDescription" xml:space="preserve">
+    <value>When enabled, LLMs can actively report errors through a dedicated tool call.</value>
+  </data>
+  <data name="ErrorReporting_ToolNameLabel" xml:space="preserve">
+    <value>Tool name:</value>
+  </data>
+  <data name="ErrorReporting_ToolNamePlaceholder" xml:space="preserve">
+    <value>e.g., report_error</value>
+  </data>
+  <data name="ErrorReporting_ToolDescriptionLabel" xml:space="preserve">
+    <value>Tool description:</value>
+  </data>
+  <data name="ErrorReporting_ToolDescriptionPlaceholder" xml:space="preserve">
+    <value>Describe what happens when the LLM calls this error reporting tool...</value>
+  </data>
+  <data name="ErrorReporting_BehaviorLabel" xml:space="preserve">
+    <value>When LLM actively reports an error via tool call:</value>
+  </data>
+  <data name="ErrorReporting_CustomParentMessageLabel" xml:space="preserve">
+    <value>Custom message to parent session:</value>
+  </data>
+  <data name="ErrorReporting_CustomParentMessagePlaceholder" xml:space="preserve">
+    <value>Enter the message that will be sent back to the parent session...</value>
+  </data>
+  <data name="ErrorReporting_ParametersHeader" xml:space="preserve">
+    <value>Error reporting parameters</value>
+  </data>
+  <data name="ErrorReporting_LoadDefaults" xml:space="preserve">
+    <value>Load defaults</value>
+  </data>
+  <data name="ErrorReporting_AddParameter" xml:space="preserve">
+    <value>Add Parameter</value>
+  </data>
+  <data name="ErrorReporting_NoParameters" xml:space="preserve">
+    <value>No LLM error reporting parameters</value>
+  </data>
+  <data name="ErrorReporting_NoParametersDescription" xml:space="preserve">
+    <value>Add parameters to define the structured error data that LLMs can provide when reporting errors.</value>
+  </data>
+  <data name="ErrorReporting_DefaultParameterDescription" xml:space="preserve">
+    <value>Describe this parameter</value>
+  </data>
+  <data name="ErrorReporting_DefaultToolName" xml:space="preserve">
+    <value>report_error</value>
+  </data>
+  <data name="ErrorReporting_DefaultToolDescription" xml:space="preserve">
+    <value>Report errors encountered in executing</value>
+  </data>
+  <data name="ErrorReporting_Behavior_Pause" xml:space="preserve">
+    <value>Pause workflow</value>
+  </data>
+  <data name="ErrorReporting_Behavior_PauseDescription" xml:space="preserve">
+    <value>Pause the parent session and require manual intervention when LLM reports an error.</value>
+  </data>
+  <data name="ErrorReporting_Behavior_ReportError" xml:space="preserve">
+    <value>Report error</value>
+  </data>
+  <data name="ErrorReporting_Behavior_ReportErrorDescription" xml:space="preserve">
+    <value>Propagate the LLM-reported error to the parent session immediately.</value>
+  </data>
+  <data name="ErrorReporting_DefaultParameter_ErrorMessage" xml:space="preserve">
+    <value>A detailed message describing what went wrong.</value>
+  </data>
+  <data name="ErrorReporting_DefaultParameter_ErrorType" xml:space="preserve">
+    <value>The category or type of error that occurred.</value>
+  </data>
+  <data name="ErrorHandling_UrgingMessage" xml:space="preserve">
+    <value>Urging Message:</value>
+  </data>
+  <data name="ErrorHandling_UrgingMessage_Watermark" xml:space="preserve">
+    <value>Message to show when waiting for completion (optional)...</value>
+  </data>
+  <data name="ErrorHandling_UrgingMessage_Hint" xml:space="preserve">
+    <value>This message will be sent to prompt completion when the task is taking too long.</value>
+  </data>
+</root>

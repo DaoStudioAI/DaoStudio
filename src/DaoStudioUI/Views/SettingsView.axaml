@@ -1,0 +1,383 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DaoStudioUI.ViewModels"
+             xmlns:res="using:DaoStudioUI.Resources"
+             xmlns:lo="using:Avalonia.Layout"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+             xmlns:controls="using:Avalonia.Controls"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
+             x:Class="DaoStudioUI.Views.SettingsView"
+             x:Name="SettingsControl"
+             x:DataType="vm:SettingsViewModel">
+
+    <UserControl.Resources>
+        <!-- Warning button style that works with light/dark themes -->
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <!-- Light theme colors -->
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="DeleteButtonBackground" Color="#d9534f" />
+                    <SolidColorBrush x:Key="DeleteButtonBackgroundPointerOver" Color="#c9302c" />
+                    <SolidColorBrush x:Key="DeleteButtonBackgroundPressed" Color="#ac2925" />
+                    <SolidColorBrush x:Key="DeleteButtonForeground" Color="White" />
+                    <SolidColorBrush x:Key="DisabledButtonBackground" Color="#e9ecef" />
+                    <SolidColorBrush x:Key="DisabledButtonForeground" Color="#6c757d" />
+                </ResourceDictionary>
+                
+                <!-- Dark theme colors - slightly brighter to be visible in dark theme -->
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="DeleteButtonBackground" Color="#ff5b57" />
+                    <SolidColorBrush x:Key="DeleteButtonBackgroundPointerOver" Color="#ff4742" />
+                    <SolidColorBrush x:Key="DeleteButtonBackgroundPressed" Color="#ff3530" />
+                    <SolidColorBrush x:Key="DeleteButtonForeground" Color="White" />
+                    <SolidColorBrush x:Key="DisabledButtonBackground" Color="#2d3238" />
+                    <SolidColorBrush x:Key="DisabledButtonForeground" Color="#6c757d" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            
+            <ControlTheme x:Key="WarningButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                <Setter Property="Background" Value="{DynamicResource DeleteButtonBackground}" />
+                <Setter Property="Foreground" Value="{DynamicResource DeleteButtonForeground}" />
+                <Style Selector="^:pointerover /template/ ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource DeleteButtonBackgroundPointerOver}" />
+                </Style>
+                <Style Selector="^:pressed /template/ ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource DeleteButtonBackgroundPressed}" />
+                </Style>
+            </ControlTheme>
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+
+    <Design.DataContext>
+        <vm:SettingsViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*" Margin="24">
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="{res:Localization Settings_Title}" FontSize="32" FontWeight="SemiBold" Margin="0,0,0,24" />
+
+        <!-- Loading indicator -->
+        <ui:ProgressRing Grid.Row="1" IsVisible="{Binding IsLoading}" IsIndeterminate="True" Width="50" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+        <!-- Tab View -->
+        <TabControl Grid.Row="1" IsVisible="{Binding !IsLoading}">
+            <!-- General Tab -->
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <ui:SymbolIcon Symbol="{x:Static ui:Symbol.Setting}" FontSize="16"/>
+                        <TextBlock Text="{res:Localization Settings_GeneralTab}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <ScrollViewer Padding="16">
+                    <StackPanel Spacing="36">
+                        <!-- Theme Section -->
+                        <StackPanel Spacing="16">
+                            <TextBlock Text="{res:Localization Settings_Appearance}" FontWeight="SemiBold" FontSize="18" />
+                            
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" VerticalAlignment="Center">
+                                <TextBlock Grid.Column="0" Text="{res:Localization Settings_Theme}" VerticalAlignment="Center" Margin="0,0,16,0" />
+                                <ComboBox Grid.Column="1" SelectedIndex="{Binding Theme}" HorizontalAlignment="Left" MinWidth="180">
+                                    <ComboBoxItem Content="{res:Localization Settings_Theme_Light}" />
+                                    <ComboBoxItem Content="{res:Localization Settings_Theme_Dark}" />
+                                    <ComboBoxItem Content="{res:Localization Settings_Theme_System}" />
+                                </ComboBox>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Tool Conflict Resolution Section -->
+                        <StackPanel Spacing="16">
+                            <TextBlock Text="{res:Localization Settings_ToolConflictResolution}" FontWeight="SemiBold" FontSize="18" />
+                            
+                            <StackPanel Spacing="12">
+                                <CheckBox IsChecked="{Binding AutoResolveToolNameConflicts}" 
+                                          Content="{res:Localization Settings_AutoResolveToolNameConflicts}"
+                                          ToolTip.Tip="{res:Localization Settings_AutoResolveToolNameConflictsDescription}" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Provider Section -->
+                        <StackPanel Spacing="16">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="{res:Localization Settings_LlmProviders}" FontWeight="SemiBold" FontSize="18" VerticalAlignment="Center" />
+                                <Button Grid.Column="1" Classes="accent" x:Name="AddProviderButton"
+                                        Command="{Binding AddProviderCommand}"
+                                        CommandParameter="{Binding #AddProviderButton}"
+                                        VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <ui:SymbolIcon Symbol="Add" />
+                                        <TextBlock Text="{res:Localization Settings_AddProvider}" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <TextBlock Text="{res:Localization Settings_ProvidersDescription}" 
+                                      Opacity="0.8" TextWrapping="Wrap" />
+
+                            <!-- Providers Cards -->
+                            <controls:ItemsRepeater ItemsSource="{Binding Providers}" Margin="0,8,0,0">
+                                <controls:ItemsRepeater.Layout>
+                                    <lo:UniformGridLayout MinItemWidth="450" MinItemHeight="280" MinRowSpacing="24" MinColumnSpacing="24" />
+                                </controls:ItemsRepeater.Layout>
+                                <controls:ItemsRepeater.ItemTemplate>
+                                    <DataTemplate x:CompileBindings="False">
+                                        <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" 
+                                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" 
+                                                BorderThickness="1" 
+                                                CornerRadius="8" 
+                                                Padding="28" 
+                                                BoxShadow="0 2 4 0 #20000000">
+                                            <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
+                                                <!-- Header -->
+                                                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,18">
+                                                    <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                                        <ui:SymbolIcon Symbol="Cloud" FontSize="20" />
+                                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="18" VerticalAlignment="Center" />
+                                                        <Button Classes="transparent"
+                                                                        Width="32" Height="32"
+                                                                        Padding="0"
+                                                                VerticalAlignment="Center"
+                                                                Command="{Binding #SettingsControl.DataContext.EditProviderNameCommand}" 
+                                                                CommandParameter="{Binding}">
+                                                            <ui:SymbolIcon Symbol="Edit" FontSize="16" />
+                                                        </Button>
+                                                    </StackPanel>
+                                                    <ToggleSwitch Grid.Column="1" IsChecked="{Binding IsEnabled}" OnContent="" OffContent=""
+                                                                 Checked="ToggleSwitch_OnChecked"
+                                                                 Unchecked="ToggleSwitch_OnUnchecked" />
+                                                </Grid>
+                                                
+                                                <!-- Content -->
+                                                <StackPanel Grid.Row="1" Spacing="18">
+                                                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" Margin="0,6">
+                                                        <TextBlock Text="{res:Localization Settings_ApiEndpoint}" Width="120" VerticalAlignment="Center" FontSize="14" />
+                                                        <TextBox Grid.Column="1" Text="{Binding ApiEndpoint}" TextWrapping="NoWrap" MinHeight="36" MinWidth="200" />
+                                                    </Grid>
+                                                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" Margin="0,6">
+                                                        <TextBlock Text="{res:Localization Settings_ApiKey}" Width="120" VerticalAlignment="Center" FontSize="14" />
+                                                        <TextBox Grid.Column="1" Text="{Binding ApiKey}" PasswordChar="•" RevealPassword="False" MinWidth="200" MinHeight="36" />
+                                                    </Grid>
+                                                </StackPanel>
+                                                
+                                                <!-- Spacer -->
+                                                <Panel Grid.Row="2" />
+                                                
+                                                <!-- Model Loading Indicator -->
+                                                <StackPanel Grid.Row="3" 
+                                                          HorizontalAlignment="Center" 
+                                                          VerticalAlignment="Center" 
+                                                          Spacing="8"
+                                                          Margin="0,10"
+                                                          IsVisible="{Binding #SettingsControl.DataContext.IsLoadingModels}">
+                                                    <ui:ProgressRing IsIndeterminate="True" Width="24" Height="24" />
+                                                    <TextBlock Text="{Binding #SettingsControl.DataContext.LoadingModelsMessage}" 
+                                                               HorizontalAlignment="Center" />
+                                                </StackPanel>
+                                                
+                                                <!-- Footer -->
+                                                <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,18,0,0">
+                                                    <Button Command="{Binding #SettingsControl.DataContext.DeleteProviderWithConfirmationCommand}" CommandParameter="{Binding}" Theme="{StaticResource WarningButton}">
+                                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                                            <ui:SymbolIcon Symbol="Delete" />
+                                                            <TextBlock Text="{res:Localization Settings_Delete}" />
+                                                        </StackPanel>
+                                                    </Button>
+                                                    <Button Command="{Binding #SettingsControl.DataContext.SaveProviderCommand}" 
+                                                            CommandParameter="{Binding}" 
+                                                            Classes="accent"
+                                                            IsVisible="{Binding !#SettingsControl.DataContext.IsLoadingModels}"
+                                                            IsEnabled="{Binding HasChanges}">
+                                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                                            <ui:SymbolIcon Symbol="Save" />
+                                                            <TextBlock Text="{res:Localization Settings_Save}" />
+                                                        </StackPanel>
+                                                    </Button>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </controls:ItemsRepeater.ItemTemplate>
+                            </controls:ItemsRepeater>
+                            
+                            <!-- Empty State -->
+                            <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" 
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" 
+                                    BorderThickness="1" 
+                                    CornerRadius="8" 
+                                    Padding="28" 
+                                    IsVisible="{Binding !Providers.Count}"
+                                    BoxShadow="0 2 4 0 #20000000"
+                                    HorizontalAlignment="Stretch"
+                                    MinHeight="280">
+                                <StackPanel Spacing="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <ui:SymbolIcon Symbol="Cloud" FontSize="38" />
+                                    <TextBlock Text="{res:Localization Settings_NoProvidersTitle}" 
+                                              HorizontalAlignment="Center" 
+                                              FontSize="18" 
+                                              FontWeight="SemiBold" />
+                                    <TextBlock Text="{res:Localization Settings_NoProvidersDescription}" 
+                                              HorizontalAlignment="Center" 
+                                              TextWrapping="Wrap"
+                                              Opacity="0.8"
+                                              FontSize="14" />
+                                    <Button Classes="accent" 
+                                            x:Name="EmptyStateAddButton"
+                                            Command="{Binding AddProviderCommand}" 
+                                            CommandParameter="{Binding #EmptyStateAddButton}"
+                                            HorizontalAlignment="Center" 
+                                            Margin="0,12,0,0">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <ui:SymbolIcon Symbol="Add" />
+                                            <TextBlock Text="{res:Localization Settings_AddProvider}" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Version Tab -->
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <ui:SymbolIcon Symbol="{x:Static ui:Symbol.List}" FontSize="16"/>
+                        <TextBlock Text="{res:Localization Settings_VersionTab}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <ScrollViewer Padding="16">
+                    <StackPanel Spacing="36" MaxWidth="720" HorizontalAlignment="Stretch">
+                        <!-- Version Information Section -->
+                        <StackPanel Spacing="16" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{res:Localization Settings_Version_Title}" FontWeight="SemiBold" FontSize="18" />
+                            
+                            <!-- Current Version Display -->
+                            <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" 
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" 
+                                    BorderThickness="1" 
+                                    CornerRadius="8" 
+                                    Padding="24" 
+                                    BoxShadow="0 2 4 0 #20000000">
+                                <Grid RowDefinitions="Auto,Auto" RowSpacing="16">
+                                    <!-- App Icon and Name -->
+                                    <Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="16" HorizontalAlignment="Stretch">
+                                        <Image Source="/Assets/logo.png" Width="48" Height="48" Grid.Column="0" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="{res:Localization MainWindow_Title}" FontSize="20" FontWeight="SemiBold" />
+                                            <TextBlock FontSize="14" Opacity="0.7">
+                                                <Run Text="{res:Localization Settings_Version_CurrentVersion}"/>
+                                                <Run Text=" "/>
+                                                <Run Text="{Binding CurrentVersion}" FontFamily="Consolas"/>
+                                            </TextBlock>
+                                            <TextBlock FontSize="14" Opacity="0.7">
+                                                <Run Text="{res:Localization Settings_System_BuildConfiguration}"/>
+                                                <Run Text=" "/>
+                                                <Run Text="{Binding BuildConfiguration}" FontFamily="Consolas"/>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Check for Updates Button -->
+                                    <StackPanel Grid.Row="1" HorizontalAlignment="Left" Spacing="12">
+                                        <Button Classes="accent" 
+                                                Command="{Binding CheckForUpdatesCommand}"
+                                                IsEnabled="{Binding !IsCheckingForUpdates}"
+                                                MinWidth="180">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <ui:SymbolIcon Symbol="Refresh" IsVisible="{Binding !IsCheckingForUpdates}" />
+                                                <ui:ProgressRing IsIndeterminate="True" Width="16" Height="16" IsVisible="{Binding IsCheckingForUpdates}" />
+                                                <TextBlock Text="{res:Localization Settings_Version_CheckForUpdates}" 
+                                                          IsVisible="{Binding !IsCheckingForUpdates}" />
+                                                <TextBlock Text="{res:Localization Settings_Version_CheckingForUpdates}" 
+                                                          IsVisible="{Binding IsCheckingForUpdates}" />
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Version Details Section -->
+                        <StackPanel Spacing="16" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{res:Localization Settings_VersionDetails_Title}" FontWeight="SemiBold" FontSize="18" />
+                            <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="24"
+                                    BoxShadow="0 2 4 0 #20000000">
+                                <Grid ColumnDefinitions="160,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="10" ColumnSpacing="16">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{res:Localization Settings_Version_Informational}"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding InformationalVersion}" FontFamily="Consolas" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{res:Localization Settings_Version_Assembly}"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AssemblyVersion}" FontFamily="Consolas" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{res:Localization Settings_Version_File}"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding FileVersion}" FontFamily="Consolas" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="{res:Localization Settings_Version_GitBranch}"/>
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding GitBranch}" />
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="{res:Localization Settings_Version_GitCommit}"/>
+                                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding GitCommitIdShort}" FontFamily="Consolas" />
+
+                                    <TextBlock Grid.Row="5" Grid.Column="0" Text="{res:Localization Settings_Version_GitCommitDate}"/>
+                                    <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding GitCommitDate}" />
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- System Information Section -->
+                        <StackPanel Spacing="16" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{res:Localization Settings_SystemInfo_Title}" FontWeight="SemiBold" FontSize="18" />
+                            <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="24"
+                                    BoxShadow="0 2 4 0 #20000000">
+                                <Grid ColumnDefinitions="160,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="10" ColumnSpacing="16">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{res:Localization Settings_System_OS}"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding OsDescription}" TextWrapping="Wrap" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{res:Localization Settings_System_OSArchitecture}"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding OsArchitecture}" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{res:Localization Settings_System_ProcessArchitecture}"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ProcessArchitecture}" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="{res:Localization Settings_System_Framework}"/>
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding FrameworkDescription}" TextWrapping="Wrap" />
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="{res:Localization Settings_System_RuntimeVersion}"/>
+                                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding RuntimeVersion}" FontFamily="Consolas" />
+
+                                    <TextBlock Grid.Row="5" Grid.Column="0" Text="{res:Localization Settings_System_AvaloniaVersion}"/>
+                                    <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding AvaloniaVersion}" FontFamily="Consolas" />
+
+                                    <TextBlock Grid.Row="6" Grid.Column="0" Text="{res:Localization Settings_System_AppDirectory}"/>
+                                    <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding AppDirectory}" TextWrapping="Wrap" />
+
+                                    <TextBlock Grid.Row="7" Grid.Column="0" Text="{res:Localization Settings_System_ExecutablePath}"/>
+                                    <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding ExecutablePath}" TextWrapping="Wrap" />
+
+                                    <TextBlock Grid.Row="8" Grid.Column="0" Text="{res:Localization Settings_System_BuildConfiguration}"/>
+                                    <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding BuildConfiguration}" />
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+
+</UserControl>

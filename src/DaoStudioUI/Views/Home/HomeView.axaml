@@ -1,0 +1,282 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DaoStudioUI.ViewModels"
+             xmlns:res="using:DaoStudioUI.Resources"
+        xmlns:converters="using:DaoStudioUI.Converters"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:controls="using:Avalonia.Controls"
+             xmlns:views="using:DaoStudioUI.Views"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DaoStudioUI.Views.HomeView"
+             x:DataType="vm:HomeViewModel">
+
+    <Design.DataContext>
+        <vm:HomeViewModel />
+    </Design.DataContext>
+
+	<UserControl.Resources>
+		<converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
+	</UserControl.Resources>
+
+    <ScrollViewer Padding="20">
+        <StackPanel Spacing="30">
+
+			<!-- Header section -->
+			<TextBlock Text="{res:Localization Home_Welcome}"
+                       FontSize="28"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,20" />
+			
+            <!-- People section -->
+            <StackPanel Spacing="16">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{res:Localization Home_Person}" 
+                               FontSize="18"
+                               FontWeight="SemiBold" />
+                
+                </Grid>
+
+                <!-- Loading indicator for models -->
+                <ui:ProgressRing IsVisible="{Binding IsModelsLoading}" 
+                                 IsIndeterminate="True" 
+                                 Width="40" Height="40" 
+                                 HorizontalAlignment="Center" Margin="0,10" />
+
+                <!-- Empty state for models -->
+                <views:GettingStartedGuide IsVisible="{Binding !HasModels}"
+                                          x:Name="GettingStartedGuideControl"
+                                          NavigationRequested="GettingStartedGuide_NavigationRequested" />
+                
+                <!-- Models cards -->
+                <ItemsControl ItemsSource="{Binding Models}"
+                             IsVisible="{Binding HasModels}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" 
+                                       Margin="0,10,0,0"
+                                       HorizontalAlignment="Left" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="200" 
+                                    Height="250" 
+                                    Margin="0,0,24,24"
+                                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12" 
+                                    Padding="0"
+                                    Cursor="Hand"
+                                    ClipToBounds="True"
+                                    BoxShadow="0 4 8 0 #20000000">
+                                <Button  Margin="0"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="0"
+                                        CommandParameter="{Binding}"
+                                        Tapped="ModelButton_Tapped">
+                                    <Grid HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch"
+                                          Width="{Binding $parent[Border].Width}"
+                                          Height="{Binding $parent[Border].Height}">
+                                        <!-- Background Image or Default Icon (Full Card) -->
+                                        <Panel HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch">
+                                            <!-- Default Icon if no image -->
+                                            <Border Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch"
+                                                    Width="{Binding $parent[Border].Width}"
+                                                    Height="{Binding $parent[Border].Height}"
+                                                    IsVisible="{Binding Image, Converter={x:Static ObjectConverters.IsNull}}">
+                                                <ui:SymbolIcon Symbol="Contact" 
+                                                              FontSize="80"
+                                                              VerticalAlignment="Center"
+                                                              HorizontalAlignment="Center" />
+                                            </Border>
+                                            
+                                            <!-- Model Image if available (Full Card) -->
+                                            <Image Source="{Binding Image, Converter={StaticResource ByteArrayToImageConverter}}" 
+                                                   Stretch="UniformToFill"
+                                                   HorizontalAlignment="Stretch"
+                                                   VerticalAlignment="Stretch"
+                                                   Width="{Binding $parent[Border].Width}"
+                                                   Height="{Binding $parent[Border].Height}"
+                                                   IsVisible="{Binding Image, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                        </Panel>
+                                        
+                                        <!-- Title overlay at top -->
+                                        <Border VerticalAlignment="Top" 
+                                                HorizontalAlignment="Stretch"
+                                                Height="48"
+                                                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                                Opacity="0.85">
+                                            <Grid ColumnDefinitions="*" Margin="16,8">
+                                                <TextBlock Grid.Column="0" 
+                                                           Text="{Binding Name}" 
+                                                           FontWeight="SemiBold" 
+                                                           FontSize="20"
+                                                           VerticalAlignment="Center" />
+                                            </Grid>
+                                        </Border>
+                                        
+                                        <!-- Card content overlay at bottom -->
+                                        <Border VerticalAlignment="Bottom"
+                                                HorizontalAlignment="Stretch"
+                                                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                                Opacity="0.85"
+                                                Padding="16">
+                                            <StackPanel HorizontalAlignment="Stretch">
+                                                <!-- Card Title -->
+                                                <TextBlock Text="{Binding ModelId}"
+                                                           FontWeight="SemiBold"
+                                                           FontSize="14"
+                                                           HorizontalAlignment="Stretch" />
+                                                
+                                                <!-- Card Subtitle -->
+                                                <TextBlock Text="{Binding ProviderName}"
+                                                           Opacity="0.7"
+                                                           FontSize="12"
+                                                           Margin="0,0,0,0"
+                                                           HorizontalAlignment="Stretch"
+                                                           TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </Button>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- Sessions section -->
+            <StackPanel Spacing="16" Margin="0,10,0,0">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{res:Localization Home_Sessions}" 
+                               FontWeight="SemiBold" 
+                               FontSize="22" />
+                
+                </Grid>
+
+                <!-- Empty state for sessions -->
+                <Border IsVisible="{Binding !HasSessions}" 
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        CornerRadius="8" 
+                        Padding="20" 
+                        HorizontalAlignment="Stretch">
+                    <StackPanel Spacing="12" HorizontalAlignment="Center">
+                        <ui:SymbolIcon Symbol="Comment" FontSize="32" HorizontalAlignment="Center" />
+                        <TextBlock Text="{res:Localization Home_NoSessionsAvailable}" 
+                                   HorizontalAlignment="Center" 
+                                   TextAlignment="Center"
+                                   Opacity="0.8" />
+                    </StackPanel>
+                </Border>
+                
+                <!-- Sessions list -->
+                <ItemsControl ItemsSource="{Binding Sessions}"
+                             IsVisible="{Binding HasSessions}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" 
+                                       Margin="0,10,0,0"
+                                       HorizontalAlignment="Left" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="160" 
+                                    Height="210" 
+                                    Margin="0,0,24,24"
+                                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12" 
+                                    Padding="0"
+                                    Cursor="Hand"
+                                    ClipToBounds="True"
+                                    BoxShadow="0 4 8 0 #20000000">
+                                <Button Margin="0"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        BorderThickness="0"
+                                        Padding="0"
+                                        Background="Transparent"
+                                        CommandParameter="{Binding}"
+                                        Tapped="SessionButton_Tapped">
+                                    <Grid HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch"
+                                          Width="{Binding $parent[Border].Width}"
+                                          Height="{Binding $parent[Border].Height}">
+                                        
+                                        <!-- Delete Button in upper right corner -->
+                                        <Button Name="DeleteButton"
+                                                Classes="delete"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                CornerRadius="8"
+                                                Padding="6"
+                                                VerticalAlignment="Top"
+                                                HorizontalAlignment="Right"
+                                                Margin="0,4,4,0"
+                                                ZIndex="10"
+                                                CommandParameter="{Binding}"
+                                                Tapped="DeleteButton_Tapped">
+											<ui:SymbolIcon Symbol="Clear" Foreground="{DynamicResource SystemFillColorCriticalBrush}" FontSize="12" />
+
+										</Button>
+                                        
+                                        <!-- Session Content -->
+                                        <Border Padding="16"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch">
+                                            <StackPanel HorizontalAlignment="Stretch"
+                                                        VerticalAlignment="Stretch">
+                                                <!-- Session Title -->
+                                                <TextBlock Text="{Binding Title}"
+                                                           FontWeight="SemiBold"
+                                                           FontSize="16"
+                                                           HorizontalAlignment="Stretch"
+                                                           TextWrapping="Wrap"
+                                                           MaxLines="5" />
+                                                
+                                                
+                                                <!-- Model Info -->
+                                                <TextBlock Text="{Binding Description}"
+                                                           TextWrapping="Wrap"
+                                                           Opacity="0.7"
+                                                           FontSize="12"
+                                                           MaxLines="6"
+                                                           HorizontalAlignment="Stretch"
+                                                           TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+                                        </Border>
+                                        
+                                        <!-- Session Date overlay -->
+                                        <Border Background="{DynamicResource SystemAccentColor}" 
+                                                VerticalAlignment="Bottom" 
+                                                HorizontalAlignment="Right"
+                                                CornerRadius="4,0,0,0"
+                                                Padding="8,4"
+                                                Margin="0,0,0,0"
+                                                Opacity="0.8">
+                                            <TextBlock Text="{Binding LastModified, StringFormat='{}{0:g}'}"
+                                                       Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                                                       FontSize="12" />
+                                        </Border>
+                                    </Grid>
+                                </Button>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

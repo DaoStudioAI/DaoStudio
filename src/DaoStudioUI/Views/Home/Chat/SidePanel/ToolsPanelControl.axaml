@@ -1,0 +1,68 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DaoStudioUI.ViewModels"
+             xmlns:res="using:DaoStudioUI.Resources"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:tabs="using:DaoStudioUI.Views.Dialogs.Tabs"
+             mc:Ignorable="d" d:DesignWidth="390" d:DesignHeight="550"
+             x:Class="DaoStudioUI.Views.ToolsPanelControl"
+             x:DataType="vm:ToolsPanelViewModel">
+
+	<Design.DataContext>
+		<vm:ToolsPanelViewModel />
+	</Design.DataContext>
+
+	<Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+            BorderThickness="1,0,0,0"
+            Padding="0,30,0,12">
+		<!-- Main content -->
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+
+			<!-- Tab header area with close button -->
+			<Grid Grid.Row="0" 
+							  Background="Transparent">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+
+				<!-- Tab headers -->
+				<DockPanel Grid.Column="0" LastChildFill="False" Height="60">
+					<TabStrip Name="headerTabStrip" 
+							  Margin="0"
+							  Padding="0"
+							  BorderThickness="0"
+							  DockPanel.Dock="Bottom">
+						<TabStripItem Content="{res:Localization Chat_Tools}" />
+						<TabStripItem Content="{res:Localization Usage_Tab}" />
+					</TabStrip>
+				</DockPanel>
+
+				<!-- Close button -->
+				<Button Grid.Column="1"
+						Command="{Binding TogglePaneCommand}"
+						Width="32" Height="32"
+						Padding="0"
+						Margin="4,4,12,0"
+						VerticalAlignment="Center"
+						CornerRadius="4"
+						ToolTip.Tip="{res:Localization Tools_ClosePanel}">
+					<ui:SymbolIcon Symbol="Dismiss" FontSize="12"/>
+				</Button>
+			</Grid>
+
+			<!-- Content frame -->
+			<ContentControl Name="contentFrame"
+						   Grid.Row="1" 
+						   Margin="0,4,0,0">
+			</ContentControl>
+		</Grid>
+	</Border>
+</UserControl>

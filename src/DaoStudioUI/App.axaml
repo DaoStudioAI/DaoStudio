@@ -1,0 +1,22 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DaoStudioUI.App"
+             xmlns:local="using:DaoStudioUI"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:styling="using:FluentAvalonia.Styling"
+             xmlns:converters="using:DaoStudioUI.Converters"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="/Styles/ColorResources.axaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+    
+    <Application.Styles>
+        <styling:FluentAvaloniaTheme PreferUserAccentColor="True" />
+    </Application.Styles>
+</Application>

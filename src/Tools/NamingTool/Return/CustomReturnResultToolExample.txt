@@ -1,0 +1,176 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using DaoStudio.Common.Plugins;
+using DaoStudio.Tools.Naming;
+
+namespace DaoStudio.Tools.Naming
+{
+    /// <summary>
+    /// Example demonstrating how to use the CustomReturnResultTool
+    /// </summary>
+    public static class CustomReturnResultToolExample
+    {
+        /// <summary>
+        /// Example 1: Create a tool for reporting task completion with custom parameters
+        /// </summary>
+        public static void ExampleTaskCompletionTool()
+        {
+            // This would typically be provided by the session management system
+            var completionSource = new TaskCompletionSource<ChildSessionResult>();
+            long sessionId = 12345;
+            
+            // Build a custom tool for task completion reporting
+            var tool = CustomReturnResultToolHelper.CreateBuilder()
+                .WithName("report_task_completion")
+                .WithDescription("Report the completion status of a task with detailed information")
+                .AddStringParameter("task_name", "The name of the completed task")
+                .AddStringParameter("status", "Completion status: 'completed', 'failed', or 'partial'")
+                .AddOptionalStringParameter("summary", "A brief summary of what was accomplished")
+                .AddOptionalStringParameter("details", "Detailed information about the task execution")
+                .AddOptionalIntParameter("progress_percentage", "Progress percentage (0-100)")
+                .AddOptionalDoubleParameter("execution_time_seconds", "Time taken to complete the task in seconds")
+                .AddOptionalBoolParameter("requires_followup", "Whether this task requires follow-up actions")
+                .Build(completionSource, sessionId);
+            
+            // The tool would be registered with the session and made available to the AI
+            Console.WriteLine($"Created tool: {tool.ToolName}");
+            Console.WriteLine($"Description: {tool.ToolDescription}");
+            Console.WriteLine($"Parameters: {tool.Parameters.Count}");
+            
+            foreach (var param in tool.Parameters)
+            {
+                Console.WriteLine($"  - {param.Name} ({param.Type.Name}): {param.Description} [Required: {param.IsRequired}]");
+            }
+        }
+        
+        /// <summary>
+        /// Example 2: Create a tool for data analysis results
+        /// </summary>
+        public static void ExampleDataAnalysisTool()
+        {
+            var completionSource = new TaskCompletionSource<ChildSessionResult>();
+            long sessionId = 67890;
+            
+            var tool = CustomReturnResultToolHelper.CreateBuilder()
+                .WithName("report_analysis_results")
+                .WithDescription("Report the results of data analysis")
+                .AddStringParameter("analysis_type", "Type of analysis performed (e.g., 'statistical', 'ml_model', 'trend_analysis')")
+                .AddBoolParameter("analysis_successful", "Whether the analysis completed successfully")
+                .AddOptionalStringParameter("key_findings", "Main findings from the analysis")
+                .AddOptionalDoubleParameter("confidence_score", "Confidence score for the results (0.0 to 1.0)")
+                .AddOptionalIntParameter("data_points_analyzed", "Number of data points that were analyzed")
+                .AddOptionalStringParameter("visualization_path", "Path to generated charts or visualizations")
+                .AddOptionalStringParameter("recommendations", "Recommendations based on the analysis")
+                .Build(completionSource, sessionId);
+            
+            Console.WriteLine($"\nCreated analysis tool: {tool.ToolName}");
+            foreach (var param in tool.Parameters)
+            {
+                Console.WriteLine($"  - {param.Name}: {param.Description}");
+            }
+        }
+        
+        /// <summary>
+        /// Example 3: Using the standard pre-built tools
+        /// </summary>
+        public static void ExampleStandardTools()
+        {
+            var completionSource = new TaskCompletionSource<ChildSessionResult>();
+            long sessionId = 11111;
+            
+            // Use a pre-built standard result tool
+            var standardTool = CustomReturnResultToolHelper.CreateStandardResultTool(
+                completionSource, 
+                sessionId,
+                "set_operation_result",
+                "Report the result of the requested operation");
+            
+            Console.WriteLine($"\nStandard tool: {standardTool.ToolName}");
+            foreach (var param in standardTool.Parameters)
+            {
+                Console.WriteLine($"  - {param.Name}: {param.Description} [Required: {param.IsRequired}]");
+            }
+            
+            // Use a pre-built task completion tool
+            var taskTool = CustomReturnResultToolHelper.CreateTaskCompletionTool(
+                completionSource, 
+                sessionId,
+                "complete_assigned_task",
+                "Report completion of the assigned task");
+            
+            Console.WriteLine($"\nTask completion tool: {taskTool.ToolName}");
+            foreach (var param in taskTool.Parameters)
+            {
+                Console.WriteLine($"  - {param.Name}: {param.Description} [Required: {param.IsRequired}]");
+            }
+        }
+        
+        /// <summary>
+        /// Example 4: Demonstrate how the tool would be called by an AI
+        /// </summary>
+        public static async Task ExampleToolUsage()
+        {
+            var completionSource = new TaskCompletionSource<ChildSessionResult>();
+            long sessionId = 99999;
+            
+            var tool = CustomReturnResultToolHelper.CreateBuilder()
+                .WithName("submit_report")
+                .WithDescription("Submit a generated report")
+                .AddStringParameter("report_title", "Title of the report")
+                .AddStringParameter("report_content", "Main content of the report")
+                .AddBoolParameter("is_final", "Whether this is the final version")
+                .AddOptionalIntParameter("word_count", "Number of words in the report")
+                .Build(completionSource, sessionId);
+            
+            // Simulate an AI calling the tool
+            var resultData = new Dictionary<string, object?>
+            {
+                ["report_title"] = "Monthly Sales Analysis",
+                ["report_content"] = "Sales increased by 15% compared to last month...",
+                ["is_final"] = true,
+                ["word_count"] = 1250
+            };
+            
+            // This is how the AI would call the tool
+            string response = await tool.SetCustomResult(resultData);
+            Console.WriteLine($"\nTool response: {response}");
+            
+            // Get the result from the completion source
+            var result = await completionSource.Task;
+            Console.WriteLine($"Success: {result.Success}");
+            Console.WriteLine($"Result: {result.Result}");
+        }
+        
+        /// <summary>
+        /// Example 5: Demonstrate validation errors
+        /// </summary>
+        public static async Task ExampleValidationErrors()
+        {
+            var completionSource = new TaskCompletionSource<ChildSessionResult>();
+            long sessionId = 55555;
+            
+            var tool = CustomReturnResultToolHelper.CreateBuilder()
+                .WithName("submit_form")
+                .WithDescription("Submit a form with validation")
+                .AddStringParameter("name", "User's name")
+                .AddIntParameter("age", "User's age")
+                .AddOptionalStringParameter("email", "User's email address")
+                .Build(completionSource, sessionId);
+            
+            // Try to call with missing required parameter
+            var incompleteData = new Dictionary<string, object?>
+            {
+                ["name"] = "John Doe"
+                // Missing required 'age' parameter
+            };
+            
+            string response = await tool.SetCustomResult(incompleteData);
+            Console.WriteLine($"\nValidation error response: {response}");
+            
+            var result = await completionSource.Task;
+            Console.WriteLine($"Success: {result.Success}");
+            Console.WriteLine($"Error: {result.ErrorMessage}");
+        }
+    }
+}

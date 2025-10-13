@@ -1,0 +1,395 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:fluent="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:Naming.AdvConfig.ViewModels"
+             xmlns:tabs="using:Naming.AdvConfig.Tabs"
+             xmlns:controls="using:Naming.AdvConfig.Controls"
+             xmlns:naming="using:Naming"
+             xmlns:res="clr-namespace:NamingTool.Properties"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             x:Class="Naming.AdvConfig.Tabs.ErrorHandlingTab"
+             x:DataType="vm:ErrorHandlingTabViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="Border.SectionCard">
+            <Setter Property="Background" Value="{StaticResource CardBackgroundFillColorDefaultBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource CardStrokeColorDefaultBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="24"/>
+        </Style>
+
+        <Style Selector="Border.SubSectionCard">
+            <Setter Property="Background" Value="{StaticResource CardBackgroundFillColorSecondaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource CardStrokeColorDefaultBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="20"/>
+        </Style>
+
+        <Style Selector="Border.CalloutCard">
+            <Setter Property="Background" Value="{StaticResource SolidBackgroundFillColorBaseBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ControlStrokeColorDefaultBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="20"/>
+        </Style>
+
+        <Style Selector="Border.DetailPanel">
+            <Setter Property="Background" Value="{DynamicResource SystemFillColorAttentionBackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource SystemFillColorAttentionBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="15"/>
+        </Style>
+
+        <Style Selector="Border.OptionCard">
+            <Setter Property="Background" Value="{StaticResource CardBackgroundFillColorSecondaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ControlStrokeColorDefaultBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+        </Style>
+
+        <Style Selector="ListBox.OptionList">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+
+        <Style Selector="ListBox.OptionList ListBoxItem">
+            <Setter Property="Margin" Value="0,0,0,12"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style Selector="ListBox.OptionList ListBoxItem:pointerover Border.OptionCard">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentStrokeColorDefaultBrush}"/>
+        </Style>
+
+        <Style Selector="ListBox.OptionList ListBoxItem:selected Border.OptionCard">
+            <Setter Property="Background" Value="{DynamicResource AccentFillColorTertiaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentStrokeColorDefaultBrush}"/>
+        </Style>
+
+        <Style Selector="ListBox.OptionList ListBoxItem:selected Border.OptionCard TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+        </Style>
+
+    </UserControl.Styles>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="ErrorReportingParameterTemplate" x:DataType="naming:ParameterConfig">
+                <controls:ParameterTypeEditor Parameter="{Binding}"
+                                              ParameterChanged="ErrorParameterEditor_ParameterChanged"
+                                              RemoveRequested="ErrorParameterEditor_RemoveRequested" />
+            </DataTemplate>
+
+            <DataTemplate x:Key="ErrorReportingEmptyStateTemplate" x:DataType="vm:ErrorHandlingTabViewModel">
+                <Border Classes="SubSectionCard"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Padding="32">
+                    <StackPanel Orientation="Vertical"
+                                Spacing="12"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <fluent:SymbolIcon Symbol="Help"
+                                           FontSize="38"
+                                           Foreground="{DynamicResource AccentTextFillColorSecondaryBrush}"/>
+                        <TextBlock Text="{x:Static res:Resources.ErrorReporting_NoParameters}"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                        <TextBlock Text="{x:Static res:Resources.ErrorReporting_NoParametersDescription}"
+                                   FontSize="13"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   MaxWidth="360"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                        <Button Content="{x:Static res:Resources.ErrorReporting_AddParameter}"
+                                Classes="accent"
+                                Command="{Binding AddErrorParameterCommand}"
+                                HorizontalAlignment="Center"
+                                Padding="20,10" />
+                    </StackPanel>
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="24" Margin="24">
+
+            <Border Classes="SectionCard">
+                <StackPanel Spacing="5">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{x:Static res:Resources.ErrorHandling_BehaviorLabel}"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="{x:Static res:Resources.ErrorHandling_BehaviorDescription}"
+                                   FontSize="12"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <ListBox Classes="OptionList"
+                             ItemsSource="{Binding AvailableBehaviors}"
+                             SelectedItem="{Binding SelectedBehaviorOption, Mode=TwoWay}"
+                             SelectionMode="Single">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:DanglingBehaviorOption">
+                                <Border Classes="OptionCard">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{Binding DisplayName}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="14"/>
+                                        <TextBlock Text="{Binding Description}"
+                                                   FontSize="12"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                   TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <Border Classes="DetailPanel"
+                            IsVisible="{Binding SelectedDanglingBehavior, Converter={x:Static tabs:DanglingBehaviorToBooleanConverter.Instance}, ConverterParameter=Urge}">
+                        <StackPanel Spacing="12">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="{x:Static res:Resources.ErrorHandling_Info_UrgeTitle}"
+                                           FontWeight="Bold"/>
+                                <TextBlock Text="{x:Static res:Resources.ErrorHandling_Info_UrgeDescription}"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock Text="{x:Static res:Resources.ErrorHandling_Info_UrgeNote}"
+                                           FontStyle="Italic"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <Border Classes="SubSectionCard">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{x:Static res:Resources.ErrorHandling_UrgingMessage}"
+                                               FontWeight="SemiBold"/>
+                                    <TextBox Text="{Binding UrgingMessage}"
+                                             Watermark="{x:Static res:Resources.ErrorHandling_UrgingMessage_Watermark}"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             MinHeight="80"/>
+                                    <TextBlock Text="{x:Static res:Resources.ErrorHandling_UrgingMessage_Hint}"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="DetailPanel"
+                            IsVisible="{Binding SelectedDanglingBehavior, Converter={x:Static tabs:DanglingBehaviorToBooleanConverter.Instance}, ConverterParameter=ReportError}">
+                        <StackPanel Spacing="12">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="{x:Static res:Resources.ErrorHandling_Info_ReportErrorTitle}"
+                                           FontWeight="Bold"/>
+                                <TextBlock Text="{x:Static res:Resources.ErrorHandling_Info_ReportErrorDescription}"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock Text="{x:Static res:Resources.ErrorHandling_Info_ReportErrorNote}"
+                                           FontStyle="Italic"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <Border Classes="SubSectionCard">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{x:Static res:Resources.ErrorHandling_ErrorMessageLabel}"
+                                               FontWeight="SemiBold"/>
+                                    <TextBox Text="{Binding ErrorMessage}"
+                                             Watermark="{x:Static res:Resources.ErrorHandling_ErrorMessagePlaceholder}"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             MinHeight="80"/>
+                                    <TextBlock Text="{x:Static res:Resources.ErrorHandling_ErrorMessageHint}"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="DetailPanel"
+                            IsVisible="{Binding SelectedDanglingBehavior, Converter={x:Static tabs:DanglingBehaviorToBooleanConverter.Instance}, ConverterParameter=Pause}">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{x:Static res:Resources.ErrorHandling_Info_PauseTitle}"
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="{x:Static res:Resources.ErrorHandling_Info_PauseDescription}"
+                                       TextWrapping="Wrap"/>
+                            <TextBlock Text="{x:Static res:Resources.ErrorHandling_Info_PauseNote}"
+                                       FontStyle="Italic"
+                                       TextWrapping="Wrap"/>
+                            <TextBlock Text="{x:Static res:Resources.ErrorHandling_Info_PauseWarning}"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="SectionCard">
+                <StackPanel Spacing="20">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{x:Static res:Resources.ErrorReporting_SectionTitle}"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="{x:Static res:Resources.ErrorReporting_SectionDescription}"
+                                   FontSize="12"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16" VerticalAlignment="Center">
+                        <ToggleSwitch Grid.Column="0"
+                                      IsChecked="{Binding IsErrorReportingEnabled}"
+                                      OnContent="{x:Static res:Resources.ErrorReporting_EnableOn}"
+                                      OffContent="{x:Static res:Resources.ErrorReporting_EnableOff}"/>
+                        <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+                            <TextBlock Text="{x:Static res:Resources.ErrorReporting_EnableLabel}"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock Text="{x:Static res:Resources.ErrorReporting_EnableDescription}"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Spacing="18" IsVisible="{Binding IsErrorReportingConfigurationVisible}">
+                        <Border Classes="SubSectionCard">
+                            <Grid RowDefinitions="Auto,Auto" RowSpacing="16">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{x:Static res:Resources.ErrorReporting_ToolNameLabel}"
+                                               FontWeight="SemiBold"/>
+                                    <TextBox Text="{Binding ErrorToolName}"
+                                             Watermark="{x:Static res:Resources.ErrorReporting_ToolNamePlaceholder}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Spacing="6">
+                                    <TextBlock Text="{x:Static res:Resources.ErrorReporting_ToolDescriptionLabel}"
+                                               FontWeight="SemiBold"/>
+                                    <TextBox Text="{Binding ErrorToolDescription}"
+                                             Watermark="{x:Static res:Resources.ErrorReporting_ToolDescriptionPlaceholder}"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             MinHeight="100"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Classes="SubSectionCard">
+                            <StackPanel Spacing="12">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                    <TextBlock Text="{x:Static res:Resources.ErrorReporting_ParametersHeader}"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center"/>
+                                    <Button Grid.Column="1"
+                                            Content="{x:Static res:Resources.ErrorReporting_ClearAll}"
+                                            Command="{Binding ClearErrorParametersCommand}"
+                                            IsEnabled="{Binding HasErrorReportingParameters}"/>
+                                </Grid>
+
+                                <Button Content="{x:Static res:Resources.ErrorReporting_AddParameter}"
+                                        Classes="accent"
+                                        Command="{Binding AddErrorParameterCommand}"
+                                        HorizontalAlignment="Left"
+                                        IsEnabled="{Binding IsErrorReportingEnabled}"/>
+
+                                <Grid>
+                                    <ContentControl Content="{Binding}"
+                                                    ContentTemplate="{StaticResource ErrorReportingEmptyStateTemplate}"
+                                                    IsVisible="{Binding HasNoErrorReportingParameters}"/>
+
+                                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  IsVisible="{Binding HasErrorReportingParameters}">
+                                        <ItemsControl ItemsSource="{Binding ErrorReportingParameters}"
+                                                      ItemTemplate="{StaticResource ErrorReportingParameterTemplate}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Spacing="12"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+						<Border Classes="SubSectionCard">
+							<StackPanel Spacing="12">
+								<TextBlock Text="{x:Static res:Resources.ErrorReporting_BehaviorLabel}"
+                                           FontWeight="SemiBold"/>
+								<ListBox Classes="OptionList"
+                                         ItemsSource="{Binding AvailableErrorReportingBehaviors}"
+                                         SelectedItem="{Binding SelectedErrorReportingBehaviorOption, Mode=TwoWay}"
+                                         SelectionMode="Single">
+									<ListBox.ItemTemplate>
+										<DataTemplate x:DataType="vm:ErrorReportingBehaviorOption">
+											<Border Classes="OptionCard">
+												<StackPanel Spacing="4">
+													<TextBlock Text="{Binding DisplayName}"
+                                                               FontWeight="SemiBold"/>
+													<TextBlock Text="{Binding Description}"
+                                                               FontSize="12"
+                                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                               TextWrapping="Wrap"/>
+												</StackPanel>
+											</Border>
+										</DataTemplate>
+									</ListBox.ItemTemplate>
+								</ListBox>
+
+								<Border Classes="DetailPanel"
+                                        IsVisible="{Binding SelectedErrorReportingBehavior, Converter={x:Static tabs:ErrorReportingBehaviorToBooleanConverter.Instance}, ConverterParameter=Pause}">
+									<StackPanel Spacing="6">
+										<TextBlock Text="{x:Static res:Resources.ErrorReporting_Behavior_Pause}"
+                                                   FontWeight="Bold"/>
+										<TextBlock Text="{x:Static res:Resources.ErrorReporting_Info_PauseDescription}"
+                                                   TextWrapping="Wrap"/>
+									</StackPanel>
+								</Border>
+
+								<Border Classes="DetailPanel"
+                                        IsVisible="{Binding SelectedErrorReportingBehavior, Converter={x:Static tabs:ErrorReportingBehaviorToBooleanConverter.Instance}, ConverterParameter=ReportError}">
+									<StackPanel Spacing="10">
+										<TextBlock Text="{x:Static res:Resources.ErrorReporting_Info_ReportErrorTitle}"
+                                                   FontWeight="Bold"/>
+										<TextBlock Text="{x:Static res:Resources.ErrorReporting_Info_ReportErrorDescription}"
+                                                   TextWrapping="Wrap"/>
+										<Border Classes="SubSectionCard"
+                                                IsVisible="{Binding IsCustomParentMessageVisible}">
+											<StackPanel Spacing="6">
+												<TextBlock Text="{x:Static res:Resources.ErrorReporting_CustomParentMessageLabel}"
+                                                           FontWeight="SemiBold"/>
+												<TextBox Text="{Binding CustomErrorMessageToParent}"
+                                                         Watermark="{x:Static res:Resources.ErrorReporting_CustomParentMessagePlaceholder}"
+                                                         AcceptsReturn="True"
+                                                         TextWrapping="Wrap"
+                                                         MinHeight="80"/>
+											</StackPanel>
+										</Border>
+									</StackPanel>
+								</Border>
+							</StackPanel>
+						</Border>
+
+					</StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

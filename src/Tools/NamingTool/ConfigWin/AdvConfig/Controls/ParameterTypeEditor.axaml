@@ -1,0 +1,152 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
+             x:Class="Naming.AdvConfig.Controls.ParameterTypeEditor"
+             x:Name="RootControl">
+
+    <UserControl.Styles>
+        <Style Selector="TextBox">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Margin" Value="0,4"/>
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Margin" Value="0,4"/>
+        </Style>
+        <Style Selector="TextBlock.Label">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
+        <Style Selector="Border.ParameterGroup">
+            <Setter Property="BorderBrush" Value="{StaticResource CardStrokeColorDefaultBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="0,8"/>
+            <Setter Property="Background" Value="{StaticResource CardBackgroundFillColorDefaultBrush}"/>
+        </Style>
+        <Style Selector="Button.AddButton">
+            <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        <Style Selector="Button.RemoveButton">
+            <Setter Property="Background" Value="{DynamicResource SystemFillColorCriticalBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Border Classes="ParameterGroup">
+        <StackPanel Spacing="16">
+            
+            <!-- Parameter Basic Info -->
+        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="2*,*,5*,Auto,Auto" ColumnSpacing="16" RowSpacing="0"
+            IsVisible="{Binding ShowBasicInfo, ElementName=RootControl}">
+                <!-- Row 0: Titles -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Classes="Label" Text="Name:" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Classes="Label" Text="Type:" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Classes="Label" Text="Description:" VerticalAlignment="Bottom"/>
+                
+                <!-- Row 1: Input Controls -->
+                <TextBox Grid.Row="1" Grid.Column="0"
+                         TextWrapping="Wrap"
+                        VerticalAlignment="Center"
+                         Name="ParameterNameTextBox" 
+                         Watermark="Parameter name"/>
+                
+                <ComboBox Grid.Row="1" Grid.Column="1" 
+                        VerticalAlignment="Center"
+                          Name="ParameterTypeComboBox">
+                    <ComboBoxItem Content="String" Tag="String"/>
+                    <ComboBoxItem Content="Number" Tag="Number"/>
+                    <ComboBoxItem Content="Boolean" Tag="Bool"/>
+                    <ComboBoxItem Content="Object" Tag="Object"/>
+                    <ComboBoxItem Content="Array" Tag="Array"/>
+                </ComboBox>
+                
+                <TextBox Grid.Row="1" Grid.Column="2" 
+                        VerticalAlignment="Center"
+                         Name="ParameterDescriptionTextBox" 
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         Watermark="Describe what this parameter represents"/>
+                
+                <CheckBox Grid.Row="1" Grid.Column="3" 
+                          Name="RequiredCheckBox" 
+                          Content="Required" 
+                          VerticalAlignment="Center"
+                          Margin="0,4"/>
+                
+                <Button Grid.Row="1" Grid.Column="4" 
+                        Classes="RemoveButton" 
+                        Name="RemoveParameterButton"
+                        VerticalAlignment="Center"
+                        ToolTip.Tip="Remove this parameter"
+                        Margin="4">
+                    <ui:SymbolIcon Symbol="Delete"/>
+                </Button>
+            </Grid>
+            
+            <!-- Advanced Type Configuration -->
+            <StackPanel Name="AdvancedTypePanel" IsVisible="False">
+                
+                <!-- Array Element Configuration -->
+                <Border Name="ArrayConfigPanel" IsVisible="False" Classes="ParameterGroup">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Array Element Configuration" FontWeight="SemiBold"/>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Classes="Label" Text="Element Type:"/>
+                                <ComboBox Name="ArrayElementTypeComboBox">
+                                    <ComboBoxItem Content="String" Tag="String"/>
+                                    <ComboBoxItem Content="Number" Tag="Number"/>
+                                    <ComboBoxItem Content="Boolean" Tag="Bool"/>
+                                     <ComboBoxItem Content="Object" Tag="Object"/> 
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Classes="Label" Text="Element Description:"/>
+                                <TextBox Name="ArrayElementDescriptionTextBox" 
+                                         Watermark="Describe array elements"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Object Properties Configuration -->
+                <Border Name="ObjectConfigPanel" IsVisible="False" Classes="ParameterGroup">
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <TextBlock Grid.Column="0" Text="Object Properties" FontWeight="SemiBold"/>
+                            <Button Grid.Column="1" 
+                                    Classes="AddButton" 
+                                    Name="AddPropertyButton"
+                                    Content="Add Property"/>
+                        </Grid>
+                        
+                        <!-- Object Properties List -->
+                        <StackPanel Name="ObjectPropertiesPanel">
+                            <TextBlock Text="No properties defined" 
+                                       FontStyle="Italic"
+                                       Foreground="{StaticResource TextFillColorSecondaryBrush}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,16"
+                                       Name="NoPropertiesMessage"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

@@ -1,0 +1,539 @@
+<Window xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DaoStudioUI.ViewModels"
+             xmlns:res="using:DaoStudioUI.Resources"
+			xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:converters="using:DaoStudioUI.Converters"
+             mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="768"
+             Width="1024" Height="768"
+             WindowStartupLocation="CenterOwner"
+             CanResize="True"
+             ShowInTaskbar="False"
+             SystemDecorations="Full"
+             TransparencyLevelHint="AcrylicBlur"
+             Background="Transparent"
+             x:DataType="vm:AddPersonViewModel"
+             Title="{Binding WindowTitle}"
+             KeyDown="OnKeyDown"
+             x:Class="DaoStudioUI.Views.Dialogs.AddModelView">
+
+	<Window.Resources>
+		<converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
+	</Window.Resources>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<!-- Main Content -->
+		<Grid Grid.Row="0" Margin="24">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="2*"/>
+			</Grid.ColumnDefinitions>
+
+			<!-- Column 1: Avatar, Name, IsEnabled -->
+			<Border Grid.Column="0"
+					Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
+					CornerRadius="8"
+					Padding="16"
+					Margin="0,0,8,0">
+				<Grid RowDefinitions="Auto,Auto,*">
+					<TextBlock Grid.Row="0" Text="{res:Localization People_BasicInfo}"
+							   Classes="TitleLarge"
+							   HorizontalAlignment="Center"
+							   Margin="0,0,0,8"/>
+
+					<!-- Avatar -->
+					<Panel Grid.Row="1" HorizontalAlignment="Center" Margin="0,8,0,16">
+						<!-- Avatar with clickable upload functionality -->
+						<Button Command="{Binding UploadImageCommand}"
+								ToolTip.Tip="{res:Localization People_UploadImage}"
+								Background="Transparent"
+								BorderThickness="0"
+								Padding="0"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								CornerRadius="16">
+							<Panel>
+								<!-- Background Rectangle - always visible -->
+								<Border Width="140" Height="140"
+									   Background="{StaticResource ButtonBackgroundPressed}"
+									   CornerRadius="16"
+									   BorderThickness="2"
+									   BorderBrush="{StaticResource ControlStrokeColorDefaultBrush}"/>
+
+								<!-- Default avatar icon - only visible when HasValidImage is false -->
+								<TextBlock Text="&#xE77B;"
+										   FontFamily="{StaticResource SymbolThemeFontFamily}"
+										   FontSize="64"
+										   HorizontalAlignment="Center"
+										   VerticalAlignment="Center"
+										   IsVisible="{Binding !HasValidImage}"/>
+
+								<!-- Person image - only visible when HasValidImage is true -->
+								<Border Width="136" Height="136"
+									   CornerRadius="14"
+									   IsVisible="{Binding HasValidImage}">
+									<Border.Background>
+										<ImageBrush Source="{Binding Person.Image, Converter={StaticResource ByteArrayToImageConverter}}"
+													Stretch="UniformToFill"/>
+									</Border.Background>
+								</Border>
+							</Panel>
+						</Button>
+
+						<!-- Clear image button in upper right corner, only visible when HasValidImage is true -->
+						<Button Command="{Binding ClearImageCommand}"
+								ToolTip.Tip="{res:Localization People_ClearImage}"
+								Background="Transparent"
+								BorderThickness="0"
+								Padding="8"
+								HorizontalAlignment="Right"
+								VerticalAlignment="Top"
+								IsVisible="{Binding HasValidImage}">
+							<TextBlock Text="&#xE894;"
+									  FontFamily="{StaticResource SymbolThemeFontFamily}"
+									  FontSize="20"
+									  Foreground="{StaticResource SystemFillColorCriticalBrush}"
+									  HorizontalAlignment="Center"
+									  VerticalAlignment="Center"/>
+						</Button>
+					</Panel>
+
+					<!-- Person Name and Developer Message -->
+					<Grid Grid.Row="2">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
+
+						<!-- Person Name -->
+						<StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,16">
+							<TextBlock Text="{res:Localization People_Name}"
+									  Classes="BodyStrong"/>
+							<TextBox Text="{Binding Person.Name, Mode=TwoWay}"
+									 TextChanging="TextBox_OnTextChanging"
+									 Watermark="{res:Localization People_NameWatermark}"/>
+						</StackPanel>
+
+						<!-- Description -->
+						<StackPanel Grid.Row="1" Spacing="4" Margin="0,0,0,16" >
+							<Grid ColumnDefinitions="Auto,Auto">
+								<TextBlock Grid.Column="0" Text="{res:Localization People_Description}"
+										  Classes="BodyStrong"/>
+								<Button Grid.Column="1"
+										Background="Transparent"
+										BorderThickness="0"
+										Padding="4,0"
+										Margin="4,0,0,0"
+										VerticalAlignment="Center"
+										ToolTip.Tip="{res:Localization People_DescriptionTooltip}">
+									<TextBlock Text="&#xE946;"
+											  FontFamily="{StaticResource SymbolThemeFontFamily}"
+											  FontSize="14"
+											  Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+								</Button>
+							</Grid>
+							<TextBox Text="{Binding Person.Description, Mode=TwoWay}"
+									 Watermark="{res:Localization People_DescriptionWatermark}"
+									 ToolTip.Tip="{res:Localization People_DescriptionTooltip}"/>
+						</StackPanel>
+
+						<!-- Developer Message - fills remaining space -->
+						<Grid Grid.Row="2" RowDefinitions="Auto,*">
+							<TextBlock Grid.Row="0" Text="Developer Message"
+									  Classes="BodyStrong"/>
+							<TextBox Grid.Row="1" Text="{Binding Person.DeveloperMessage}"
+									 AcceptsReturn="True"
+									 TextWrapping="Wrap"
+									 VerticalAlignment="Stretch"
+									 VerticalContentAlignment="Top"/>
+						</Grid>
+					</Grid>
+				</Grid>
+			</Border>
+
+			<!-- TabControl for Provider/Model and Tools -->
+			<TabControl Grid.Column="1"
+						Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
+						CornerRadius="8"
+						Margin="8,0,0,0">
+
+				<!-- Provider and Model Tab -->
+				<TabItem Header="{res:Localization People_ProviderAndModel}">
+					<Grid Margin="16" RowDefinitions="Auto,*">
+						<StackPanel Grid.Row="0" Spacing="16">
+							<!-- Current ModelId Display -->
+							<StackPanel Spacing="4">
+								<TextBlock Text="{res:Localization People_CurrentModel}"
+										  Classes="BodyStrong"/>
+								<TextBox Text="{Binding Person.ModelId, Mode=TwoWay}"
+										 TextWrapping="NoWrap"
+										 FontFamily="Consolas, Monospace"/>
+							</StackPanel>
+
+							<!-- Provider Selection -->
+							<StackPanel Spacing="4">
+								<TextBlock Text="{res:Localization People_Provider}"
+										  Classes="BodyStrong"/>
+								<ComboBox ItemsSource="{Binding Providers}"
+										 SelectedItem="{Binding SelectedProvider}"
+										 DisplayMemberBinding="{Binding Name}"
+										 HorizontalAlignment="Stretch"/>
+							</StackPanel>
+
+							<!-- Catalog Selection - Only visible when there are catalogs -->
+							<StackPanel Spacing="4" IsVisible="{Binding ShowCatalogSelection}">
+								<TextBlock Text="{res:Localization People_Catalog}"
+										  Classes="BodyStrong"/>
+								<ComboBox ItemsSource="{Binding CatalogNames}"
+										 SelectedItem="{Binding SelectedCatalog}"
+										 HorizontalAlignment="Stretch"/>
+							</StackPanel>
+						</StackPanel>
+
+						<!-- Person Selection - Moved to Row 1 to take remaining space -->
+						<Grid Grid.Row="1" RowDefinitions="Auto,*" Margin="0,16,0,0">
+							<TextBlock Grid.Row="0" Text="{res:Localization People_ModelSelection}"
+									  Classes="BodyStrong"/>
+
+							<!-- Models List - Filtered by catalog -->
+							<ListBox Grid.Row="1"
+									 ItemsSource="{Binding FilteredModels}"
+									 SelectedItem="{Binding SelectedCachedModel, Mode=TwoWay}"
+									 ScrollViewer.VerticalScrollBarVisibility="Auto"
+									 Margin="0,4,0,0">
+								<ListBox.ItemsPanel>
+									<ItemsPanelTemplate>
+										<VirtualizingStackPanel />
+									</ItemsPanelTemplate>
+								</ListBox.ItemsPanel>
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<Grid ColumnDefinitions="*" Margin="4">
+											<StackPanel Grid.Column="0" Spacing="2">
+												<TextBlock Text="{Binding Name}"
+														   FontWeight="SemiBold"
+														   TextTrimming="CharacterEllipsis"/>
+											</StackPanel>
+										</Grid>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
+						</Grid>
+					</Grid>
+				</TabItem>
+
+				<!-- Tools Tab -->
+				<TabItem Header="{res:Localization People_CapabilitiesAndTools}">
+					<Grid Margin="16" RowDefinitions="Auto,Auto,*">
+						<!-- Use All Tools Option -->
+						<CheckBox Grid.Row="0"
+								  Content="{res:Localization People_UseAllTools}"
+								  IsChecked="{Binding UseAllTools}"
+								  Margin="0,8,0,16"/>
+
+						<!-- Inline tool selection -->
+						<Grid Grid.Row="1" RowDefinitions="Auto,Auto,*" IsVisible="{Binding !UseAllTools}">
+							<!-- Tool selection buttons -->
+							<Grid Grid.Row="0" ColumnDefinitions="*,*" Margin="0,0,0,16">
+								<Button Grid.Column="0"
+										Content="{res:Localization Tools_SelectAll}"
+										Command="{Binding SelectAllToolsCommand}"
+										HorizontalAlignment="Stretch"
+										HorizontalContentAlignment="Center"
+										Margin="0,0,4,0"
+										Padding="8,6"/>
+								<Button Grid.Column="1"
+										Content="{res:Localization Tools_ClearAll}"
+										Command="{Binding ClearAllToolsCommand}"
+										HorizontalAlignment="Stretch"
+										HorizontalContentAlignment="Center"
+										Margin="4,0,0,0"
+										Padding="8,6"/>
+							</Grid>
+
+							<!-- Tools List -->
+							<ListBox Grid.Row="2"
+									 ItemsSource="{Binding AvailableTools}"
+									 Margin="0"
+									 ScrollViewer.VerticalScrollBarVisibility="Auto"
+									 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+								<ListBox.ItemsPanel>
+									<ItemsPanelTemplate>
+										<VirtualizingStackPanel />
+									</ItemsPanelTemplate>
+								</ListBox.ItemsPanel>
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                                BorderBrush="{DynamicResource ControlStrokeColorSecondaryBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="8"
+                                                Margin="0,0,0,12"
+                                                Padding="16,14"
+                                                BoxShadow="0 3 10 0 #25000000"
+                                                HorizontalAlignment="Stretch">
+                                            <Grid RowDefinitions="Auto,Auto,50">
+                                                <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,0,0,8">
+                                                    <CheckBox Grid.Column="0"
+                                                              IsChecked="{Binding IsSelected}"
+                                                              VerticalAlignment="Center"/>
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding Name}"
+                                                               FontWeight="SemiBold"
+                                                               FontSize="14"
+                                                               VerticalAlignment="Center"
+                                                               TextWrapping="Wrap"
+                                                               Margin="8,0,0,0"/>
+                                                </Grid>
+                                                <Grid Grid.Row="1" ColumnDefinitions="Auto,*" Margin="0,0,0,10">
+                                                    <ui:SymbolIcon Grid.Column="0"
+                                                                  Symbol="Repair"
+                                                                  FontSize="12"
+                                                                  Margin="0,2,6,0"
+                                                                  Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding PluginName}"
+                                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                               FontSize="12"
+                                                               TextWrapping="Wrap"/>
+                                                </Grid>
+                                                <TextBlock Grid.Row="2"
+                                                           Margin="0,0,0,10"
+                                                           Text="{Binding Description}"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                           Opacity="0.9"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+						</Grid>
+					</Grid>
+				</TabItem>
+
+				<!-- LLM Parameters Tab -->
+				<TabItem Header="{res:Localization People_LLMParameters}">
+					<ScrollViewer Padding="16" VerticalScrollBarVisibility="Auto">
+						<StackPanel Spacing="16">
+							<!-- Temperature -->
+							<StackPanel Spacing="4">
+								<Grid ColumnDefinitions="Auto,Auto">
+									<TextBlock Grid.Column="0" Text="{res:Localization People_Temperature}"
+											  Classes="BodyStrong"/>
+									<Button Grid.Column="1"
+											Background="Transparent"
+											BorderThickness="0"
+											Padding="4,0"
+											Margin="4,0,0,0"
+											VerticalAlignment="Center"
+											ToolTip.Tip="{res:Localization People_TemperatureTooltip}">
+										<TextBlock Text="&#xE946;"
+												  FontFamily="{StaticResource SymbolThemeFontFamily}"
+												  FontSize="14"
+												  Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+									</Button>
+								</Grid>
+								<TextBox Text="{Binding Person.Temperature, Mode=TwoWay}"
+										 Watermark="{res:Localization People_TemperatureWatermark}"
+										 ToolTip.Tip="{res:Localization People_TemperatureTooltip}"/>
+							</StackPanel>
+
+							<!-- TopP -->
+							<StackPanel Spacing="4">
+								<Grid ColumnDefinitions="Auto,Auto">
+									<TextBlock Grid.Column="0" Text="{res:Localization People_TopP}"
+											  Classes="BodyStrong"/>
+									<Button Grid.Column="1"
+											Background="Transparent"
+											BorderThickness="0"
+											Padding="4,0"
+											Margin="4,0,0,0"
+											VerticalAlignment="Center"
+											ToolTip.Tip="{res:Localization People_TopPTooltip}">
+										<TextBlock Text="&#xE946;"
+												  FontFamily="{StaticResource SymbolThemeFontFamily}"
+												  FontSize="14"
+												  Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+									</Button>
+								</Grid>
+								<TextBox Text="{Binding Person.TopP, Mode=TwoWay}"
+										 Watermark="{res:Localization People_TopPWatermark}"
+										 ToolTip.Tip="{res:Localization People_TopPTooltip}"/>
+							</StackPanel>
+
+							<!-- TopK -->
+							<StackPanel Spacing="4">
+								<Grid ColumnDefinitions="Auto,Auto">
+									<TextBlock Grid.Column="0" Text="{res:Localization People_TopK}"
+											  Classes="BodyStrong"/>
+									<Button Grid.Column="1"
+											Background="Transparent"
+											BorderThickness="0"
+											Padding="4,0"
+											Margin="4,0,0,0"
+											VerticalAlignment="Center"
+											ToolTip.Tip="{res:Localization People_TopKTooltip}">
+										<TextBlock Text="&#xE946;"
+												  FontFamily="{StaticResource SymbolThemeFontFamily}"
+												  FontSize="14"
+												  Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+									</Button>
+								</Grid>
+								<TextBox Text="{Binding Person.TopK, Mode=TwoWay}"
+										 Watermark="{res:Localization People_TopKWatermark}"
+										 ToolTip.Tip="{res:Localization People_TopKTooltip}"/>
+							</StackPanel>
+
+							<!-- Presence Penalty -->
+							<StackPanel Spacing="4">
+								<Grid ColumnDefinitions="Auto,Auto">
+									<TextBlock Grid.Column="0" Text="{res:Localization People_PresencePenalty}"
+											  Classes="BodyStrong"/>
+									<Button Grid.Column="1"
+											Background="Transparent"
+											BorderThickness="0"
+											Padding="4,0"
+											Margin="4,0,0,0"
+											VerticalAlignment="Center"
+											ToolTip.Tip="{res:Localization People_PresencePenaltyTooltip}">
+										<TextBlock Text="&#xE946;"
+												  FontFamily="{StaticResource SymbolThemeFontFamily}"
+												  FontSize="14"
+												  Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+									</Button>
+								</Grid>
+								<TextBox Text="{Binding Person.PresencePenalty, Mode=TwoWay}"
+										 Watermark="{res:Localization People_PresencePenaltyWatermark}"
+										 ToolTip.Tip="{res:Localization People_PresencePenaltyTooltip}"/>
+							</StackPanel>
+
+							<!-- Frequency Penalty -->
+							<StackPanel Spacing="4">
+								<Grid ColumnDefinitions="Auto,Auto">
+									<TextBlock Grid.Column="0" Text="{res:Localization People_FrequencyPenalty}"
+											  Classes="BodyStrong"/>
+									<Button Grid.Column="1"
+											Background="Transparent"
+											BorderThickness="0"
+											Padding="4,0"
+											Margin="4,0,0,0"
+											VerticalAlignment="Center"
+											ToolTip.Tip="{res:Localization People_FrequencyPenaltyTooltip}">
+										<TextBlock Text="&#xE946;"
+												  FontFamily="{StaticResource SymbolThemeFontFamily}"
+												  FontSize="14"
+												  Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+									</Button>
+								</Grid>
+								<TextBox Text="{Binding Person.FrequencyPenalty, Mode=TwoWay}"
+										 Watermark="{res:Localization People_FrequencyPenaltyWatermark}"
+										 ToolTip.Tip="{res:Localization People_FrequencyPenaltyTooltip}"/>
+							</StackPanel>
+
+							<!-- HTTP Headers -->
+							<StackPanel Spacing="4">
+								<Grid ColumnDefinitions="Auto,Auto">
+									<TextBlock Grid.Column="0" Text="{res:Localization People_HttpHeaders}"
+											  Classes="BodyStrong"/>
+									<Button Grid.Column="1"
+											Background="Transparent"
+											BorderThickness="0"
+											Padding="4,0"
+											Margin="4,0,0,0"
+											VerticalAlignment="Center"
+											ToolTip.Tip="{res:Localization People_HttpHeadersTooltip}">
+										<TextBlock Text="&#xE946;"
+												  FontFamily="{StaticResource SymbolThemeFontFamily}"
+												  FontSize="14"
+												  Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+									</Button>
+								</Grid>
+								<TextBox Text="{Binding HttpHeaders, Mode=TwoWay}"
+										 AcceptsReturn="True"
+										 TextWrapping="Wrap"
+										 Height="80"
+										 Watermark="{res:Localization People_HttpHeadersWatermark}"
+										 ToolTip.Tip="{res:Localization People_HttpHeadersTooltip}"/>
+								<!-- Validation error message -->
+								<TextBlock Text="{Binding HttpHeadersError}"
+										  IsVisible="{Binding HttpHeadersError, Converter={x:Static ObjectConverters.IsNotNull}}"
+										  Foreground="{StaticResource SystemFillColorCriticalBrush}"
+										  TextWrapping="Wrap"
+										  FontSize="12"
+										  Margin="0,4,0,0"/>
+							</StackPanel>
+
+							<!-- Additional Content -->
+							<StackPanel Spacing="4">
+								<Grid ColumnDefinitions="Auto,Auto">
+									<TextBlock Grid.Column="0" Text="{res:Localization People_AdditionalContent}"
+											  Classes="BodyStrong"/>
+									<Button Grid.Column="1"
+											Background="Transparent"
+											BorderThickness="0"
+											Padding="4,0"
+											Margin="4,0,0,0"
+											VerticalAlignment="Center"
+											ToolTip.Tip="{res:Localization People_AdditionalContentTooltip}">
+										<TextBlock Text="&#xE946;"
+												  FontFamily="{StaticResource SymbolThemeFontFamily}"
+												  FontSize="14"
+												  Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+									</Button>
+								</Grid>
+								<TextBox Text="{Binding AdditionalContent, Mode=TwoWay}"
+										 AcceptsReturn="True"
+										 TextWrapping="Wrap"
+										 Height="160"
+										 Watermark="{res:Localization People_AdditionalContentWatermark}"
+										 ToolTip.Tip="{res:Localization People_AdditionalContentTooltip}"/>
+								<!-- Validation error message -->
+								<TextBlock Text="{Binding AdditionalContentError}"
+										  IsVisible="{Binding AdditionalContentError, Converter={x:Static ObjectConverters.IsNotNull}}"
+										  Foreground="{StaticResource SystemFillColorCriticalBrush}"
+										  TextWrapping="Wrap"
+										  FontSize="12"
+										  Margin="0,4,0,0"/>
+							</StackPanel>
+						</StackPanel>
+					</ScrollViewer>
+				</TabItem>
+			</TabControl>
+
+		</Grid>
+		<!-- Action Buttons -->
+		<StackPanel Grid.Row="1"
+					Orientation="Horizontal"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Bottom"
+					Spacing="8"
+					Margin="24,16,24,24">
+			<Button Content="{res:Localization Settings_SaveButton}"
+					Command="{Binding SaveCommand}"
+					Classes="accent"
+					Width="100"/>
+			<Button Content="{res:Localization Settings_CancelButton}"
+					Command="{Binding CancelCommand}"
+					Width="100"/>
+		</StackPanel>
+	</Grid>
+
+	<Design.DataContext>
+		<vm:AddPersonViewModel />
+	</Design.DataContext>
+
+</Window>

@@ -1,0 +1,523 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fluent="using:FluentAvalonia.UI.Controls"
+        xmlns:local="clr-namespace:Naming"
+        xmlns:res="clr-namespace:NamingTool.Properties"
+        mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="768"
+        x:Class="Naming.NamingConfigWindow"
+        x:DataType="local:NamingConfigWindow"
+    Title="{x:Static res:Resources.Window_Title}"
+        Width="1024" Height="768"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        CanResize="True">
+
+    <Window.Styles>
+        <Style Selector="TextBox">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+        <Style Selector="TextBox.error">
+            <Setter Property="BorderBrush" Value="Red"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+        <Style Selector="NumericUpDown">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+        <Style Selector="Button.AddButton">
+            <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        <Style Selector="Button.RemoveButton">
+            <Setter Property="Background" Value="{DynamicResource SystemFillColorCriticalBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource SystemFillColorCriticalBrush}"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Main Content -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="24" Margin="24,24,24,0">
+                    
+
+                    <!-- Basic Settings -->
+                    <Expander Header="{x:Static res:Resources.Section_BasicSettings}" IsExpanded="True">
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" Margin="16" RowSpacing="12">
+                            <Grid.Styles>
+                                <Style Selector="TextBlock.Label">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="0,0,8,0"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Style>
+                                <Style Selector="Control.Input">
+                                    <Setter Property="Margin" Value="0,4"/>
+                                </Style>
+                            </Grid.Styles>
+                            
+                            <!-- Display Name -->
+                            <TextBlock Grid.Row="0" Grid.Column="0" Classes="Label" Text="{x:Static res:Resources.Field_DisplayName}"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Classes="Input"
+                                     Text="{Binding DisplayName}"
+                                     Watermark="{x:Static res:Resources.Config_DisplayName_Watermark}"/>
+                            
+                            <!-- Max Recursion Level -->
+                            <TextBlock Grid.Row="1" Grid.Column="0" Classes="Label" Text="{x:Static res:Resources.Field_MaxRecursionLevel}"/>
+                            <NumericUpDown Grid.Row="1" Grid.Column="1" Classes="Input"
+                                          Value="{Binding MaxRecursionLevel}"
+                                          Minimum="1" Maximum="20"
+                                          Increment="1"/>
+                            
+                            <!-- Executive Person -->
+                            <TextBlock Grid.Row="2" Grid.Column="0" Classes="Label" Text="{x:Static res:Resources.Field_ExecutivePerson}"/>
+                            <ComboBox Grid.Row="2" Grid.Column="1" Classes="Input"
+                                     ItemsSource="{Binding AvailablePersons}"
+                                     SelectedItem="{Binding SelectedExecutivePerson}"
+                                     PlaceholderText="{x:Static res:Resources.Field_ExecutivePerson_Placeholder}"
+                                     HorizontalAlignment="Stretch">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                            <TextBlock Text="{x:Static res:Resources.Config_Separator}" FontSize="11" 
+                                                      Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                            <TextBlock Text="{Binding Description}" FontSize="11" 
+                                                      Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            
+                            <!-- Subtask Name -->
+                            <TextBlock Grid.Row="3" Grid.Column="0" Classes="Label" Text="{x:Static res:Resources.Field_SubtaskName}"/>
+                            <StackPanel Grid.Row="3" Grid.Column="1">
+                                <TextBox Classes="Input"
+                                         Text="{Binding FunctionName}"
+                                         Watermark="{x:Static res:Resources.Config_SubtaskName_Watermark}"
+                                         ToolTip.Tip="{x:Static res:Resources.Config_SubtaskName_Tooltip}"
+                                         Name="FunctionNameTextBox"
+                                         TextChanged="OnFunctionNameTextChanged"/>
+                                <TextBlock Name="FunctionNameValidationMessage" Classes="Input"
+                                          FontSize="11"
+                                          Foreground="Red"
+                                          IsVisible="{Binding !IsFunctionNameValid}"
+                                          Text="{x:Static res:Resources.Field_SubtaskName_Validation}"
+                                          Margin="0,2,0,0"/>
+                            </StackPanel>
+                            
+                            <!-- Subtask Description -->
+                            <TextBlock Grid.Row="4" Grid.Column="0" Classes="Label" Text="{x:Static res:Resources.Field_SubtaskDescription}"/>
+                            <TextBox Grid.Row="4" Grid.Column="1" Classes="Input"
+                                     Text="{Binding FunctionDescription}"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     Watermark="{x:Static res:Resources.Config_Description_Watermark}"/>
+                        </Grid>
+                    </Expander>
+
+                        <!-- Error Reporting -->
+                        <Expander Header="{x:Static res:Resources.ErrorReporting_SectionTitle}" IsExpanded="False">
+                            <StackPanel Margin="16" Spacing="12">
+                                <TextBlock Text="{x:Static res:Resources.ErrorReporting_SectionDescription}"
+                                          FontWeight="SemiBold"
+                                          TextWrapping="Wrap"/>
+
+                                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                    <ToggleSwitch IsChecked="{Binding IsErrorReportingEnabled}"
+                                                  OnContent="{x:Static res:Resources.ErrorReporting_EnableOn}"
+                                                  OffContent="{x:Static res:Resources.ErrorReporting_EnableOff}"/>
+                                    <TextBlock Text="{x:Static res:Resources.ErrorReporting_EnableLabel}"
+                                              VerticalAlignment="Center"
+                                              FontWeight="SemiBold"/>
+                                </StackPanel>
+
+                                <TextBlock Text="{x:Static res:Resources.ErrorReporting_EnableDescription}"
+                                          FontSize="12"
+                                          Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                          TextWrapping="Wrap"/>
+
+                                <StackPanel IsVisible="{Binding IsErrorReportingEnabled}" Spacing="14">
+                                    <StackPanel>
+                                        <TextBlock Text="{x:Static res:Resources.ErrorReporting_ToolNameLabel}" FontWeight="SemiBold"/>
+                                        <TextBox Name="ErrorToolNameTextBox"
+                                                 Text="{Binding ErrorToolName}"
+                                                 Watermark="{x:Static res:Resources.ErrorReporting_ToolNamePlaceholder}"/>
+                                    </StackPanel>
+
+                                    <StackPanel>
+                                        <TextBlock Text="{x:Static res:Resources.ErrorReporting_ToolDescriptionLabel}" FontWeight="SemiBold"/>
+                                        <TextBox Name="ErrorToolDescriptionTextBox"
+                                                 Text="{Binding ErrorToolDescription}"
+                                                 TextWrapping="Wrap"
+                                                 AcceptsReturn="True"
+                                                 MinHeight="80"
+                                                 Watermark="{x:Static res:Resources.ErrorReporting_ToolDescriptionPlaceholder}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="6">
+                                        <TextBlock Text="{x:Static res:Resources.ErrorReporting_BehaviorLabel}" FontWeight="SemiBold"/>
+                                        <ComboBox ItemsSource="{Binding ErrorReportingBehaviorOptions}"
+                                                  SelectedItem="{Binding SelectedErrorReportingBehaviorOption}">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Spacing="4">
+                                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding Description}" FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="4" IsVisible="{Binding IsCustomErrorMessageVisible}">
+                                        <TextBlock Text="{x:Static res:Resources.ErrorReporting_CustomParentMessageLabel}" FontWeight="SemiBold"/>
+                                        <TextBox Text="{Binding CustomErrorMessageToParent}"
+                                                 TextWrapping="Wrap"
+                                                 AcceptsReturn="True"
+                                                 MinHeight="80"
+                                                 Watermark="{x:Static res:Resources.ErrorReporting_CustomParentMessagePlaceholder}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="10">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                            <TextBlock Text="{x:Static res:Resources.ErrorReporting_ParametersHeader}"
+                                                      FontWeight="SemiBold"
+                                                      VerticalAlignment="Center"/>
+                                            <Button Grid.Column="1"
+                                                    Content="{x:Static res:Resources.ErrorReporting_LoadDefaults}"
+                                                    Click="OnLoadDefaultErrorReportingParametersClick"/>
+                                        </Grid>
+
+                                        <Button Content="{x:Static res:Resources.ErrorReporting_AddParameter}"
+                                                Classes="AddButton"
+                                                HorizontalAlignment="Left"
+                                                Click="OnAddErrorReportingParameterClick"/>
+
+                                        <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                               BorderThickness="1"
+                                               CornerRadius="4"
+                                               Padding="24"
+                                               Margin="0,4"
+                                               IsVisible="{Binding IsErrorReportingParametersEmpty}">
+                                            <StackPanel Spacing="8" HorizontalAlignment="Center">
+                                                <TextBlock Text="{x:Static res:Resources.ErrorReporting_NoParameters}"
+                                                          FontWeight="SemiBold"
+                                                          FontSize="14"
+                                                          HorizontalAlignment="Center"
+                                                          Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                                <TextBlock Text="{x:Static res:Resources.ErrorReporting_NoParametersDescription}"
+                                                          TextWrapping="Wrap"
+                                                          HorizontalAlignment="Center"
+                                                          TextAlignment="Center"
+                                                          MaxWidth="400"
+                                                          FontSize="12"
+                                                          Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <ItemsControl ItemsSource="{Binding ErrorReportingParameters}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="local:ParameterConfigViewModel">
+                                                    <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                                           BorderThickness="1"
+                                                           CornerRadius="4"
+                                                           Padding="12"
+                                                           Margin="0,4">
+                                                        <Grid ColumnDefinitions="*,3*,Auto,Auto" ColumnSpacing="8">
+                                                            <StackPanel Grid.Column="0">
+                                                                <TextBlock Text="{x:Static res:Resources.Field_Name}" FontWeight="SemiBold" FontSize="11"/>
+                                                                <TextBox Text="{Binding Name}" Watermark="error_message"/>
+                                                            </StackPanel>
+                                                            <StackPanel Grid.Column="1">
+                                                                <TextBlock Text="{x:Static res:Resources.Field_Description}" FontWeight="SemiBold" FontSize="11"/>
+                                                                <TextBox Text="{Binding Description}" Watermark="{x:Static res:Resources.ErrorReporting_DefaultParameterDescription}"/>
+                                                            </StackPanel>
+                                                            <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                                                <TextBlock Text="{x:Static res:Resources.Field_Required}" FontWeight="SemiBold" FontSize="11"/>
+                                                                <CheckBox IsChecked="{Binding IsRequired}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </StackPanel>
+                                                            <Button Grid.Column="3"
+                                                                    Classes="RemoveButton"
+                                                                    Click="OnRemoveErrorReportingParameterClick"
+                                                                    ToolTip.Tip="{x:Static res:Resources.Config_RemoveItem_Tooltip}"
+                                                                    VerticalAlignment="Bottom"
+                                                                    Margin="4,0,4,4">
+                                                                <fluent:SymbolIcon Symbol="Delete"/>
+                                                            </Button>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </Expander>
+
+                    <!-- Required Information -->
+                    <Expander Header="{x:Static res:Resources.Config_RequiredInformation_Header}" IsExpanded="True">
+                        <StackPanel Margin="16" Spacing="12">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                                <TextBlock Grid.Column="0" Text="{x:Static res:Resources.Section_RequiredInformation_Description}"
+                                          FontWeight="SemiBold"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Left"
+                                          TextWrapping="Wrap"
+                                          Margin="0,0,8,0"/>
+                                <Button Grid.Column="1" Classes="AddButton" Content="{x:Static res:Resources.Config_AddInformation}" 
+                                       Click="OnAddFunctionParameterClick"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Right"/>
+                            </Grid>
+                            
+                            <!-- Empty state message -->
+                            <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                   BorderThickness="1"
+                                   CornerRadius="4"
+                                   Padding="24"
+                                   Margin="0,4"
+                                   IsVisible="{Binding IsInputParametersEmpty}">
+                                <StackPanel Spacing="8" HorizontalAlignment="Center">
+                                    <TextBlock Text="{x:Static res:Resources.Section_RequiredInformation_Empty}"
+                                              FontWeight="SemiBold"
+                                              FontSize="14"
+                                              HorizontalAlignment="Center"
+                                              Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock Text="{x:Static res:Resources.Section_RequiredInformation_EmptyDescription}"
+                                              TextWrapping="Wrap"
+                                              HorizontalAlignment="Center"
+                                              TextAlignment="Center"
+                                              MaxWidth="400"
+                                              FontSize="12"
+                                              Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <ItemsControl ItemsSource="{Binding InputParameters}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="local:ParameterConfigViewModel">
+                                        <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                               BorderThickness="1"
+                                               CornerRadius="4"
+                                               Padding="12"
+                                               Margin="0,4">
+                                            <Grid ColumnDefinitions="*,3*,Auto,Auto">
+                                                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                                    <TextBlock Text="{x:Static res:Resources.Field_Name}" FontWeight="SemiBold" FontSize="11"/>
+                                                    <TextBox Text="{Binding Name}" Watermark="{x:Static res:Resources.Config_InformationName_Watermark}"/>
+                                                </StackPanel>
+                                                
+                                                <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                                                    <TextBlock Text="{x:Static res:Resources.Field_Description}" FontWeight="SemiBold" FontSize="11"/>
+                                                    <TextBox Text="{Binding Description}" 
+                                                            Watermark="{x:Static res:Resources.Config_InformationDescription_Watermark}"/>
+                                                </StackPanel>
+                                                
+                                                <StackPanel Grid.Column="2" Margin="0,0,8,0">
+                                                    <TextBlock Text="{x:Static res:Resources.Field_Required}" FontWeight="SemiBold" FontSize="11"/>
+                                                    <CheckBox IsChecked="{Binding IsRequired}" 
+                                                             HorizontalAlignment="Center"
+                                                             VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                
+                                                <Button Grid.Column="3" Classes="RemoveButton" 
+                                                       Click="OnRemoveFunctionParameterClick"
+                                                       ToolTip.Tip="{x:Static res:Resources.Config_RemoveItem_Tooltip}"
+                                                       VerticalAlignment="Bottom"
+                                                       Margin="4,0,4,4">
+                                                    <fluent:SymbolIcon Symbol="Delete"/>
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Expander>
+
+                    <!-- Prompt Message -->
+                    <Expander Header="{x:Static res:Resources.Config_PromptMessage_Header}" IsExpanded="True">
+                        <StackPanel Margin="16" Spacing="12">
+                            <TextBlock Text="{x:Static res:Resources.Section_PromptMessage_Description}"
+                                      FontWeight="SemiBold"
+                                      TextWrapping="Wrap"
+                                      Margin="0,0,0,4"/>
+                            <TextBox Name="PromptMessageTextBox"
+                                     Text="{Binding PromptMessage}"
+                                     TextWrapping="Wrap"
+                                     MinHeight="320"
+                                     AcceptsReturn="True"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     GotFocus="OnPromptMessageGotFocus"
+                                     Watermark="Enter the prompt message for the subtask. Reference required information using double brackets, e.g., {{task}}, {{background}}, {{requirements}}."/>
+                        </StackPanel>
+                    </Expander>
+
+                    <!-- Return Parameters -->
+                    <Expander Header="Required Response Items" IsExpanded="True">
+                        <StackPanel Margin="16" Spacing="12">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                                <TextBlock Grid.Column="0" Text="{x:Static res:Resources.Section_ReturnParameters_Description}"
+                                          FontWeight="SemiBold"
+                                          HorizontalAlignment="Left"
+                                          TextWrapping="Wrap"
+                                          Margin="0,0,8,0"/>
+                                <Button Grid.Column="1" Classes="AddButton" Content="Add Response Item" 
+                                       Click="OnAddReturnParameterClick"
+                                       HorizontalAlignment="Right"/>
+                            </Grid>
+                            
+                            <!-- Empty state message -->
+                            <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                   BorderThickness="1"
+                                   CornerRadius="4"
+                                   Padding="24"
+                                   Margin="0,4"
+                                   IsVisible="{Binding IsReturnParametersEmpty}">
+                                <StackPanel Spacing="8" HorizontalAlignment="Center">
+                                    <TextBlock Text="{x:Static res:Resources.Section_ReturnParameters_Empty}"
+                                              FontWeight="SemiBold"
+                                              FontSize="14"
+                                              HorizontalAlignment="Center"
+                                              Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                    <TextBlock Text="Click 'Add Response Item' to specify the required information that the subtask must report back. These items define the structured data that the executive person must provide upon task completion."
+                                              TextWrapping="Wrap"
+                                              HorizontalAlignment="Center"
+                                              TextAlignment="Center"
+                                              MaxWidth="400"
+                                              FontSize="12"
+                                              Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <ItemsControl ItemsSource="{Binding ReturnParameters}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="local:ParameterConfigViewModel">
+                                        <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                               BorderThickness="1"
+                                               CornerRadius="4"
+                                               Padding="12"
+                                               Margin="0,4">
+                                            <Grid ColumnDefinitions="*,3*,Auto,Auto">
+                                                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                                    <TextBlock Text="{x:Static res:Resources.Field_Name}" FontWeight="SemiBold" FontSize="11"/>
+                                                    <TextBox Text="{Binding Name}" Watermark="Required information name"/>
+                                                </StackPanel>
+                                                
+                                                <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                                                    <TextBlock Text="{x:Static res:Resources.Field_Description}" FontWeight="SemiBold" FontSize="11"/>
+                                                    <TextBox Text="{Binding Description}" 
+                                                            Watermark="Describe the required information to be provided"/>
+                                                </StackPanel>
+                                                
+                                                <StackPanel Grid.Column="2" Margin="0,0,8,0">
+                                                    <TextBlock Text="{x:Static res:Resources.Field_Required}" FontWeight="SemiBold" FontSize="11"/>
+                                                    <CheckBox IsChecked="{Binding IsRequired}" 
+                                                             HorizontalAlignment="Center"
+                                                             VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                
+                                                <Button Grid.Column="3" Classes="RemoveButton" 
+                                                       Click="OnRemoveReturnParameterClick"
+                                                       ToolTip.Tip="Remove this item"
+                                                       VerticalAlignment="Bottom"
+                                                       Margin="4,0,4,4">
+                                                    <fluent:SymbolIcon Symbol="Delete"/>
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Expander>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Action Buttons -->
+        <Grid Grid.Row="1" Margin="24,16,24,24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <!-- Export/Import Buttons -->
+            <StackPanel Grid.Column="0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Left"
+                        Spacing="8">
+                <Button Name="ExportButton"
+                        Click="OnExportClick"
+                        ToolTip.Tip="Export settings to JSON file">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <fluent:SymbolIcon Symbol="SaveLocal"/>
+                        <TextBlock Text="{x:Static res:Resources.Button_Export}"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="ImportButton"
+                        Click="OnImportClick"
+                        ToolTip.Tip="Import settings from JSON file">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <fluent:SymbolIcon Symbol="OpenFile"/>
+                        <TextBlock Text="{x:Static res:Resources.Button_Import}"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="AdvancedModeButton"
+                        Click="OnAdvancedModeClick"
+                        ToolTip.Tip="Switch to advanced configuration mode">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <fluent:SymbolIcon Symbol="Settings"/>
+                        <TextBlock Text="Advanced Mode"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            
+            <!-- Save/Cancel Buttons -->
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="8">
+                <Button Name="SaveAndCloseButton"
+                        Classes="accent"
+                        IsDefault="True"
+                        Click="OnSaveAndCloseClick">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <fluent:SymbolIcon Symbol="Save"/>
+                        <TextBlock Text="{x:Static res:Resources.Button_SaveAndClose}"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="CancelButton"
+                        IsCancel="True"
+                        Click="OnCancelClick">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <fluent:SymbolIcon Symbol="Cancel"/>
+                        <TextBlock Text="{x:Static res:Resources.Cancel}"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

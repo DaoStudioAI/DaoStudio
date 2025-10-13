@@ -1,0 +1,21 @@
+<Project>
+  <!-- This file is loaded after the project files -->
+  
+  <!-- For DesktopUI project, configure tool references to not copy to main output -->
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'DesktopUI'">
+    <ProjectReference Update="@(ProjectReference)" Condition="$([System.String]::Copy('%(ProjectReference.Identity)').Contains('\Tools\'))">
+      <!-- Don't copy tool outputs to main directory, they'll be in Plugins folder -->
+      <Private>false</Private>
+    </ProjectReference>
+  </ItemGroup>
+
+  <!-- Post-build event for DesktopUI to ensure plugin dependencies are available -->
+  <Target Name="EnsurePluginDependencies" AfterTargets="Build" Condition="'$(MSBuildProjectName)' == 'DesktopUI'">
+    <Message Text="Tool outputs are located in $(BaseOutputPath)Plugins\" Importance="high" />
+  </Target>
+
+  <!-- For tool projects, ensure their dependencies are copied to their output folder -->
+  <PropertyGroup Condition="'$(IsToolProject)' == 'true'">
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+</Project>

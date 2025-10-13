@@ -1,0 +1,157 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:res="clr-namespace:BrowserTool.Properties"
+        xmlns:local="clr-namespace:BrowserTool"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+        x:Class="BrowserTool.BrowserConfigWindow"
+        x:DataType="local:BrowserConfigWindow"
+    Title="{x:Static res:Resources.BrowserSettings}"
+        Width="600" Height="500"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="24" Margin="24">
+                <!-- Header Section -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{x:Static res:Resources.BrowserSettings}" 
+                              Classes="TitleLarge"/>
+                    <TextBlock Text="{x:Static res:Resources.BrowserSettings_Description}"
+                              Classes="Body"
+                              Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+                </StackPanel>
+
+                <!-- Basic Settings Section -->
+                <Expander Header="{x:Static res:Resources.Section_BasicSettings}" 
+                          IsExpanded="True">
+                    <StackPanel Spacing="16" Margin="16">
+                        <!-- Display Name Field -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{x:Static res:Resources.Field_DisplayName}"
+                                       Classes="BodyStrong"/>
+                            <TextBox Name="DisplayNameTextBox"
+                                     Text="{Binding DisplayName}"
+                                     Watermark="Enter a display name for this tool..."
+                                     MinHeight="32"/>
+                        </StackPanel>
+
+                        <!-- Separator -->
+                        <Border Background="{StaticResource CardStrokeColorDefaultBrush}"
+                                Height="1" Margin="0,8,0,8"/>
+
+                        <!-- Session Aware Option -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{x:Static res:Resources.SessionAware_Label}"
+                                       Classes="BodyStrong"/>
+                            <CheckBox Name="EnableSessionAwareCheckBox"
+                                      Content="{x:Static res:Resources.SessionAware_Label}"
+                                      IsChecked="True"/>
+                            <TextBlock Text="{x:Static res:Resources.SessionAware_Description}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource TextFillColorSecondaryBrush}"
+                                       Margin="0,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Browser Configuration Section -->
+                <Expander Header="{x:Static res:Resources.Section_BrowserConfiguration}" 
+                          IsExpanded="True">
+                    <StackPanel Spacing="16" Margin="16">
+                        <!-- Tool Type -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{x:Static res:Resources.BrowserToolType}"
+                                      Classes="BodyStrong"/>
+                            <ComboBox Name="BrowserToolTypeComboBox" 
+                                      HorizontalAlignment="Stretch"
+                                      MinHeight="32"
+                                      SelectionChanged="BrowserToolTypeComboBox_SelectionChanged"/>
+                        </StackPanel>
+
+                        <!-- Browser Type -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{x:Static res:Resources.BrowserType}"
+                                      Classes="BodyStrong"
+                                      Name="BrowserTypeLabel"/>
+                            <ComboBox Name="BrowserTypeComboBox"
+                                      HorizontalAlignment="Stretch"
+                                      MinHeight="32"
+                                      IsEnabled="{Binding #BrowserTypeLabel.IsEnabled}">
+                                <ComboBoxItem>Chrome</ComboBoxItem>
+                                <ComboBoxItem>Firefox</ComboBoxItem>
+                                <ComboBoxItem>Edge</ComboBoxItem>
+                                <ComboBoxItem>Safari</ComboBoxItem>
+                                <ComboBoxItem>Opera</ComboBoxItem>
+                                <ComboBoxItem>Brave</ComboBoxItem>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <!-- Browser Path -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{x:Static res:Resources.BrowserPath}"
+                                      Classes="BodyStrong"
+                                      Name="BrowserPathLabel"/>
+                            <Grid IsEnabled="{Binding #BrowserPathLabel.IsEnabled}"
+                                  ColumnDefinitions="*,Auto">
+                <TextBox Name="BrowserPathTextBox" 
+                    Grid.Column="0"
+                    MinHeight="32"
+                    Watermark="{x:Static res:Resources.BrowserPathPlaceholder}"/>
+                                <Button Name="BrowseButton"
+                                        Grid.Column="1"
+                                        Margin="8,0,0,0"
+                                        MinWidth="100"
+                                        MinHeight="32">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <ui:SymbolIcon Symbol="OpenFolder" FontSize="16"/>
+                                        <TextBlock Text="{x:Static res:Resources.Browse}"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Action buttons -->
+        <StackPanel Grid.Row="1" 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="8"
+                    Margin="24,24,24,24">
+            <Button Name="SaveButton"
+                    Classes="accent"
+                    MinWidth="100"
+                    MinHeight="32"
+                    IsDefault="True">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ui:SymbolIcon Symbol="Save" FontSize="16"/>
+                    <TextBlock Text="{x:Static res:Resources.Save}"/>
+                </StackPanel>
+            </Button>
+            <Button Name="CancelButton"
+                    MinWidth="100"
+                    MinHeight="32"
+                    IsCancel="True">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ui:SymbolIcon Symbol="Cancel" FontSize="16"/>
+                    <TextBlock Text="{x:Static res:Resources.Cancel}"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

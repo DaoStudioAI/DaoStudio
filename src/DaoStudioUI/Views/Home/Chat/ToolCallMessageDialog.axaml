@@ -1,0 +1,68 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:DaoStudioUI.ViewModels"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:res="using:DaoStudioUI.Resources"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
+        x:Class="DaoStudioUI.Views.ToolCallMessageDialog"
+        x:DataType="vm:ToolCallMessageDialogViewModel"
+        Title="{Binding Title}"
+        Width="800" Height="600"
+        WindowStartupLocation="CenterOwner"
+        CanResize="True"
+        ShowInTaskbar="False"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        SystemDecorations="Full">    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Main content card -->
+        <Border Grid.Row="0" 
+                Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="8"
+				Padding="5"
+                Margin="0,0,0,16">
+                
+                <!-- Message content -->
+                <TextBox Grid.Row="1"
+                         Text="{Binding MessageContent}"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         Watermark="{res:Localization ToolCall_MessageWatermark}"
+                         Background="{StaticResource CardBackgroundFillColorSecondaryBrush}"
+                         BorderBrush="Transparent"
+						 BorderThickness="0"
+                         Padding="0"
+                         MinHeight="200"/>
+        </Border>
+
+        <!-- Action buttons -->
+        <StackPanel Grid.Row="1" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Spacing="8">
+            <Button Command="{Binding SaveCommand}"
+                    Classes="accent"
+                    Width="100">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ui:SymbolIcon Symbol="Save"/>
+                    <TextBlock Text="{res:Localization Settings_Save}"/>
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding CancelCommand}"
+                    Width="100">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ui:SymbolIcon Symbol="Cancel"/>
+                    <TextBlock Text="{res:Localization Common_Cancel}"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window> 

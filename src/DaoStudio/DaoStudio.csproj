@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Platforms>x64</Platforms>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <AvaloniaXaml Remove="Exceptions\**" />
+	  <Compile Remove="Exceptions\**" />
+	  <EmbeddedResource Remove="Exceptions\**" />
+	  <None Remove="Exceptions\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+    <PackageReference Include="DryIoc.dll" Version="5.4.3" />
+		<PackageReference Include="McMaster.NETCore.Plugins" Version="2.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.9" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="OpenAI" Version="2.5.0" />
+		<PackageReference Include="Microsoft.Extensions.AI" Version="9.9.1" />
+		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.6.0-preview.1.25310.2" />
+		<PackageReference Include="System.ClientModel" Version="1.7.0" />
+		<PackageReference Include="Google_GenerativeAI.Microsoft" Version="3.3.0" />
+		<PackageReference Include="Google_GenerativeAI" Version="3.3.0" />
+		<PackageReference Include="Mscc.GenerativeAI" Version="2.8.16" />
+		<PackageReference Include="Mscc.GenerativeAI.Microsoft" Version="2.8.16" />
+		<PackageReference Include="OllamaSharp" Version="5.4.7" />
+		<PackageReference Include="LLamaSharp" Version="0.25.0" />
+		<PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.25.0" />
+		<PackageReference Include="LLamaSharp.Backend.Cuda12" Version="0.25.0" />
+		<PackageReference Include="Anthropic.SDK" Version="5.6.0" />
+		<PackageReference Include="AWSSDK.Bedrock" Version="4.0.12.2" />
+		<PackageReference Include="AWSSDK.BedrockRuntime" Version="4.0.7.2" />
+		<PackageReference Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.3.6" />
+		<PackageReference Include="AWSSDK.Extensions.CrtIntegration" Version="4.0.0.5" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);SKEXP0101;SKEXP0110;SKEXP0001</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DBStorage\DBStorage.csproj" />
+		<ProjectReference Include="..\Interfaces\Interfaces.csproj" />
+		<ProjectReference Include="..\Tools\PluginCommon\PluginCommon.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+</Project>

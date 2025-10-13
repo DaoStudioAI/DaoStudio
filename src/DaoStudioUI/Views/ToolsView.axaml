@@ -1,0 +1,204 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DaoStudioUI.ViewModels"
+             xmlns:res="using:DaoStudioUI.Resources"
+             xmlns:lo="using:Avalonia.Layout"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+             xmlns:controls="using:Avalonia.Controls"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
+             x:Class="DaoStudioUI.Views.ToolsView"
+             x:Name="ToolsControl"
+             x:DataType="vm:ToolsViewModel">
+
+    <UserControl.Resources>
+        <!-- Warning button style that works with light/dark themes -->
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <!-- Light theme colors -->
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="DeleteButtonBackground" Color="#d9534f" />
+                    <SolidColorBrush x:Key="DeleteButtonBackgroundPointerOver" Color="#c9302c" />
+                    <SolidColorBrush x:Key="DeleteButtonBackgroundPressed" Color="#ac2925" />
+                    <SolidColorBrush x:Key="DeleteButtonForeground" Color="White" />
+                    <SolidColorBrush x:Key="DisabledButtonBackground" Color="#e9ecef" />
+                    <SolidColorBrush x:Key="DisabledButtonForeground" Color="#6c757d" />
+                </ResourceDictionary>
+                
+                <!-- Dark theme colors - slightly brighter to be visible in dark theme -->
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="DeleteButtonBackground" Color="#ff5b57" />
+                    <SolidColorBrush x:Key="DeleteButtonBackgroundPointerOver" Color="#ff4742" />
+                    <SolidColorBrush x:Key="DeleteButtonBackgroundPressed" Color="#ff3530" />
+                    <SolidColorBrush x:Key="DeleteButtonForeground" Color="White" />
+                    <SolidColorBrush x:Key="DisabledButtonBackground" Color="#2d3238" />
+                    <SolidColorBrush x:Key="DisabledButtonForeground" Color="#6c757d" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            
+            <ControlTheme x:Key="WarningButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                <Setter Property="Background" Value="{DynamicResource DeleteButtonBackground}" />
+                <Setter Property="Foreground" Value="{DynamicResource DeleteButtonForeground}" />
+                <Style Selector="^:pointerover /template/ ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource DeleteButtonBackgroundPointerOver}" />
+                </Style>
+                <Style Selector="^:pressed /template/ ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource DeleteButtonBackgroundPressed}" />
+                </Style>
+            </ControlTheme>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Design.DataContext>
+        <vm:ToolsViewModel />
+    </Design.DataContext>
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="24">
+            <!-- Header -->
+            <TextBlock Text="{res:Localization Tools_Title}" FontSize="32" FontWeight="SemiBold" Margin="0,0,0,8" />
+
+            <!-- Loading indicator -->
+            <ui:ProgressRing IsVisible="{Binding IsLoading}" IsIndeterminate="True" Width="50" Height="50" HorizontalAlignment="Center" Margin="0,10" />
+
+            <!-- Tools Section Header -->
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="{res:Localization Tools_AvailableTools}" FontWeight="SemiBold" FontSize="18" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Classes="accent" x:Name="AddToolButton"
+                        Command="{Binding AddToolCommand}"
+                        CommandParameter="{Binding #AddToolButton}"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <ui:SymbolIcon Symbol="Add" />
+                        <TextBlock Text="{res:Localization Tools_AddTool}" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Tools Cards -->
+            <controls:ItemsRepeater ItemsSource="{Binding Tools}" Margin="0,8,0,0">
+                <controls:ItemsRepeater.Layout>
+                    <lo:UniformGridLayout MinItemWidth="240" MinItemHeight="280" MinRowSpacing="24" MinColumnSpacing="24" />
+                </controls:ItemsRepeater.Layout>
+                <controls:ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:CompileBindings="False">
+                        <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" 
+                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" 
+                                BorderThickness="1" 
+                                CornerRadius="12" 
+                                BoxShadow="0 4 8 0 #20000000"
+                                ClipToBounds="True">
+                            <Grid RowDefinitions="Auto,Auto,*,Auto">
+                                <!-- Header with Tool Name and Buttons -->
+                                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="16,8" Height="48">
+                                    <!-- Name and Edit Button -->
+                                    <Grid Grid.Column="0" ColumnDefinitions="*,Auto" VerticalAlignment="Center"
+                                    Margin="0,0,8,0">
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding Name}"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip.Tip="{Binding Name}" />
+                                        <Button Grid.Column="1"
+                                                Classes="transparent"
+                                                Width="32" Height="32"
+                                                Padding="0"
+                                                Margin="8,0,0,0"
+                                                Command="{Binding $parent[UserControl].DataContext.EditToolNameCommand}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip.Tip="{res:Localization Tools_EditToolName}"
+                                                IsVisible="{Binding !IsEditingName}">
+                                            <ui:SymbolIcon Symbol="Edit" FontSize="12" />
+                                        </Button>
+                                    </Grid>
+                                    
+                                    <!-- Delete Tool Button -->
+                                    <Button Grid.Column="1"
+                                            Classes="transparent"
+                                            Width="32" Height="32"
+                                            Padding="0"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Right"
+                                            Command="{Binding #ToolsControl.DataContext.DeleteToolCommand}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip.Tip="{res:Localization Tools_DeleteTool}">
+                                        <ui:SymbolIcon Symbol="Clear" Foreground="{DynamicResource SystemFillColorCriticalBrush}" FontSize="12" />
+                                    </Button>
+                                </Grid>
+                                
+                                <!-- Separator Line -->
+                                <Separator Grid.Row="1" 
+                                           Height="1" 
+                                           Background="{DynamicResource CardStrokeColorDefaultBrush}" />
+                                
+                                <!-- Tool Description -->
+                                <TextBlock Grid.Row="2" 
+                                           Text="{Binding Description}"
+                                           Opacity="0.7"
+                                           FontSize="14"
+                                           TextWrapping="Wrap"
+                                           Margin="16,16,16,0" />
+                                
+                                <!-- Settings Button -->
+                                <Button Grid.Row="3"
+                                        Classes="transparent"
+                                        Width="32" Height="32"
+                                        Padding="0"
+                                        Command="{Binding $parent[UserControl].DataContext.ShowConfigDlgCommand}" 
+                                        CommandParameter="{Binding}" 
+                                        ToolTip.Tip="{res:Localization Tools_ConfigureTool}"
+                                        IsVisible="{Binding CanShowConfigWindow}"
+                                        VerticalAlignment="Bottom" 
+                                        HorizontalAlignment="Right"
+                                        Margin="0,0,16,16">
+                                    <ui:SymbolIcon Symbol="Settings" FontSize="12" />
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </controls:ItemsRepeater.ItemTemplate>
+            </controls:ItemsRepeater>
+            <!-- Empty State -->
+            <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" 
+                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" 
+                    BorderThickness="1" 
+                    CornerRadius="8" 
+                    Padding="28" 
+                    IsVisible="{Binding !Tools.Count}"
+                    BoxShadow="0 2 4 0 #20000000"
+                    HorizontalAlignment="Stretch"
+                    MinHeight="280">
+                <StackPanel Spacing="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ui:SymbolIcon Symbol="TagFilled" FontSize="38" />
+                    <TextBlock Text="{res:Localization Tools_NoToolsTitle}" 
+                              HorizontalAlignment="Center" 
+                              FontSize="18" 
+                              FontWeight="SemiBold" />
+                    <TextBlock Text="{res:Localization Tools_NoToolsDescription}" 
+                              HorizontalAlignment="Center" 
+                              TextWrapping="Wrap"
+                              Opacity="0.8"
+                              FontSize="14" />
+                    <Button Classes="accent" 
+                            x:Name="EmptyStateAddButton"
+                            Command="{Binding AddToolCommand}" 
+                            CommandParameter="{Binding #EmptyStateAddButton}"
+                            HorizontalAlignment="Center" 
+                            Margin="0,12,0,0">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <ui:SymbolIcon Symbol="Add" />
+                            <TextBlock Text="{res:Localization Tools_AddTool}" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl> 

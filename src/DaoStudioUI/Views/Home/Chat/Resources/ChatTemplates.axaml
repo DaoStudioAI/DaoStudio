@@ -1,0 +1,195 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ui="using:FluentAvalonia.UI.Controls"
+                    xmlns:res="using:DaoStudioUI.Resources"
+                    xmlns:models="using:DaoStudioUI.Models"
+                    xmlns:i="using:Avalonia.Xaml.Interactivity"
+                    xmlns:ia="using:Avalonia.Xaml.Interactions.Core">
+
+    <!-- Time Message Template -->
+    <DataTemplate x:Key="TimeMessageTemplate" x:DataType="models:ChatMessage">
+        <Border Background="Transparent"
+                Padding="8"
+                HorizontalAlignment="Center">
+            <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:g}'}"
+                       FontSize="12"
+                       Opacity="0.7"
+                       FontStyle="Italic"/>
+        </Border>
+    </DataTemplate>
+
+	<!-- System Message Template -->
+	<DataTemplate x:Key="SystemMessageTemplate" x:DataType="models:ChatMessage">
+		<Border Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+				BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+				BorderThickness="1"
+				CornerRadius="8"
+				x:DataType="models:ChatMessage"
+				Padding="16"
+				HorizontalAlignment="Center"
+				Margin="32,0">
+			<StackPanel Spacing="8">
+				<TextBlock Text="{Binding Content}"
+						   TextWrapping="Wrap"
+						   FontStyle="Italic"/>
+			</StackPanel>
+		</Border>
+	</DataTemplate>
+	<!-- Tool call Message Template -->
+	<DataTemplate x:Key="UserToolMessageTemplate" x:DataType="models:ChatMessage">
+		<Border Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+				BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+				BorderThickness="1"
+				CornerRadius="8"
+				Padding="10"
+				x:DataType="models:ChatMessage"
+				HorizontalAlignment="{Binding ., Converter={StaticResource MessageToAlignmentConverter}}">		
+			<Button Background="Transparent"			
+					BorderThickness="0"
+					Padding="0"
+					HorizontalContentAlignment="Stretch"
+					VerticalContentAlignment="Stretch"
+					Command="{Binding MessagePressedCommand}">
+				<StackPanel Spacing="8">
+					<TextBlock Text="{Binding Content}"
+							   MaxLines="2"
+							   TextWrapping="Wrap"/>
+					<!-- Message timestamp -->
+					<TextBlock Text="{Binding LocalModifiedTime}"
+							   FontSize="10"
+							   Opacity="0.6"
+							   HorizontalAlignment="Right"/>
+				</StackPanel>
+			</Button>
+		</Border>
+	</DataTemplate>
+	<!-- User Message Template -->
+	<DataTemplate x:Key="UserMessageTemplate" x:DataType="models:ChatMessage">
+		<Border Background="{Binding ., Converter={StaticResource MessageToColorConverter}}"
+				BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+				BorderThickness="1"
+				CornerRadius="8"
+				x:DataType="models:ChatMessage"
+				HorizontalAlignment="{Binding ., Converter={StaticResource MessageToAlignmentConverter}}">
+			<Panel>
+				<!-- Normal View Mode -->
+				<Button Background="Transparent"
+						BorderThickness="0"
+						Padding="16"
+						HorizontalContentAlignment="Stretch"
+						VerticalContentAlignment="Stretch"
+						Command="{Binding MessagePressedCommand}"
+						IsVisible="{Binding !IsEditing}">
+					<StackPanel Spacing="8">
+						<!-- Text content -->
+						<TextBlock Text="{Binding Content}"
+								   TextWrapping="Wrap"
+								   IsVisible="{Binding Type, Converter={StaticResource MessageTypeToVisibilityConverter}, ConverterParameter=Normal}"/>
+						
+						<!-- Image content -->
+						<StackPanel IsVisible="{Binding Type, Converter={StaticResource MessageTypeToVisibilityConverter}, ConverterParameter=Image}">
+							<TextBlock Text="{Binding Content}"
+									   TextWrapping="Wrap"
+									   Margin="0,0,0,8"/>
+							<Border CornerRadius="4" ClipToBounds="True" MaxHeight="300">
+								<Image Source="{Binding BinaryContents, Converter={StaticResource ByteArrayToImageConverter}}"
+									   Stretch="Uniform"/>
+							</Border>
+						</StackPanel>
+						
+						<!-- Audio content -->
+						<StackPanel IsVisible="{Binding Type, Converter={StaticResource MessageTypeToVisibilityConverter}, ConverterParameter=Audio}">
+							<TextBlock Text="{Binding Content}"
+									   TextWrapping="Wrap"
+									   Margin="0,0,0,8"/>
+							<Button HorizontalAlignment="Center" Classes="accent">
+								<StackPanel Orientation="Horizontal" Spacing="8">
+									<ui:SymbolIcon Symbol="Play"/>
+									<TextBlock Text="{res:Localization Chat_PlayAudio}"/>
+								</StackPanel>
+							</Button>
+						</StackPanel>
+
+						<!-- Message timestamp -->
+						<TextBlock Text="{Binding LocalModifiedTime}"
+								   FontSize="10"
+								   Opacity="0.6"
+								   HorizontalAlignment="Right"/>
+					</StackPanel>
+				</Button>
+				
+				<!-- Edit Mode -->
+				<Border Padding="16" IsVisible="{Binding IsEditing}">
+					<StackPanel Spacing="8">
+						<!-- Editable content -->
+						<TextBox Text="{Binding EditContent}"
+								 TextWrapping="Wrap"
+								 AcceptsReturn="True"
+								 MinHeight="60">
+						</TextBox>
+
+						<!-- Edit mode buttons -->
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+							<Button Command="{Binding SaveEditCommand}"
+									Classes="accent"
+									ToolTip.Tip="Save changes">
+								<ui:SymbolIcon Symbol="Save"/>
+							</Button>
+							<Button Command="{Binding SendEditCommand}"
+									ToolTip.Tip="Save and send">
+								<ui:SymbolIcon Symbol="Send"/>
+							</Button>
+							<Button Command="{Binding CancelEditCommand}"
+									ToolTip.Tip="Cancel editing">
+								<ui:SymbolIcon Symbol="Cancel"/>
+							</Button>
+						</StackPanel>
+						
+						<!-- Message timestamp in edit mode -->
+						<TextBlock Text="{Binding LocalModifiedTime}"
+								   FontSize="10"
+								   Opacity="0.6"           
+								   HorizontalAlignment="Right"/>
+					</StackPanel>
+				</Border>
+			</Panel>
+		</Border>
+	</DataTemplate><!-- Information Message Template -->
+	<DataTemplate x:Key="InformationMessageTemplate" x:DataType="models:ChatMessage">
+		<Border Background="{DynamicResource InformationMessageColorBrush}"
+				BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+				BorderThickness="1"
+				CornerRadius="8"
+				x:DataType="models:ChatMessage"
+				HorizontalAlignment="{Binding ., Converter={StaticResource MessageToAlignmentConverter}}"
+				Cursor="Hand">
+			<Button Background="Transparent"
+					BorderThickness="0"
+					Padding="12"
+					HorizontalContentAlignment="Stretch"
+					VerticalContentAlignment="Stretch"
+					Command="{Binding MessagePressedCommand}">
+				<StackPanel Spacing="8">
+					<!-- Information icon and content in horizontal layout -->
+					<DockPanel>
+						<ui:SymbolIcon Symbol="Contact"
+									   FontSize="16"
+									   VerticalAlignment="Top"
+									   Margin="0,2,8,0"
+									   DockPanel.Dock="Left"/>
+						<TextBlock Text="{Binding Content}"
+								   TextWrapping="Wrap"
+								   VerticalAlignment="Top"/>
+					</DockPanel>
+
+					<!-- Timestamp -->
+					<TextBlock Text="{Binding LocalModifiedTime}"
+							   FontSize="10"
+							   Opacity="0.6"
+							   HorizontalAlignment="Right"/>
+				</StackPanel>
+			</Button>
+		</Border>
+	</DataTemplate>
+
+</ResourceDictionary>

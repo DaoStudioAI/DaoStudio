@@ -1,0 +1,232 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DaoStudioUI.ViewModels"
+             xmlns:res="using:DaoStudioUI.Resources"
+             xmlns:lo="using:Avalonia.Layout"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+        xmlns:converters="using:DaoStudioUI.Converters"
+             xmlns:controls="using:Avalonia.Controls"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
+             x:Class="DaoStudioUI.Views.ModelsView"
+             x:Name="ModelsControl"
+             x:DataType="vm:PeopleViewModel">
+
+    <UserControl.Resources>
+        <!-- Warning button style that works with light/dark themes -->
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <!-- Light theme colors -->
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="DeleteButtonBackground" Color="#d9534f" />
+                    <SolidColorBrush x:Key="DeleteButtonBackgroundPointerOver" Color="#c9302c" />
+                    <SolidColorBrush x:Key="DeleteButtonBackgroundPressed" Color="#ac2925" />
+                    <SolidColorBrush x:Key="DeleteButtonForeground" Color="White" />
+                    <SolidColorBrush x:Key="DisabledButtonBackground" Color="#e9ecef" />
+                    <SolidColorBrush x:Key="DisabledButtonForeground" Color="#6c757d" />
+                </ResourceDictionary>
+                
+                <!-- Dark theme colors - slightly brighter to be visible in dark theme -->
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="DeleteButtonBackground" Color="#ff5b57" />
+                    <SolidColorBrush x:Key="DeleteButtonBackgroundPointerOver" Color="#ff4742" />
+                    <SolidColorBrush x:Key="DeleteButtonBackgroundPressed" Color="#ff3530" />
+                    <SolidColorBrush x:Key="DeleteButtonForeground" Color="White" />
+                    <SolidColorBrush x:Key="DisabledButtonBackground" Color="#2d3238" />
+                    <SolidColorBrush x:Key="DisabledButtonForeground" Color="#6c757d" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            
+            <ControlTheme x:Key="WarningButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                <Setter Property="Background" Value="{DynamicResource DeleteButtonBackground}" />
+                <Setter Property="Foreground" Value="{DynamicResource DeleteButtonForeground}" />
+                <Style Selector="^:pointerover /template/ ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource DeleteButtonBackgroundPointerOver}" />
+                </Style>
+                <Style Selector="^:pressed /template/ ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource DeleteButtonBackgroundPressed}" />
+                </Style>
+            </ControlTheme>
+        </ResourceDictionary>
+		<converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
+	</UserControl.Resources>
+
+
+
+	<Design.DataContext>
+        <vm:ModelsViewModel />
+    </Design.DataContext>
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="24">
+            <!-- Header -->
+            <TextBlock Text="{res:Localization People_Title}" FontSize="32" FontWeight="SemiBold" Margin="0,0,0,8" />
+
+            <!-- Loading indicator -->
+            <ui:ProgressRing IsVisible="{Binding IsLoading}" IsIndeterminate="True" Width="50" Height="50" HorizontalAlignment="Center" Margin="0,10" />
+
+            <!-- Models Section -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Spacing="36">
+                    <!-- LLM Models Section -->
+                    <StackPanel Spacing="16">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="{res:Localization People_AvailablePeople}" FontWeight="SemiBold" FontSize="18" VerticalAlignment="Center" />
+                            <Button Grid.Column="1" Classes="accent" x:Name="AddModelButton"
+                                    Command="{Binding AddModelCommand}"
+                                    CommandParameter="{Binding #AddModelButton}"
+                                    VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <ui:SymbolIcon Symbol="Add" />
+                                    <TextBlock Text="{res:Localization People_AddPerson}" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <!-- Models Cards -->
+                        <controls:ItemsRepeater ItemsSource="{Binding Models}" Margin="0,8,0,0">
+                            <controls:ItemsRepeater.Layout>
+                                <lo:UniformGridLayout MinItemWidth="240" MinItemHeight="280" MinRowSpacing="24" MinColumnSpacing="24" />
+                            </controls:ItemsRepeater.Layout>
+                            <controls:ItemsRepeater.ItemTemplate>
+                                <DataTemplate x:DataType="vm:PersonItem">
+                                    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" 
+                                            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" 
+                                            BorderThickness="1" 
+                                            CornerRadius="12" 
+                                            BoxShadow="0 4 8 0 #20000000"
+                                            Cursor="Hand"
+                                            ClipToBounds="True">
+                                        <i:Interaction.Behaviors>
+                                            <ia:EventTriggerBehavior EventName="Tapped">
+                                                <ia:InvokeCommandAction Command="{ReflectionBinding #ModelsControl.DataContext.EditModelCommand}" 
+                                                                    CommandParameter="{Binding}" />
+                                            </ia:EventTriggerBehavior>
+                                        </i:Interaction.Behaviors>
+                                        <StackPanel>
+                                            <!-- Model Image with overlapped title -->
+                                            <Grid>
+                                                <Border Height="180">
+                                                    <Panel>
+                                                        <!-- If image is null, show model icon -->
+                                                        <ui:SymbolIcon FontSize="48" 
+                                                                      IsVisible="{Binding Image, Converter={x:Static ObjectConverters.IsNull}}"
+                                                                      VerticalAlignment="Center"
+                                                                      HorizontalAlignment="Center">
+                                                            <ui:SymbolIcon.Symbol>Contact</ui:SymbolIcon.Symbol>
+                                                        </ui:SymbolIcon>
+                                                        <!-- Only show if image is available -->
+                                                        <Image Source="{Binding Image, Converter={StaticResource ByteArrayToImageConverter}}" 
+                                                              Stretch="UniformToFill"
+                                                              IsVisible="{Binding Image, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                                    </Panel>
+                                                </Border>
+                                                
+                                                <!-- Title overlay -->
+                                                <Border Background="#00000000" 
+                                                        VerticalAlignment="Top" 
+                                                        HorizontalAlignment="Stretch"
+                                                        Height="48">
+                                                    <Grid ColumnDefinitions="*,Auto" Margin="16,8">
+                                                        <TextBlock Grid.Column="0" 
+                                                                   Text="{Binding Name}" 
+                                                                   FontWeight="SemiBold" 
+                                                                   TextWrapping="Wrap"
+                                                                   FontSize="22"
+																   Margin="0"
+                                                                   VerticalAlignment="Center" />
+                                                        
+                                                        <Button Grid.Column="1"
+                                                                Classes="transparent"
+                                                                Width="28" Height="28"
+                                                                Padding="6"
+                                                                Margin="4,0,0,0"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Right"
+                                                                Tapped="DeleteButton_Tapped"                                                                
+                                                                FontWeight="SemiBold"
+                                                                ToolTip.Tip="{res:Localization People_DeletePerson}">
+                                                            <ui:SymbolIcon Symbol="Clear" Foreground="{DynamicResource SystemFillColorCriticalBrush}" FontSize="12" />
+                                                        </Button>
+                                                    </Grid>
+                                                </Border>
+                                            </Grid>
+                                            
+                                            <!-- Separator Line -->
+                                            <Separator Height="1" 
+                                                       Background="{DynamicResource CardStrokeColorDefaultBrush}" 
+                                                       Margin="0,0,0,0" />
+                                            
+                                            <!-- Card content -->
+                                            <Border Padding="16">
+                                                <StackPanel>
+													<!-- Card Title -->
+													<TextBlock Text="{Binding ModelId }"
+                                                               FontWeight="SemiBold"
+                                                               FontSize="15" />
+													                                                    
+                                                    <!-- Provider Name -->
+                                                    <TextBlock Text="{Binding ProviderName}"
+                                                               Opacity="0.7"
+                                                               FontSize="14"
+                                                               Margin="0,0,0,12" />
+                                                    
+                                                    <!-- Model Details -->
+                                                    <TextBlock Text="{Binding DeveloperMessage}" 
+                                                               TextWrapping="Wrap"
+                                                               Opacity="0.8"
+                                                               FontSize="14"
+                                                               Margin="0,0,0,8" />
+                                                    
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </controls:ItemsRepeater.ItemTemplate>
+                        </controls:ItemsRepeater>
+                        
+                        <!-- Empty State -->
+                        <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" 
+                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" 
+                                BorderThickness="1" 
+                                CornerRadius="8" 
+                                Padding="28" 
+                                IsVisible="{Binding !Models.Count}"
+                                BoxShadow="0 2 4 0 #20000000"
+                                HorizontalAlignment="Stretch"
+                                MinHeight="280">
+                            <StackPanel Spacing="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ui:SymbolIcon Symbol="Calculator" FontSize="38" />
+                                <TextBlock Text="{res:Localization People_NoPeopleTitle}" 
+                                          HorizontalAlignment="Center" 
+                                          FontSize="18" 
+                                          FontWeight="SemiBold" />
+                                <TextBlock Text="{res:Localization People_NoPeopleDescription}" 
+                                          HorizontalAlignment="Center" 
+                                          TextWrapping="Wrap"
+                                          Opacity="0.8"
+                                          FontSize="14" />
+                                <Button Classes="accent" 
+                                        x:Name="EmptyStateAddButton"
+                                        Command="{Binding AddModelCommand}" 
+                                        CommandParameter="{Binding #EmptyStateAddButton}"
+                                        HorizontalAlignment="Center" 
+                                        Margin="0,12,0,0">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <ui:SymbolIcon Symbol="Add" />
+                                        <TextBlock Text="{res:Localization People_AddPerson}" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,41 @@
+<Project>
+  <!-- Common properties for all projects -->
+  <PropertyGroup>
+    <SolutionDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)</SolutionDir>
+    <!-- Build outputs now go under Output/Build -->
+    <BaseOutputPath>$(SolutionDir)BuildOutput\Build\</BaseOutputPath>
+    
+    <!-- Ensure intermediate output (obj) files are placed under Output/obj -->
+    <BaseIntermediateOutputPath>$(SolutionDir)BuildOutput\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    
+    <!-- Copy dependencies to output directory -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <!-- Check if this is a Tool project based on path -->
+  <PropertyGroup>
+    <!-- Detect tool projects (must live directly under $(SolutionDir)Tools\) -->
+    <IsToolProject Condition="$([System.String]::Copy('$(MSBuildProjectDirectory)').StartsWith('$(SolutionDir)Tools\'))">true</IsToolProject>
+    <IsToolProject Condition="'$(IsToolProject)' == ''">false</IsToolProject>
+  </PropertyGroup>
+
+  <!-- Output path configuration based on project type -->
+  <PropertyGroup>
+    <!-- Tools projects go to Plugins folder -->
+    <OutputPath Condition="'$(IsToolProject)' == 'true'">$(BaseOutputPath)Plugins\$(MSBuildProjectName)\</OutputPath>
+    
+    <!-- Test projects go to Tests folder -->
+    <!-- Route all test projects to Output/Tests -->
+    <OutputPath Condition="$([System.String]::Copy('$(MSBuildProjectDirectory)').Contains('\Test\'))">$(SolutionDir)BuildOutput\Tests\</OutputPath>
+    
+    <!-- All other projects (DesktopUI and its core dependencies) go to Output/Build root -->
+    <OutputPath Condition="'$(OutputPath)' == ''">$(BaseOutputPath)</OutputPath>
+  </PropertyGroup>
+
+  <!-- Disable automatic framework and runtime appending for SDK-style projects -->
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <!-- Removed the line that appends bin\$(Configuration)\$(TargetFramework)\ to simplify output structure -->
+  </PropertyGroup>
+</Project>

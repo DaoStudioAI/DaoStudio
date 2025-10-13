@@ -1,0 +1,419 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DaoStudioUI.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:res="using:DaoStudioUI.Resources"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:controls="using:Avalonia.Controls"
+        xmlns:converters="using:DaoStudioUI.Converters"
+        xmlns:views="using:DaoStudioUI.Views"
+        xmlns:selectors="using:DaoStudioUI.Selectors"
+        xmlns:models="using:DaoStudioUI.Models"
+        xmlns:navModels="using:DesktopUI.Models"
+        xmlns:interfaces="using:DaoStudio.Interfaces"        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
+        x:Class="DaoStudioUI.Views.ChatWindow"
+        x:DataType="vm:ChatViewModel"
+        x:Name="ChatWindowRoot"
+        TransparencyLevelHint="AcrylicBlur"
+		     ExtendClientAreaToDecorationsHint="True"
+        Background="Transparent"
+		Title="{Binding SessionTitle}">
+
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="Resources/ChatConverters.axaml"/>
+				<ResourceInclude Source="Resources/ChatTemplates.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+
+			<StreamGeometry x:Key="ImageFileGeometry">M2,4C2,2.895,2.895,2,4,2h16c1.105,0,2,0.895,2,2v12c0,1.105-0.895,2-2,2H4c-1.105,0-2-0.895-2-2V6z M10,10c-0.552,0-1-0.448-1-1c0-0.552,0.448-1,1-1s1,0.448,1,1C11,9.552,10.552,10,10,10z M5,17h14l-3.499-4.499L13,15.51L9.5,11.001L5,17z</StreamGeometry>
+
+			<!-- Model selection menu flyout populated via code-behind -->
+			<MenuFlyout x:Key="ModelSelectionFlyout"
+					Placement="Top"/>
+
+		</ResourceDictionary>
+	</Window.Resources>
+
+	<Window.Styles>
+		<!-- Breadcrumb button styles -->
+		<Style Selector="Button.breadcrumb">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Padding" Value="8,4"/>
+			<Setter Property="CornerRadius" Value="4"/>
+			<Setter Property="BorderThickness" Value="0"/>
+		</Style>
+
+		<Style Selector="Button.breadcrumb.current">
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{DynamicResource AccentTextFillColorPrimaryBrush}"/>
+		</Style>
+
+		<Style Selector="Button.breadcrumb:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
+		</Style>
+	</Window.Styles>
+
+	<Design.DataContext>
+		<vm:ChatViewModel />
+	</Design.DataContext>
+	<SplitView
+        PaneBackground="Transparent"
+        PanePlacement="Right"
+        OpenPaneLength="390"
+        DisplayMode="Inline"
+        IsPaneOpen="{Binding IsPaneOpen}">
+		<SplitView.Pane>
+			<views:ToolsPanelControl DataContext="{Binding ToolsPanelViewModel}"/>
+		</SplitView.Pane>
+		<Grid RowDefinitions="Auto,*,Auto">
+			<!-- Header with session info and back button -->
+			<Border Grid.Row="0"
+					Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+					BorderThickness="0,0,0,1"
+					Padding="8">
+				<Grid RowDefinitions="30,Auto" ColumnDefinitions="Auto,*,Auto">
+					<!-- Model image/icon -->
+					<Border Grid.Column="0"
+							Width="64" Height="64"
+							Grid.RowSpan="2"
+							CornerRadius="12"
+							Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+							Margin="0,0,16,0">
+						<Panel>
+							<!-- Default icon if no image -->
+							<ui:SymbolIcon Symbol="Contact"
+										  FontSize="24"
+										  VerticalAlignment="Center"
+										  HorizontalAlignment="Center"
+										  IsVisible="{Binding ModelImage, Converter={x:Static ObjectConverters.IsNull}}" />
+
+							<!-- Model image if available -->
+							<Image Source="{Binding ModelImage, Converter={StaticResource ByteArrayToImageConverter}}"
+								   Stretch="UniformToFill"
+								   IsVisible="{Binding ModelImage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+						</Panel>
+					</Border>
+
+					<Border x:Name="TitleBar" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0"
+							Height="40"
+							VerticalAlignment="Top"
+							Background="Transparent"
+							PointerPressed="OnTitleBarPointerPressed"
+							ZIndex="1000">
+						<TextBlock Text="{Binding SessionTitle}"
+								   FontWeight="SemiBold"
+								   FontSize="20"
+								   HorizontalAlignment="Center" />
+					</Border>
+
+					<!-- Buttons StackPanel -->
+					<StackPanel Grid.Column="2" Grid.Row="1"
+								Orientation="Horizontal"
+								HorizontalAlignment="Right"
+								VerticalAlignment="Top"
+								Spacing="0">
+						<!-- Step Debugging Toggle Button -->
+						<Button Command="{Binding ToggleStepDebuggingCommand}"
+								Width="42" Height="42"
+								Margin="0,0,0,0"
+								ToolTip.Tip="{res:Localization Chat_EnableStepDebugging}">
+							<Image Source="/Assets/step-debug.png"
+											Width="24" Height="24"
+											VerticalAlignment="Center"
+											HorizontalAlignment="Center"
+											Stretch="Uniform"/>
+						</Button>
+
+					<!-- Step Next Button (always visible, always enabled, only works when waiting) -->
+					<Button Command="{Binding StepNextCommand}"
+							Width="42" Height="42"
+							Margin="0,0,0,0"
+							HotKey="F11"
+							ToolTip.Tip="{res:Localization Chat_StepNext}">
+						<Image Source="/Assets/debug-step-into.png"
+										Width="24" Height="24"
+										VerticalAlignment="Center"
+										HorizontalAlignment="Center"
+										Stretch="Uniform"/>
+					</Button>						<!-- Separator before tools button -->
+						<Border Width="1"
+							Height="28"
+							Margin="8,7,8,7"
+							VerticalAlignment="Center"
+							Background="{DynamicResource CardStrokeColorDefaultBrush}" />
+
+						<!-- TogglePane Button -->
+						<Button Command="{Binding TogglePaneCommand}"
+							Width="42" Height="42"
+							Margin="0,0,16,0"
+							ToolTip.Tip="{res:Localization Chat_Tools}">
+							<ui:SymbolIcon Symbol="Repair"/>
+						</Button>
+					</StackPanel>
+					
+					<!-- Breadcrumb Navigation Bar -->
+					<Border Grid.Column="1" Grid.Row="1"
+							Padding="0,8,0,0"
+							IsVisible="{Binding BreadcrumbItems.Count, Converter={StaticResource CountGreaterThanConverter}, ConverterParameter=1}">
+						<ScrollViewer HorizontalScrollBarVisibility="Auto" 
+									  VerticalScrollBarVisibility="Disabled">
+							<StackPanel Orientation="Horizontal" Spacing="4">
+								<!-- Back Button -->
+								<Button Command="{Binding NavigateBackCommand}"
+										ToolTip.Tip="Go Back"
+										Classes="breadcrumb"
+										Padding="4">
+									<ui:SymbolIcon Symbol="Back" FontSize="14"/>
+								</Button>
+								
+								<!-- Breadcrumb Items -->
+								<ItemsControl ItemsSource="{Binding BreadcrumbItems}">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Orientation="Horizontal" Spacing="4"/>
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<StackPanel Orientation="Horizontal" Spacing="4">
+												<!-- Separator (except for first item) -->
+												<ui:SymbolIcon Symbol="ChevronRight" 
+															  FontSize="12"
+															  Margin="0,0,0,0"
+															  VerticalAlignment="Center"
+															  IsVisible="{Binding IsNotFirst}"/>
+												
+												<!-- Breadcrumb Button -->
+												<Button Content="{Binding Title}"
+														Command="{Binding NavigateCommand}"
+														CommandParameter="{Binding Index}"
+														IsEnabled="{Binding !IsCurrent}"
+														Classes="breadcrumb"
+														Classes.current="{Binding IsCurrent}"/>
+											</StackPanel>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</StackPanel>
+						</ScrollViewer>
+					</Border>
+				</Grid>
+			</Border>
+
+			<!-- Transitioning content for session navigation -->
+			<TransitioningContentControl Grid.Row="1"
+											Content="{Binding CurrentSessionContent}"
+											IsEnabled="{Binding !IsNavigating}">
+				<TransitioningContentControl.DataTemplates>
+					<DataTemplate DataType="navModels:ChatSessionContent">
+						<!-- Chat messages area -->
+						<ScrollViewer VerticalScrollBarVisibility="Auto"
+									 HorizontalScrollBarVisibility="Disabled"
+									 Padding="16"
+									 Name="MessageScroller"
+									 Loaded="OnMessageScrollerLoaded"
+									 Unloaded="OnMessageScrollerUnloaded">
+							<ItemsControl ItemsSource="{Binding ViewModel.Messages}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<StackPanel Spacing="16" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								<ItemsControl.DataTemplates>
+									<selectors:ChatMessageTemplateSelector
+										x:DataType="models:ChatMessage"
+										TimeMessageTemplate="{StaticResource TimeMessageTemplate}"
+										SystemMessageTemplate="{StaticResource SystemMessageTemplate}"
+										UserToolMessageTemplate="{StaticResource UserToolMessageTemplate}"
+										UserMessageTemplate="{StaticResource UserMessageTemplate}"
+										InformationMessageTemplate="{StaticResource InformationMessageTemplate}"
+										DefaultTemplate="{StaticResource UserMessageTemplate}"/>
+								</ItemsControl.DataTemplates>
+							</ItemsControl>
+						</ScrollViewer>
+					</DataTemplate>
+				</TransitioningContentControl.DataTemplates>
+			</TransitioningContentControl>
+
+			<!-- Input area -->
+			<Border Grid.Row="2"
+					Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+					BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+					BorderThickness="0,1,0,0"
+					Padding="16">
+				<Grid RowDefinitions="Auto,*">
+					<!-- Message attachments preview -->
+					<ItemsControl Grid.Row="0"
+								  ItemsSource="{Binding Attachments}"
+								  IsVisible="{Binding HasAttachments}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<WrapPanel Orientation="Horizontal" Margin="0,0,0,8"/>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Width="80" Height="80"
+										Margin="0,0,8,8"
+										CornerRadius="4"
+										ClipToBounds="True"
+										Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}">
+									<Grid>
+										<Image Source="{Binding Preview}" Stretch="Uniform"/>
+										<!-- Simple button without complex binding -->
+										<Button VerticalAlignment="Top"
+												HorizontalAlignment="Right"
+												Width="24" Height="24"
+												Margin="4"
+												ToolTip.Tip="{res:Localization Common_Cancel}">
+											<ui:SymbolIcon Symbol="Cancel" FontSize="10"/>
+										</Button>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+					<!-- Input controls -->
+					<Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto,Auto,Auto">
+						<!-- Model selector button -->
+						<Button Grid.Column="0"
+								Width="42"
+								Height="{Binding #MessageInputTextBox.Bounds.Height}"
+								Margin="0,0,8,0"
+								VerticalAlignment="Bottom"
+								ToolTip.Tip="Select Model"
+								IsVisible="{Binding AvailableModels.Count, Converter={StaticResource CountNotEqualsConverter}, ConverterParameter=1}">
+							<ui:SymbolIcon Symbol="People"/>
+							<Button.Flyout>
+								<StaticResource ResourceKey="ModelSelectionFlyout"/>
+							</Button.Flyout>
+						</Button>
+
+						<!-- Message input -->
+						<TextBox Grid.Column="1"
+								 x:Name="MessageInputTextBox"
+								 Text="{Binding InputText}"
+								 AcceptsReturn="True"
+								 Watermark="{res:Localization Chat_TypeMessage}"
+								 TextWrapping="Wrap">
+							<TextBox.KeyBindings>
+								<KeyBinding Gesture="Enter" Command="{Binding SendMessageCommand}"/>
+							</TextBox.KeyBindings>
+						</TextBox>
+
+						<!-- File upload button  -->
+						<Button Grid.Column="2"
+								Command="{Binding UploadFileCommand}"
+								Width="42" Height="42"
+								Margin="8,0,0,0"
+								VerticalAlignment="Bottom"
+								ToolTip.Tip="{res:Localization Chat_UploadFile}">
+							<ui:SymbolIcon Symbol="Attach"/>
+						</Button>
+
+						<!-- Voice recording button -->
+						<Button Grid.Column="3"
+								Command="{Binding ToggleVoiceRecordingCommand}"
+								Width="42" Height="42"
+								Margin="8,0,0,0"
+								VerticalAlignment="Bottom"
+								Background="{Binding IsRecording, Converter={StaticResource BoolToColorConverter}}"
+								ToolTip.Tip="{Binding IsRecording, Converter={StaticResource RecordingButtonTooltipConverter}}">
+							<ui:SymbolIcon Symbol="Microphone" />
+						</Button>
+
+						<!-- Send button -->
+						<Button Grid.Column="4"
+								Command="{Binding SendMessageCommand}"
+								Width="42" Height="42"
+								Margin="8,0,0,0"
+								VerticalAlignment="Bottom"
+								ToolTip.Tip="{res:Localization Chat_Send}">
+							<ui:SymbolIcon Symbol="Send" />
+						</Button>
+					</Grid>
+				</Grid>
+			</Border>
+
+			<!-- Loading indicator -->
+			<Border Grid.Row="1"
+					Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+					Opacity="0.7"
+					IsVisible="{Binding IsLoading}">
+				<Panel>
+					<!-- Regular loading indicator - only visible when not streaming -->
+					<ui:ProgressRing IsIndeterminate="True"
+									Width="48" Height="48"
+									IsVisible="{Binding !IsStreaming}" />
+
+					<!-- Streaming control - only shows cancel button at the bottom -->
+					<StackPanel HorizontalAlignment="Center"
+								VerticalAlignment="Bottom"
+								Spacing="16"
+								Margin="0,0,0,24"
+								IsVisible="{Binding IsStreaming}">
+						<Button Command="{Binding CancelStreamingCommand}"
+								HorizontalAlignment="Center"
+								Classes="accent"
+								Padding="16,8">
+							<StackPanel Orientation="Horizontal" Spacing="8">
+								<ui:SymbolIcon Symbol="Cancel"/>
+								<TextBlock Text="{res:Localization Chat_CancelStreaming}"/>
+							</StackPanel>
+						</Button>
+					</StackPanel>
+				</Panel>
+			</Border>
+
+			<!-- Streaming cancel button floating at bottom -->
+			<Border Grid.Row="1"
+					BorderThickness="0"
+					Background="Transparent"
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Center"
+					Margin="0,0,0,16"
+					IsVisible="{Binding IsStreaming}">
+				<Button Command="{Binding CancelStreamingCommand}"
+						HorizontalAlignment="Center"
+						Classes="accent"
+						Padding="16,8">
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<ui:SymbolIcon Symbol="Cancel"/>
+						<TextBlock Text="{res:Localization Chat_CancelStreaming}"/>
+					</StackPanel>
+				</Button>
+			</Border>
+
+			<!-- Voice recording indicator -->
+			<Border Grid.Row="2"
+					Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+					Opacity="0.8"
+					IsVisible="{Binding IsRecording}">
+				<StackPanel HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							Spacing="16">
+					<ui:SymbolIcon Symbol="Microphone"
+								  FontSize="48"
+								  Foreground="Red"/>
+					<TextBlock Text="{res:Localization Chat_RecordingVoiceMessage}"
+							   FontSize="18"
+							   FontWeight="SemiBold"/>
+					<TextBlock Text="{Binding RecordingTime, StringFormat='{res:Localization Chat_RecordingTime}'}"
+							   FontSize="14"/>
+					<Button Command="{Binding StopRecordingCommand}"
+							HorizontalAlignment="Center"
+							Padding="16,8">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<ui:SymbolIcon Symbol="Stop"/>
+							<TextBlock Text="{res:Localization Chat_StopRecordingButton}"/>
+						</StackPanel>
+					</Button>
+				</StackPanel>
+			</Border>
+		</Grid>
+	</SplitView>
+</Window>

@@ -1,0 +1,24 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.ThemeDictionaries>        <!-- Light theme colors -->
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="SemiTransparentBackgroundBrush" Color="#50000000" />
+            <SolidColorBrush x:Key="UserMessageColorBrush" Color="#250066CC" />
+            <SolidColorBrush x:Key="AssistantMessageColorBrush" Color="#20008800" />
+            <SolidColorBrush x:Key="SystemMessageColorBrush" Color="#CC7700" />
+            <SolidColorBrush x:Key="FunctionMessageColorBrush" Color="#660099" />
+            <SolidColorBrush x:Key="DefaultMessageColorBrush" Color="#666666" />
+            <SolidColorBrush x:Key="InformationMessageColorBrush" Color="#E3F2FD" />
+        </ResourceDictionary>
+          <!-- Dark theme colors -->
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="SemiTransparentBackgroundBrush" Color="#50FFFFFF" />
+            <SolidColorBrush x:Key="UserMessageColorBrush" Color="#254D9EFF" />
+            <SolidColorBrush x:Key="AssistantMessageColorBrush" Color="#2044CC44" />
+            <SolidColorBrush x:Key="SystemMessageColorBrush" Color="#FFAA44" />
+            <SolidColorBrush x:Key="FunctionMessageColorBrush" Color="#BB77DD" />
+            <SolidColorBrush x:Key="DefaultMessageColorBrush" Color="#AAAAAA" />
+            <SolidColorBrush x:Key="InformationMessageColorBrush" Color="#1E3A8A" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

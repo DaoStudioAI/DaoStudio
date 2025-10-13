@@ -1,0 +1,124 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DaoStudioUI.ViewModels"
+             xmlns:models="using:DaoStudioUI.Models"
+			 
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:tabs="using:DaoStudioUI.Views.Dialogs.Tabs"
+			 
+             xmlns:res="using:DaoStudioUI.Resources"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="500"
+             x:Class="DaoStudioUI.Views.Dialogs.Tabs.StandardToolsTabView"
+             x:DataType="tabs:StandardToolsTabView">
+	<Design.DataContext>
+		<vm:ToolsPanelViewModel />
+	</Design.DataContext>
+	
+	<d:UserControl.DataContext>
+		<vm:ToolsPanelViewModel />
+	</d:UserControl.DataContext>
+
+	<Border Background="Transparent"
+            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+            BorderThickness="1,0,0,0">
+		<Grid RowDefinitions="*" Margin="0,0,0,12">
+
+			<!-- Content area -->
+			<Grid Grid.Row="1" RowDefinitions="Auto,Auto,*" Margin="20,16,20,0">
+				<!-- Text label for tool selection -->
+				<TextBlock Grid.Row="0"
+                           Text="{res:Localization Tools_ToolSelection}"
+                           FontWeight="SemiBold"
+                           FontSize="14"
+                           Margin="0,0,0,8"/>				<!-- Tool selection buttons without card -->
+				<Grid Grid.Row="1" ColumnDefinitions="*,*" Margin="0,0,0,16">
+					<Button Grid.Column="0"
+                            Content="{res:Localization Tools_SelectAll}"
+                            Command="{Binding SelectAllToolsCommand}"
+                            ToolTip.Tip="{res:Localization Tools_SelectAllToolTip}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Margin="0,0,4,0"
+                            Padding="8,6"/>
+					<Button Grid.Column="1"
+                            Content="{res:Localization Tools_ClearAll}"
+                            Command="{Binding ClearAllToolsCommand}"
+                            ToolTip.Tip="{res:Localization Tools_ClearAllToolTip}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Margin="4,0,0,0"
+                            Padding="8,6"/>
+				</Grid>
+
+				<!-- Tools List with improved styling -->
+				<ScrollViewer Grid.Row="2"
+				                          VerticalScrollBarVisibility="Auto"
+				                          HorizontalScrollBarVisibility="Disabled">
+					<!-- Bind to ToolItems defined on the control itself, not the DataContext -->
+					<ItemsControl ItemsSource="{Binding ToolItems, RelativeSource={RelativeSource AncestorType=tabs:StandardToolsTabView}}" Margin="0">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<StackPanel Spacing="12" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="models:ToolItem">
+								<Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                        BorderBrush="{DynamicResource ControlStrokeColorSecondaryBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Margin="0"
+                                        Padding="16,14"
+                                        BoxShadow="0 3 10 0 #25000000"
+                                        HorizontalAlignment="Stretch"
+                                        PointerPressed="OnToolItemPressed">
+									<Grid RowDefinitions="Auto,Auto,50"
+                                          IsEnabled="{Binding IsLoading, Converter={x:Static BoolConverters.Not}}">
+										<!-- Header with tool name and checkbox -->
+										<Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,0,0,8">
+											<CheckBox Grid.Column="0"
+                                                      IsChecked="{Binding IsSelected}"
+                                                      VerticalAlignment="Center"/>
+
+											<TextBlock Grid.Column="1"
+                                                       Text="{Binding Name}"
+                                                       FontWeight="SemiBold"
+                                                       FontSize="14"
+                                                       VerticalAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       Margin="8,0,0,0"/>
+										</Grid>
+
+										<!-- Plugin name with icon -->
+										<Grid Grid.Row="1" ColumnDefinitions="Auto,*" Margin="0,0,0,10">
+											<ui:SymbolIcon Grid.Column="0"
+                                                          Symbol="Repair"
+                                                          FontSize="12"
+                                                          Margin="0,2,6,0"
+                                                          Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+											<TextBlock Grid.Column="1"
+                                                       Text="{Binding PluginName}"
+                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                       FontSize="12"
+                                                       TextWrapping="Wrap"/>
+										</Grid>
+
+										<!-- Tool description with improved styling -->
+										<TextBlock Grid.Row="2"
+                                                   Margin="0,0,0,10"
+                                                   Text="{Binding Description}"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                   Opacity="0.9"/>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+			</Grid>
+		</Grid>
+	</Border>
+    
+</UserControl>

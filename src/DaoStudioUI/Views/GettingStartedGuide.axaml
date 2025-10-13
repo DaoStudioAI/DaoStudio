@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:res="using:DaoStudioUI.Resources"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="400"
+             x:Class="DaoStudioUI.Views.GettingStartedGuide">
+
+    <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="8" 
+            Padding="28" 
+            HorizontalAlignment="Stretch"
+            BoxShadow="0 2 4 0 #20000000">
+        <StackPanel Spacing="24" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+            
+            <!-- Title -->
+            <TextBlock Text="{res:Localization Home_GettingStarted_Title}" 
+                       HorizontalAlignment="Stretch" 
+                       TextAlignment="Center"
+                       FontSize="24"
+                       FontWeight="SemiBold" />
+            
+            <!-- Description -->
+            <TextBlock Text="{res:Localization Home_GettingStarted_Description}" 
+                       HorizontalAlignment="Left" 
+                       TextAlignment="Left"
+                       FontSize="16"
+                       Opacity="0.8"
+                       TextWrapping="Wrap"/>
+            
+            <!-- Steps -->
+            <StackPanel Spacing="18" HorizontalAlignment="Left" MaxWidth="500">
+                <!-- Step 1: API Provider -->
+                <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Left">
+                    <TextBlock Text="{res:Localization Home_GettingStarted_Step1}"
+                               FontSize="16"
+                               VerticalAlignment="Center" />
+                    <Button Classes="hyperlink"
+                            x:Name="ApiProviderLink"
+                            Padding="0" MinHeight="0" MinWidth="0" Margin="0"
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource SystemAccentColor}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Click="ApiProviderLink_Click"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{res:Localization Home_GettingStarted_Step1_Link}"
+                                   TextDecorations="Underline" />
+                    </Button>
+                    <TextBlock Text="{res:Localization Home_GettingStarted_Step1_Suffix}"
+                               FontSize="16"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+                
+                <!-- Step 2: Person -->
+                <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Left">
+                    <TextBlock Text="{res:Localization Home_GettingStarted_Step2}"
+                               FontSize="16"
+                               VerticalAlignment="Center" />
+                    <Button Classes="hyperlink"
+                            x:Name="PersonLink"
+                            Padding="0" MinHeight="0" MinWidth="0" Margin="0"
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource SystemAccentColor}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Click="PersonLink_Click"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{res:Localization Home_GettingStarted_Step2_Link}"
+                                   TextDecorations="Underline" />
+                    </Button>
+                    <TextBlock Text="{res:Localization Home_GettingStarted_Step2_Suffix}"
+                               FontSize="16"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+                
+                <!-- Step 3: Tools -->
+                <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Left">
+                    <TextBlock Text="{res:Localization Home_GettingStarted_Step3}"
+                               FontSize="16"
+                               VerticalAlignment="Center" />
+                    <Button Classes="hyperlink"
+                            x:Name="ToolsLink"
+                            Padding="0" MinHeight="0" MinWidth="0" Margin="0"
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource SystemAccentColor}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Click="ToolsLink_Click"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{res:Localization Home_GettingStarted_Step3_Link}"
+                                   TextDecorations="Underline" />
+                    </Button>
+                    <TextBlock Text="{res:Localization Home_GettingStarted_Step3_Suffix}"
+                               FontSize="16"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

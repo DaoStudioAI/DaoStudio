@@ -1,0 +1,188 @@
+﻿using Avalonia.Threading;
+using Microsoft.SemanticKernel;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+using System.Diagnostics;
+using PluginCommon;
+
+namespace BrowserTool
+{
+    internal class BrowserToolPlayWright:IDisposable
+    {
+        private bool disposedValue;
+        private BrowserToolConfig browserConfig;
+        private IPlaywright? playwright;
+        private IBrowser? browser;
+        private IPage? page;
+        private IHostSession hostSession;
+
+        public BrowserToolPlayWright(BrowserToolConfig browserConfig, IHostSession hostSession)
+        {
+            this.browserConfig = browserConfig;
+            this.hostSession = hostSession;
+            // Initialize Playwright asynchronously when the tool is created
+            InitializePlaywrightAsync().ConfigureAwait(false);
+        }
+
+
+        private async Task InitializePlaywrightAsync()
+        {
+            try
+            {
+                playwright = await Playwright.CreateAsync();
+            }
+            catch (Exception ex)
+            {
+                await hostSession.SendMessageAsync(HostSessMsgType.ErrorForUserOnly, $"Failed to initialize Playwright: {ex.Message}");
+            }
+        }
+
+        [KernelFunction("open_web_browser")]
+        [Description("Open a web browser, and navigate to the url parameter")]
+        public async Task<string> OpenWebBrowser(string url)
+        {
+            try
+            {
+                // Make sure Playwright is initialized
+                if (playwright == null)
+                {
+                    // Try to initialize Playwright if not already done
+                    await InitializePlaywrightAsync();
+                    
+                    if (playwright == null)
+                    {
+                        return "Failed to initialize browser engine";
+                    }
+                }
+
+                // Close existing browser instance if any
+                await CloseBrowserAsync();
+
+                // Configure browser launch options
+                var launchOptions = new BrowserTypeLaunchOptions();
+                launchOptions.Timeout = 10000;
+                launchOptions.Headless=false;
+                launchOptions.SlowMo = 50;
+
+                // Use the browser path from config if specified and not using OS browser
+                if (!string.IsNullOrEmpty(browserConfig.BrowserPath))
+                {
+                    launchOptions.ExecutablePath = browserConfig.BrowserPath;
+                }
+
+                // Launch the browser based on the browser type
+                switch (browserConfig.BrowserType)
+                {
+                    case BrowserType.Chrome:
+                        browser = await playwright.Chromium.LaunchAsync(launchOptions);
+                        break;
+                    case BrowserType.Firefox:
+                        browser = await playwright.Firefox.LaunchAsync(launchOptions);
+                        break;
+                    case BrowserType.Safari:
+                        browser = await playwright.Webkit.LaunchAsync(launchOptions);
+                        break;
+                    case BrowserType.Edge:
+                        // Edge is based on Chromium
+                        browser = await playwright.Chromium.LaunchAsync(launchOptions);
+                        break;
+                    case BrowserType.Opera:
+                        // Opera is based on Chromium
+                        browser = await playwright.Chromium.LaunchAsync(launchOptions);
+                        break;
+                    case BrowserType.Brave:
+                        // Brave is based on Chromium
+                        browser = await playwright.Chromium.LaunchAsync(launchOptions);
+                        break;
+                    case BrowserType.Unknown:
+                    default:
+                        // Default to Chromium as it's the most widely used engine
+                        browser = await playwright.Chromium.LaunchAsync(launchOptions);
+                        break;
+                }
+                
+                // Create a new page and navigate to the URL
+                page = await browser.NewPageAsync();
+                await page.GotoAsync(url);
+
+                return $"Successfully opened {url}";
+            }
+            catch (Exception ex)
+            {
+                return $"Error opening browser: {ex.Message}";
+            }
+        }
+
+        private async Task CloseBrowserAsync()
+        {
+            if (page != null)
+            {
+                await page.CloseAsync();
+                page = null;
+            }
+
+            if (browser != null)
+            {
+                await browser.CloseAsync();
+                browser = null;
+            }
+        }
+
+        [KernelFunction("get_current_page_dom")]
+        [Description("Gets the HTML DOM content of the currently open browser page")]
+        public async Task<string> GetCurrentPageDOM()
+        {
+            if (page == null)
+            {
+                return "No page is currently open";
+            }
+
+            try
+            {
+                // Get the HTML content of the current page
+                return await page.ContentAsync();
+            }
+            catch (Exception ex)
+            {
+                return $"Error getting page DOM: {ex.Message}";
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // Dispose Playwright resources
+                    Task.Run(async () => 
+                    {
+                        await CloseBrowserAsync();
+                        playwright?.Dispose();
+                    }).GetAwaiter().GetResult();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~BrowserTool()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        void IDisposable.Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
+}

@@ -1,0 +1,154 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:resx="clr-namespace:DaoStudio.Plugins.KVStore.Resources"
+        xmlns:local="clr-namespace:DaoStudio.Plugins.KVStore"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
+        x:Class="DaoStudio.Plugins.KVStore.KeyValueStoreConfigWindow"
+        x:DataType="local:KeyValueStoreConfigWindow"
+        Width="800" Height="600"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        Title="{x:Static resx:Strings.Window_KeyValueStoreConfiguration_Title}">
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Main content -->
+        <Border Grid.Row="0"
+                Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="8"
+                Padding="16">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Spacing="24">
+                    
+                    <!-- Header Section -->
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="{x:Static resx:Strings.Configuration_Description}"
+                                   TextWrapping="Wrap"
+                                   Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+
+                    <!-- Configuration Section -->
+                    <StackPanel Spacing="16">
+                        <!-- Display Name Field -->
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{x:Static resx:Strings.Field_DisplayName}"
+                                       Classes="BodyStrong"/>
+                            <TextBox Name="DisplayNameTextBox"
+                                     Text="{Binding DisplayName}"
+                                     Watermark="Enter a display name for this tool..."/>
+                        </StackPanel>
+
+                        <!-- Instance Name Section -->
+                        <StackPanel Spacing="8" IsVisible="{Binding HasMultipleInstances}">
+                            <!-- Use Instance Name Toggle -->
+                            <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                                <TextBlock Grid.Column="0"
+                                         Text="Use Instance Name"
+                                         Classes="BodyStrong"
+                                         VerticalAlignment="Center"/>
+                                <ToggleSwitch Grid.Column="1" 
+                                            Name="UseInstanceNameToggle"
+                                            IsChecked="{Binding UseInstanceName}"
+                                            OnContent="On"
+                                            OffContent="Off"
+                                            VerticalAlignment="Center"
+                                            Margin="8,0,0,0"/>
+                            </Grid>
+                            
+                            <!-- Instance Name Input (only visible when enabled) -->
+                            <StackPanel Spacing="4" IsVisible="{Binding UseInstanceName}">
+                                <TextBlock Text="Instance Name"
+                                           Classes="BodyStrong"/>
+                                <TextBox Name="InstanceNameTextBox"
+                                         Text="{Binding InstanceName}"
+                                         Watermark="Enter instance name..."/>
+                                <TextBlock Text="When enabled, all functions will be prefixed with this name followed by an underscore. This allows you to have multiple instances of the Key Value Store tool."
+                                           TextWrapping="Wrap"
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <!-- Case Sensitivity Toggle -->
+                        <StackPanel Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                                <TextBlock Grid.Column="0"
+                                         Text="{x:Static resx:Strings.Field_CaseSensitivity}"
+                                         TextWrapping="Wrap"
+                                         Foreground="{StaticResource TextFillColorSecondaryBrush}"
+                                            ToolTip.Tip="{x:Static resx:Strings.Field_CaseSensitivity_Description}"
+                                           
+                                         VerticalAlignment="Center"/>
+                                <ToggleSwitch Grid.Column="1" 
+                                            Name="CaseSensitivityToggle"
+                                            IsChecked="{Binding IsCaseSensitive}"
+                                            OnContent="On"
+                                            OffContent="Off"
+                                            ToolTip.Tip="{x:Static resx:Strings.Field_CaseSensitivity_Description}"
+                                            VerticalAlignment="Center"
+                                            Margin="8,0,0,0"/>
+                            </Grid>
+                        </StackPanel>
+                        
+                        <!-- Info Banner 
+                        <Border Background="{StaticResource CardBackgroundFillColorSecondaryBrush}"
+                                CornerRadius="4"
+                                Padding="12">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <TextBlock Grid.Column="0"
+                                          Text="ℹ️"
+                                          Foreground="{StaticResource AccentFillColorDefaultBrush}"
+                                          VerticalAlignment="Top"
+                                          FontSize="16"
+                                          Margin="0,0,8,0"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{x:Static resx:Strings.Configuration_Info}"
+                                           TextWrapping="Wrap"
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+                            </Grid>
+                        </Border>-->
+                    </StackPanel>
+                    
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+        
+        <!-- Action buttons -->
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="8"
+                    Margin="0,16,0,0">
+            <Button Name="SaveButton"
+                    Classes="accent"
+                    Width="100"
+                    IsDefault="True"
+                    Click="OnSaveButtonClick">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ui:SymbolIcon Symbol="Save" FontSize="16"/>
+                    <TextBlock Text="{x:Static resx:Strings.Button_Save}"/>
+                </StackPanel>
+            </Button>
+            <Button Name="CancelButton"
+                    Width="100"
+                    IsCancel="True"
+                    Click="OnCancelButtonClick">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ui:SymbolIcon Symbol="Cancel" FontSize="16"/>
+                    <TextBlock Text="{x:Static resx:Strings.Button_Cancel}"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

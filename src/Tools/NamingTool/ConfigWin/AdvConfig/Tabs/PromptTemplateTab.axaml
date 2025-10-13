@@ -1,0 +1,88 @@
+<UserControl x:Class="Naming.AdvConfig.Tabs.PromptTemplateTab"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:fluent="using:FluentAvalonia.UI.Controls"
+             xmlns:local="using:Naming.AdvConfig.Tabs"
+             xmlns:vm="using:Naming.AdvConfig.ViewModels"
+             xmlns:res="clr-namespace:NamingTool.Properties"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Name="Root"
+             x:DataType="vm:PromptTemplateTabViewModel">
+
+	<UserControl.Resources>
+		<!-- Parameter placeholder style (keyed resource) -->
+		<Style x:Key="ParameterPlaceholderStyle" Selector="TextBlock">
+			<Setter Property="Foreground" Value="{DynamicResource AccentTextFillColorPrimaryBrush}" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+			<Setter Property="Margin" Value="2,1" />
+		</Style>
+	</UserControl.Resources>
+
+	<!-- Put selector-based styles in UserControl.Styles so keyless styles can be applied by selector -->
+	<UserControl.Styles>
+		<Style Selector="ScrollBar">
+			<Setter Property="Cursor" Value="Arrow" />
+		</Style>
+
+		<Style Selector="Thumb">
+			<Setter Property="Cursor" Value="Arrow" />
+		</Style>
+	</UserControl.Styles>
+
+	<Grid RowDefinitions="Auto,*">
+		<!-- Header -->
+		<Border Grid.Row="0"
+                CornerRadius="8,8,0,0"
+                Padding="24,16"
+                BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1,1,1,0">
+			<Grid ColumnDefinitions="*,Auto">
+				<StackPanel Grid.Column="0" Orientation="Vertical" Spacing="8">
+					<TextBlock Text="{x:Static res:Resources.PromptTemplate_Header}"
+                               FontSize="28"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextFillColorPrimaryBrush}" />
+				</StackPanel>
+
+				<!-- Header Actions -->
+				<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+					<Button Content="{x:Static res:Resources.PromptTemplate_InsertParameters}"
+                            Classes="accent"
+                            Command="{Binding InsertInputParametersCommand}"
+                            ToolTip.Tip="{x:Static res:Resources.PromptTemplate_InsertParameters_Tooltip}">
+						<StackPanel Orientation="Horizontal" Spacing="6">
+							<fluent:SymbolIcon Symbol="{x:Static fluent:Symbol.Add}" FontSize="16" />
+							<TextBlock Text="{x:Static res:Resources.PromptTemplate_InsertParameters}" />
+						</StackPanel>
+					</Button>
+				</StackPanel>
+			</Grid>
+		</Border>
+
+		<!-- Main Content -->
+		<Border Grid.Row="1"
+                BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1,0,1,1"
+                CornerRadius="0,0,8,8"
+				Margin="10"
+                Background="{StaticResource CardBackgroundFillColorDefaultBrush}">
+
+			<TextBox Text="{Binding PromptTemplate}"
+					 AcceptsReturn="True"
+					 TextWrapping="Wrap"
+					 Background="Transparent"
+					 BorderThickness="0"
+					 MinHeight="500"
+					 FontFamily="Consolas,Monaco,monospace"
+					 FontSize="13"
+					 LineHeight="18"
+					 Watermark="{x:Static res:Resources.PromptTemplate_Watermark}"
+					 ScrollViewer.VerticalScrollBarVisibility="Auto"
+					 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+					 VerticalAlignment="Stretch"
+					 HorizontalAlignment="Stretch" />
+		</Border>
+	</Grid>
+</UserControl>

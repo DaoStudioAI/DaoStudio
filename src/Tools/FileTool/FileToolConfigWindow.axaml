@@ -1,0 +1,127 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:resx="clr-namespace:FileTool.Properties"
+        xmlns:local="clr-namespace:FileTool"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
+        x:Class="FileTool.FileToolConfigWindow"
+        x:DataType="local:FileToolConfigWindow"
+        Width="600" Height="450"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        Title="{x:Static resx:Resources.Window_FileToolConfiguration_Title}">
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Main content -->
+        <Border Grid.Row="0"
+                Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="8"
+                Padding="16">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Spacing="24">
+                    
+                    <!-- Header Section -->
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="{x:Static resx:Resources.Configuration_Header}"
+                                   Classes="TitleLarge"/>
+                        <TextBlock Text="{x:Static resx:Resources.Configuration_Description}"
+                                   TextWrapping="Wrap"
+                                   Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+
+                    <!-- Configuration Section -->
+                    <StackPanel Spacing="16">
+                        <!-- Display Name Field -->
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{x:Static resx:Resources.Field_DisplayName}"
+                                       Classes="BodyStrong"/>
+                            <TextBox Name="DisplayNameTextBox"
+                                     Text="{Binding DisplayName}"
+                                     Watermark="Enter a display name for this tool..."/>
+                        </StackPanel>
+                        
+                        <TextBlock Text="{x:Static resx:Resources.Field_DefaultDirectory}"
+                                   Classes="BodyStrong"/>
+                        
+                        <!-- Directory Input Grid -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBox Name="DirectoryTextBox"
+                                     Grid.Column="0"
+                                     Text="{Binding DirectoryPath}"
+                                     Watermark="Select a directory..."
+                                     IsReadOnly="True"
+                                     Margin="0,0,8,0"/>
+                            
+                            <Button Name="BrowseButton"
+                                    Grid.Column="1"
+                                    Click="OnBrowseButtonClick"
+                                    Width="120">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <ui:SymbolIcon Symbol="OpenFolder" FontSize="16"/>
+                                    <TextBlock Text="{x:Static resx:Resources.Button_Browse}"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        
+                        <!-- Info Banner -->
+                        <Border Background="{StaticResource CardBackgroundFillColorSecondaryBrush}"
+                                CornerRadius="4"
+                                Padding="12">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <ui:SymbolIcon Grid.Column="0"
+                                               Symbol="Important"
+                                               Foreground="{StaticResource AccentFillColorDefaultBrush}"
+                                               VerticalAlignment="Top"
+                                               FontSize="16"
+                                               Margin="0,0,8,0"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{x:Static resx:Resources.Configuration_Info}"
+                                           TextWrapping="Wrap"
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                    
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+        
+        <!-- Action buttons -->
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="8"
+                    Margin="0,16,0,0">
+            <Button Name="SaveButton"
+                    Classes="accent"
+                    Width="100"
+                    IsDefault="True"
+                    Click="OnSaveButtonClick">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ui:SymbolIcon Symbol="Save"/>
+                    <TextBlock Text="{x:Static resx:Resources.Button_Save}"/>
+                </StackPanel>
+            </Button>
+            <Button Name="CancelButton"
+                    Width="100"
+                    IsCancel="True"
+                    Click="OnCancelButtonClick">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ui:SymbolIcon Symbol="Cancel"/>
+                    <TextBlock Text="{x:Static resx:Resources.Button_Cancel}"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>
