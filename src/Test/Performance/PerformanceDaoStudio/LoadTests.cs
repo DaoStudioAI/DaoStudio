@@ -7,7 +7,7 @@ using System.Diagnostics;
 using TestDaoStudio.Helpers;
 using TestDaoStudio.Infrastructure;
 
-namespace TestDaoStudio.Performance;
+namespace PerformanceDaoStudio;
 
 /// <summary>
 /// Performance tests for load testing scenarios.

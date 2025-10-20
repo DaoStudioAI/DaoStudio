@@ -1,0 +1,113 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.0)'
+        required: true
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  SOLUTION_PATH: 'src/DaoStudio.sln'
+  BUILD_CONFIGURATION: 'Release'
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      version: ${{ steps.get_version.outputs.version }}
+    
+    steps:
+    - name: Get version
+      id: get_version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.get_version.outputs.version }}
+        release_name: DaoStudio v${{ steps.get_version.outputs.version }}
+        draft: true
+        prerelease: false
+
+  build-and-publish:
+    name: Build and Publish
+    needs: create-release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            runtime: win-x64
+            artifact_name: DaoStudio-Windows-x64
+          - os: ubuntu-latest
+            runtime: linux-x64
+            artifact_name: DaoStudio-Linux-x64
+          - os: macos-latest
+            runtime: osx-x64
+            artifact_name: DaoStudio-macOS-x64
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+    - name: Publish application
+      run: |
+        dotnet publish src/DaoStudioUI/DesktopUI.csproj \
+          --configuration ${{ env.BUILD_CONFIGURATION }} \
+          --runtime ${{ matrix.runtime }} \
+          --self-contained true \
+          --output ./publish/${{ matrix.runtime }} \
+          -p:PublishSingleFile=false \
+          -p:PublishTrimmed=false \
+          -p:Version=${{ needs.create-release.outputs.version }}
+
+    - name: Create archive (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        Compress-Archive -Path ./publish/${{ matrix.runtime }}/* -DestinationPath ./${{ matrix.artifact_name }}.zip
+
+    - name: Create archive (Unix)
+      if: matrix.os != 'windows-latest'
+      run: |
+        cd ./publish/${{ matrix.runtime }}
+        zip -r ../../${{ matrix.artifact_name }}.zip .
+        cd ../..
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create-release.outputs.upload_url }}
+        asset_path: ./${{ matrix.artifact_name }}.zip
+        asset_name: ${{ matrix.artifact_name }}-v${{ needs.create-release.outputs.version }}.zip
+        asset_content_type: application/zip
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact_name }}
+        path: ./${{ matrix.artifact_name }}.zip

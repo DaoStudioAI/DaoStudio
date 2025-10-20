@@ -32,7 +32,7 @@
                        TextWrapping="Wrap"/>
             
             <!-- Steps -->
-            <StackPanel Spacing="18" HorizontalAlignment="Left" MaxWidth="500">
+            <StackPanel Spacing="1" HorizontalAlignment="Left" MaxWidth="500">
                 <!-- Step 1: API Provider -->
                 <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Left">
                     <TextBlock Text="{res:Localization Home_GettingStarted_Step1}"

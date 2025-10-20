@@ -7,7 +7,7 @@ using TestDaoStudio.Helpers;
 using TestDaoStudio.Infrastructure;
 using DryIoc;
 
-namespace TestDaoStudio.Performance;
+namespace PerformanceDaoStudio;
 
 /// <summary>
 /// Performance tests focused on memory usage and garbage collection.

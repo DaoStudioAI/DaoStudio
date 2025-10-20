@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 Documentation
+    url: https://github.com/DaoStudioAI/DaoStudio/wiki
+    about: Check the wiki for documentation and guides
+  - name: 💬 Discussions
+    url: https://github.com/DaoStudioAI/DaoStudio/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 🔒 Security Issue
+    url: https://github.com/DaoStudioAI/DaoStudio/security/advisories/new
+    about: Report a security vulnerability privately

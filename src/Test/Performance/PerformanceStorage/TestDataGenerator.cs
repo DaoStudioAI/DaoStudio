@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using DaoStudio.DBStorage.Models;
 
-namespace TestStorage.Performance
+namespace PerformanceStorage
 {
     /// <summary>
     /// Utility class for generating large volumes of test data for load testing database repositories

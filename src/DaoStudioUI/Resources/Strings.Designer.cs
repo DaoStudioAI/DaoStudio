@@ -376,7 +376,7 @@ namespace DesktopUI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to Agent Studio!.
+        ///   Looks up a localized string similar to Welcome to Dao Studio!.
         /// </summary>
         public static string Home_GettingStarted_Title {
             get {
@@ -421,7 +421,7 @@ namespace DesktopUI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dao Agent Studio.
+        ///   Looks up a localized string similar to Dao Studio.
         /// </summary>
         public static string MainWindow_PaneTitle {
             get {
@@ -430,7 +430,7 @@ namespace DesktopUI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dao Agent Studio.
+        ///   Looks up a localized string similar to Dao Studio.
         /// </summary>
         public static string MainWindow_Title {
             get {
@@ -1136,7 +1136,7 @@ namespace DesktopUI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add a provider to get started with Agent Studio.
+        ///   Looks up a localized string similar to Add a provider to get started with Dao Studio.
         /// </summary>
         public static string Settings_NoProvidersDescription {
             get {
@@ -1163,7 +1163,7 @@ namespace DesktopUI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure the API providers you want to use with Dao Agent Studio..
+        ///   Looks up a localized string similar to Configure the API providers you want to use with Dao Studio..
         /// </summary>
         public static string Settings_ProvidersDescription {
             get {

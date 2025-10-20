@@ -8,7 +8,7 @@ using DaoStudio.DBStorage.Factory;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace TestStorage.Performance
+namespace PerformanceStorage
 {
     /// <summary>
     /// Abstract base class providing common functionality for database load tests

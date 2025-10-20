@@ -38,11 +38,24 @@ namespace DaoStudioUI.Services
         private TrayIcon CreateTrayIcon()
         {
             var trayIcon = new TrayIcon();
-            
+
             // Set the tray icon using the application icon
-            var iconUri = new Uri("avares:///Assets/logo.ico");
-            var iconStream = AssetLoader.Open(iconUri);
-            trayIcon.Icon = new WindowIcon(iconStream);
+            var assemblyName = typeof(TrayIconService).Assembly.GetName().Name;
+            if (string.IsNullOrWhiteSpace(assemblyName))
+            {
+                throw new InvalidOperationException("Unable to determine assembly name for tray icon resources.");
+            }
+
+            var iconUri = new Uri($"avares://{assemblyName}/Assets/logo.ico");
+            try
+            {
+                using var iconStream = AssetLoader.Open(iconUri);
+                trayIcon.Icon = new WindowIcon(iconStream);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Failed to load tray icon from {IconUri}", iconUri);
+            }
             
             // Set tooltip
             trayIcon.ToolTipText = Strings.MainWindow_Title;

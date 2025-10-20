@@ -124,10 +124,10 @@
     <value>Session Total</value>
   </data>
   <data name="MainWindow_Title" xml:space="preserve">
-    <value>Dao Agent Studio</value>
+    <value>Dao Studio</value>
   </data>
   <data name="MainWindow_PaneTitle" xml:space="preserve">
-    <value>Dao Agent Studio</value>
+    <value>Dao Studio</value>
   </data>
   <data name="NavItem_Home" xml:space="preserve">
     <value>Home</value>
@@ -170,7 +170,7 @@
     <value>Add Provider</value>
   </data>
   <data name="Settings_ProvidersDescription" xml:space="preserve">
-    <value>Configure the API providers you want to use with Dao Agent Studio.</value>
+    <value>Configure the API providers you want to use with Dao Studio.</value>
   </data>
   <data name="Settings_ApiEndpoint" xml:space="preserve">
     <value>API Endpoint:</value>
@@ -188,7 +188,7 @@
     <value>No providers configured</value>
   </data>
   <data name="Settings_NoProvidersDescription" xml:space="preserve">
-    <value>Add a provider to get started with Agent Studio</value>
+    <value>Add a provider to get started with Dao Studio</value>
   </data>
   <data name="Settings_SaveButton" xml:space="preserve">
     <value>Save</value>
@@ -701,7 +701,7 @@
     <value>Commit Date:</value>
   </data>
   <data name="Home_GettingStarted_Title" xml:space="preserve">
-    <value>Welcome to Agent Studio!</value>
+    <value>Welcome to Dao Studio!</value>
     <comment>Title for the getting started guide</comment>
   </data>
   <data name="Home_GettingStarted_Description" xml:space="preserve">

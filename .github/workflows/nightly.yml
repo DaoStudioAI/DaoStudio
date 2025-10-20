@@ -1,0 +1,74 @@
+name: Nightly Build
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 2 AM UTC daily
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  SOLUTION_PATH: 'src/DaoStudio.sln'
+  BUILD_CONFIGURATION: 'Release'
+
+jobs:
+  nightly-build:
+    name: Nightly Build & Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+      fail-fast: false
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+    - name: Build solution
+      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+
+    - name: Run all tests
+      run: dotnet test ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal
+
+    - name: Publish nightly build
+      run: |
+        dotnet publish src/DaoStudioUI/DesktopUI.csproj \
+          --configuration ${{ env.BUILD_CONFIGURATION }} \
+          --output ./nightly-build \
+          -p:PublishSingleFile=false
+
+    - name: Upload nightly artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: nightly-${{ matrix.os }}-${{ github.run_number }}
+        path: ./nightly-build
+        retention-days: 7
+
+  notify-failure:
+    name: Notify on Failure
+    needs: nightly-build
+    runs-on: ubuntu-latest
+    if: failure()
+    
+    steps:
+    - name: Create issue on failure
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const title = `Nightly build failed - ${new Date().toISOString().split('T')[0]}`;
+          const body = `The nightly build workflow failed.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+          
+          await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: title,
+            body: body,
+            labels: ['bug', 'automated', 'nightly-build']
+          });

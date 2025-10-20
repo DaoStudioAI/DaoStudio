@@ -11,7 +11,7 @@ using UsageDetails = DaoStudio.Interfaces.UsageDetails;
 namespace DaoStudio;
 
 /// <summary>
-/// Represents a session in the Agent Studio.
+/// Represents a session in the Dao Studio.
 /// </summary>
 internal partial class Session : ISession
 {

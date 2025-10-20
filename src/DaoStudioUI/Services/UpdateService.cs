@@ -154,7 +154,7 @@ namespace DaoStudioUI.Services
                 // Using the specified GitHub releases URL
                 // Note: For a real app, you would use your own app cast XML/JSON file
                 // This example uses unsafe mode for simplicity - in production, use proper signatures
-                _appCastUrl = "https://github.com/anaisbetts/ModernHttpClient/releases.atom";
+                _appCastUrl = "https://github.com/DaoStudioAI/DaoStudio/releases.atom";
                 _sparkleUpdater = new SparkleUpdater(
                     _appCastUrl, // App cast URL
                     new Ed25519Checker(SecurityMode.Unsafe) // In production, use proper Ed25519 signatures

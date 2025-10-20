@@ -1,0 +1,44 @@
+# Label configuration for pull requests
+# This file defines which labels should be applied to PRs based on changed files
+
+# Core components
+'core':
+  - 'src/DaoStudio/**/*'
+  - 'src/Common/**/*'
+  - 'src/Interfaces/**/*'
+
+'ui':
+  - 'src/DaoStudioUI/**/*'
+
+'database':
+  - 'src/DBStorage/**/*'
+
+# Tools/Plugins
+'tools':
+  - 'src/Tools/**/*'
+
+# Testing
+'tests':
+  - 'src/Test/**/*'
+
+'performance':
+  - 'src/Test/Performance/**/*'
+  - 'src/Test/TestStorage/Performance/**/*'
+  - 'src/Test/TestDaoStudio/Performance/**/*'
+
+# Documentation
+'documentation':
+  - '**/*.md'
+  - 'docs/**/*'
+
+# Build & CI/CD
+'build':
+  - '**/*.csproj'
+  - '**/*.sln'
+  - 'src/Directory.Build.*'
+  - '.github/workflows/**/*'
+  - '.github/dependabot.yml'
+
+# Dependencies
+'dependencies':
+  - '**/packages.lock.json'

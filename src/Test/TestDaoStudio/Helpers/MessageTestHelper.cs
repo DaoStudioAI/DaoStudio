@@ -295,7 +295,7 @@ public static class MessageTestHelper
     /// <summary>
     /// Creates sample image bytes for testing binary data.
     /// </summary>
-    public static byte[] CreateSampleImageBytes()
+    internal static byte[] CreateSampleImageBytes()
     {
         // Create a simple PNG-like header (not a real PNG, just for testing)
         return new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, /* fake PNG data */ };
@@ -304,7 +304,7 @@ public static class MessageTestHelper
     /// <summary>
     /// Creates sample audio bytes for testing.
     /// </summary>
-    public static byte[] CreateSampleAudioBytes()
+    internal static byte[] CreateSampleAudioBytes()
     {
         // Create a simple WAV-like header (not real WAV, just for testing)
         return new byte[] { 0x52, 0x49, 0x46, 0x46, /* fake WAV data */ };
@@ -338,7 +338,7 @@ public static class MessageTestHelper
     /// <summary>
     /// Creates test API provider parameters.
     /// </summary>
-    public static Dictionary<string, object> CreateOpenAIParameters()
+    internal static Dictionary<string, object> CreateOpenAIParameters()
     {
         return new Dictionary<string, object>
         {
@@ -353,7 +353,7 @@ public static class MessageTestHelper
     /// <summary>
     /// Creates test API provider parameters for Anthropic.
     /// </summary>
-    public static Dictionary<string, object> CreateAnthropicParameters()
+    internal static Dictionary<string, object> CreateAnthropicParameters()
     {
         return new Dictionary<string, object>
         {
@@ -415,7 +415,7 @@ public static class MessageTestHelper
     /// <summary>
     /// Validates that a message has all required fields set correctly.
     /// </summary>
-    public static bool IsValidMessage(IMessage message)
+    internal static bool IsValidMessage(IMessage message)
     {
         return message != null
             && message.Id != 0
@@ -428,7 +428,7 @@ public static class MessageTestHelper
     /// <summary>
     /// Validates that a person has all required fields set correctly.
     /// </summary>
-    public static bool IsValidPerson(IPerson person)
+    internal static bool IsValidPerson(IPerson person)
     {
         return person != null
             && !string.IsNullOrEmpty(person.Name)

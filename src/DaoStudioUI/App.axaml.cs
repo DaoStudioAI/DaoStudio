@@ -25,7 +25,7 @@ namespace DaoStudioUI
 {
     public partial class App : Application
     {
-        static public DaoStudio.DaoStudioService DaoStudio;
+        static public DaoStudio.DaoStudioService DaoStudioService;
         private static readonly DryIoc.Container Container = new();
         public static DryIoc.Container GetContainer() => Container;
         
@@ -46,7 +46,7 @@ namespace DaoStudioUI
             Container.RegisterInstance<ILoggerFactory>(loggerFactory);
             DaoStudio.DaoStudioService.RegisterServices(Container);
             // Initialize DaoStudio with the logger factory
-            DaoStudio = Container.Resolve<DaoStudio.DaoStudioService>();
+            DaoStudioService = Container.Resolve<DaoStudio.DaoStudioService>();
             
             // Register UI services
             Container.RegisterUIServices();
@@ -58,7 +58,7 @@ namespace DaoStudioUI
             
             IntialTask = Task.Run(async () => 
             {
-                await DaoStudio.InitializeAsync(Container);
+                await DaoStudioService.InitializeAsync(Container);
             });
         }
         public override void Initialize()

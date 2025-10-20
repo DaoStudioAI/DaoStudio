@@ -1,12 +1,9 @@
-using DaoStudio;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DaoStudio;
-using DaoStudio.Common.Plugins;
 using DaoStudio.Interfaces;
 using DesktopUI.Resources;
 using FluentAvalonia.UI.Controls;

@@ -1,0 +1,99 @@
+name: Performance Tests
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**/*.cs'
+      - 'src/**/*.csproj'
+  schedule:
+    - cron: '0 3 * * 0'  # Weekly on Sunday at 3 AM UTC
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  SOLUTION_PATH: 'src/DaoStudio.sln'
+  BUILD_CONFIGURATION: 'Release'
+
+jobs:
+  performance-tests:
+    name: Run Performance Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json', '**/*.csproj') }}
+        restore-path: |
+          ~/.nuget/packages
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+    - name: Build solution
+      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+
+    - name: Run performance tests
+      run: |
+        dotnet test src/Test/Performance/PerformanceStorage/PerformanceStorage.csproj \
+          --configuration ${{ env.BUILD_CONFIGURATION }} \
+          --no-build \
+          --verbosity normal \
+          --logger trx
+        
+        dotnet test src/Test/Performance/PerformanceDaoStudio/PerformanceDaoStudio.csproj \
+          --configuration ${{ env.BUILD_CONFIGURATION }} \
+          --no-build \
+          --verbosity normal \
+          --logger trx
+
+    - name: Upload performance test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: performance-test-results
+        path: '**/TestResults/**/*.trx'
+
+  benchmark-tests:
+    name: Run Benchmarks
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+    - name: Build solution
+      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+
+    - name: Run benchmarks
+      run: |
+        dotnet run --project src/Test/Performance/PerformanceStorage/PerformanceStorage.csproj \
+          --configuration ${{ env.BUILD_CONFIGURATION }} \
+          --no-build \
+          -- --filter '*' --exporters json
+
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: benchmark-results
+        path: '**/BenchmarkDotNet.Artifacts/**/*'

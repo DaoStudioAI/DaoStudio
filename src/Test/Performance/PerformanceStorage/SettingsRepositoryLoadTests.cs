@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using DaoStudio.DBStorage.Interfaces;
 using DaoStudio.DBStorage.Models;
-using TestStorage.Performance;
+
 using Xunit;
 using Xunit.Abstractions;
 
-namespace TestStorage.Performance
+namespace PerformanceStorage
 {
     /// <summary>
     /// Load tests for ISettingsRepository focusing on performance under high load conditions

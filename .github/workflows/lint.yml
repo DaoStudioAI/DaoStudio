@@ -1,0 +1,104 @@
+name: Lint
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  SOLUTION_PATH: 'src/DaoStudio.sln'
+
+jobs:
+  dotnet-format:
+    name: C# Code Formatting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+    - name: Check code formatting
+      run: dotnet format ${{ env.SOLUTION_PATH }} --verify-no-changes --verbosity diagnostic
+
+  markdown-lint:
+    name: Markdown Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Markdown Lint
+      uses: DavidAnson/markdownlint-cli2-action@v16
+      with:
+        globs: |
+          **/*.md
+          !**/node_modules/**
+          !**/BuildOutput/**
+
+  yaml-lint:
+    name: YAML Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: YAML Lint
+      uses: ibiqlik/action-yamllint@v3
+      with:
+        file_or_dir: .github/
+        config_file: .github/yamllint-config.yml
+        strict: true
+
+  xml-axaml-lint:
+    name: XML and AXAML Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install xmllint
+      run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+
+    - name: Lint XML and AXAML files
+      run: |
+        # Find all XML and AXAML files (excluding build output)
+        find src -type f \( -name "*.xml" -o -name "*.axaml" -o -name "*.xaml" \) \
+          ! -path "*/BuildOutput/*" \
+          ! -path "*/bin/*" \
+          ! -path "*/obj/*" \
+          -print0 | while IFS= read -r -d '' file; do
+          echo "Checking $file"
+          xmllint --noout "$file" || echo "::error file=$file::XML validation failed"
+        done
+
+    - name: Check AXAML formatting
+      run: |
+        # Check for common AXAML issues
+        echo "Checking AXAML files for common issues..."
+        find src/DaoStudioUI -type f -name "*.axaml" -print0 | while IFS= read -r -d '' file; do
+          # Check for trailing whitespace
+          if grep -q '[[:space:]]$' "$file"; then
+            echo "::warning file=$file::Contains trailing whitespace"
+          fi
+          # Check for tabs (should use spaces)
+          if grep -q $'\t' "$file"; then
+            echo "::warning file=$file::Contains tabs (should use spaces)"
+          fi
+        done

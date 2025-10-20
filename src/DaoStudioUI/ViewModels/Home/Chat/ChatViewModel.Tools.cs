@@ -1,15 +1,12 @@
-using DaoStudioUI.Models;
 using Avalonia.Threading;
-using DaoStudio;
-using DaoStudio.Common.Plugins;
+using DaoStudio.Interfaces;
+using DaoStudio.Interfaces.Plugins;
+using DaoStudioUI.Models;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DaoStudio;
-using DaoStudio.Interfaces;
-using DaoStudio.Interfaces.Plugins;
 
 namespace DaoStudioUI.ViewModels;
 
