@@ -1,4 +1,4 @@
-# DaoStudio
+# Dao Studio
 
 Dao Studio is the originator and runtime of Natural Language Programming (NLP) â€” a desktop chat client that connects LLMs with real-world software applications.
 
@@ -13,6 +13,7 @@ Dao Studio is the originator and runtime of Natural Language Programming (NLP) â
 - [Building from Source](#building-from-source)
 - [Development Status](#development-status)
 - [Contributing](#contributing)
+- [Versioning](#versioning)
 - [License](#license)
 - [Links](#links)
 
@@ -89,6 +90,14 @@ Natural Language Programming is ideal for:
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+---
+
+## Versioning
+
+DaoStudio uses [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning) for version management. The version is defined in `version.json` at the repository root.
+
+For details on versioning and releases, see [VERSIONING.md](VERSIONING.md).
 
 ---
 

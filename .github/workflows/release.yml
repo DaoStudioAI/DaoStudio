@@ -24,13 +24,18 @@ jobs:
       version: ${{ steps.get_version.outputs.version }}
     
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
     - name: Get version
       id: get_version
       run: |
         if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
           echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
         else
-          echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          # Extract version from version.json
+          VERSION=$(cat version.json | grep -oP '(?<="version": ")[^"]*')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
         fi
 
     - name: Create Release
