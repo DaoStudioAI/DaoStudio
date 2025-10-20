@@ -2,13 +2,17 @@
 
 	<PropertyGroup>
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-		<TargetFrameworks>net9.0-windows</TargetFrameworks>
+		<!-- Default to net9.0 (Linux/macOS); override on Windows -->
+		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Platforms>x64</Platforms>
 		<OutputType>Library</OutputType>
-		<DefineConstants Condition="$(RuntimeIdentifier.Contains('linux'))">$(DefineConstants);LINUX</DefineConstants>
+		<DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);WINDOWS</DefineConstants>
+		<DefineConstants Condition="$([MSBuild]::IsOSPlatform('Linux'))">$(DefineConstants);LINUX</DefineConstants>
 	</PropertyGroup>
+
+
 
 
 	<ItemGroup>
@@ -19,11 +23,16 @@
 		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.7" />
 		<PackageReference Include="CefGlue.Avalonia" Version="120.6099.211" />
 		<PackageReference Include="FluentAvaloniaUI" Version="2.4.0" />
-		<PackageReference Condition="$(TargetFramework.Contains('windows'))" Include="FlaUI.UIA3" Version="5.0.0" />
+		<PackageReference Condition="$([MSBuild]::IsOSPlatform('Windows'))" Include="FlaUI.UIA3" Version="5.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Include="Serilog" Version="4.3.0" />
 		<!--<PackageReference Include="Microsoft.Playwright" Version="1.51.0" />-->
 	</ItemGroup>
+
+	<!-- On Windows, target net9.0-windows -->
+	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+		<TargetFramework>net9.0-windows</TargetFramework>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\PluginCommon\PluginCommon.csproj" />

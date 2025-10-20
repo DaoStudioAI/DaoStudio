@@ -169,7 +169,8 @@ internal partial class BrowserToolEmbeded
                 Log.Debug("Removed cached tree root for session {SessionId}", sessionId);
             }
 
-            // Remove and dispose automation for this session
+            // Remove and dispose automation for this session (Windows only)
+#if WINDOWS
             if (_sessionAutomations.TryGetValue(sessionId, out var auto))
             {
                 if (auto != null)
@@ -186,6 +187,7 @@ internal partial class BrowserToolEmbeded
                 }
                 _sessionAutomations.Remove(sessionId);
             }
+#endif
 
         }
     }

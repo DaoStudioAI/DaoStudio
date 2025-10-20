@@ -11,15 +11,26 @@ namespace BrowserTool;
 /// <summary>
 /// Represents a cached tree node for browser automation elements
 /// </summary>
+#if WINDOWS
 internal class CachedTreeNode
 {
-    public required long Id;
+    public required long Id = 0;
     public required AutomationElement Node;
     public List<CachedTreeNode> Children = new List<CachedTreeNode>();
 #if DEBUG 
     public string? Text;
 #endif
 }
+#else
+// Minimal stub for non-Windows builds to allow session/cache management code to compile
+internal class CachedTreeNode
+{
+    public required long Id = 0;
+    // Placeholder to keep type shape; not used on non-Windows
+    public object? Node { get; set; }
+    public List<CachedTreeNode> Children = new List<CachedTreeNode>();
+}
+#endif
 
 /// <summary>
 /// Main partial class for BrowserToolEmbeded - contains core fields, constructor, and disposal
@@ -33,11 +44,16 @@ internal partial class BrowserToolEmbeded : IDisposable
 
     // Cache for the CachedTreeNode tree (legacy single-session cache)
     private CachedTreeNode? cachedTreeNodeRoot = null;
+    
+#if WINDOWS
     private UIA3Automation? cachedAutomation = null;
+#endif
 
     // Session-aware caches
     private readonly Dictionary<long, CachedTreeNode?> _sessionCachedTreeRoots = new();
+#if WINDOWS
     private readonly Dictionary<long, UIA3Automation?> _sessionAutomations = new();
+#endif
 
     public BrowserToolEmbeded(BrowserToolConfig browserConfig, IHost? host = null)
     {
@@ -56,15 +72,21 @@ internal partial class BrowserToolEmbeded : IDisposable
                 browserWindow?.Close();
                 browserWindow = null;
 
+                
+#if WINDOWS
                 cachedAutomation?.Dispose();
                 cachedAutomation = null;
+#endif
 
                 // Dispose per-session automations
+                
+#if WINDOWS
                 foreach (var kv in _sessionAutomations.ToList())
                 {
                     try { kv.Value?.Dispose(); } catch { }
                     _sessionAutomations[kv.Key] = null;
                 }
+#endif
             }
 
             // TODO: free unmanaged resources (unmanaged objects) and override finalizer

@@ -46,11 +46,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <!-- Exclude test files from compilation -->
-  <ItemGroup>
-    <Compile Remove="TestNamingTool\**" />
-    <EmbeddedResource Remove="TestNamingTool\**" />
-    <None Remove="TestNamingTool\**" />
-  </ItemGroup>
-
 </Project>

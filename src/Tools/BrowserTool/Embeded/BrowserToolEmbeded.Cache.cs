@@ -44,6 +44,8 @@ internal partial class BrowserToolEmbeded
     /// <summary>
     /// Gets the automation instance for a session
     /// </summary>
+    
+#if WINDOWS
     private UIA3Automation? GetAutomation(IHostSession session)
     {
         if (browserConfig.EnableSessionAware)
@@ -52,10 +54,14 @@ internal partial class BrowserToolEmbeded
         }
         return cachedAutomation;
     }
+    
+    #endif
 
     /// <summary>
     /// Sets the automation instance for a session
     /// </summary>
+    
+#if WINDOWS
     private void SetAutomation(IHostSession session, UIA3Automation? automation)
     {
         if (browserConfig.EnableSessionAware)
@@ -67,6 +73,7 @@ internal partial class BrowserToolEmbeded
             cachedAutomation = automation;
         }
     }
+    #endif
 
     /// <summary>
     /// Clears the cache for a session
@@ -76,20 +83,26 @@ internal partial class BrowserToolEmbeded
         if (browserConfig.EnableSessionAware)
         {
             _sessionCachedTreeRoots[session.Id] = null;
+            
+#if WINDOWS
             if (_sessionAutomations.TryGetValue(session.Id, out var a) && a != null)
             {
                 try { a.Dispose(); } catch { }
             }
             _sessionAutomations[session.Id] = null;
+#endif
         }
         else
         {
             cachedTreeNodeRoot = null;
+            
+#if WINDOWS
             if (cachedAutomation != null)
             {
                 try { cachedAutomation.Dispose(); } catch { }
             }
             cachedAutomation = null;
+#endif
         }
     }
 
