@@ -16,7 +16,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -35,7 +35,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Markdown Lint
       uses: DavidAnson/markdownlint-cli2-action@v16
@@ -51,7 +51,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: YAML Lint
       uses: ibiqlik/action-yamllint@v3
@@ -66,7 +66,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
