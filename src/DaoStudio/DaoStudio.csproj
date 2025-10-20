@@ -34,8 +34,8 @@
 		<PackageReference Include="LLamaSharp.Backend.Cuda12" Version="0.25.0" />
 		<PackageReference Include="Anthropic.SDK" Version="5.6.0" />
 		<PackageReference Include="AWSSDK.Bedrock" Version="4.0.12.2" />
-		<PackageReference Include="AWSSDK.BedrockRuntime" Version="4.0.7.2" />
-		<PackageReference Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.3.6" />
+		<PackageReference Include="AWSSDK.BedrockRuntime" Version="4.0.7.5" />
+		<PackageReference Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.4.1" />
 		<PackageReference Include="AWSSDK.Extensions.CrtIntegration" Version="4.0.0.5" />
 	</ItemGroup>
 
