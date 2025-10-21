@@ -1,28 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-
-	  <!--<TargetFramework>net9.0-windows</TargetFramework>
-	  <OutputType>WinExe</OutputType>-->
-	  <!--<DefineConstants Condition="$(RuntimeIdentifier.Contains('linux'))">$(DefineConstants);LINUX</DefineConstants>-->
-
-	  <TargetFramework>net9.0-windows</TargetFramework>
-	  <OutputType>WinExe</OutputType>
-
-
-	  <!--
-      Enable full trimming in Release mode.
-      To learn more, see: https://learn.microsoft.com/dotnet/core/deploying/trimming/trimming-options#trimming-granularity
-    -->
-	  <!--<TrimMode Condition="'$(Configuration)' == 'Release'">full</TrimMode>-->
-	  
-	  
+    <!-- Use net9.0 for cross-platform support -->
+    <TargetFramework>net9.0</TargetFramework>
+    <OutputType>WinExe</OutputType>
     <Nullable>enable</Nullable>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
     <Platforms>x64</Platforms>
+
+    <!-- Platform-specific settings -->
+    <BuiltInComInteropSupport Condition="$([MSBuild]::IsOSPlatform('Windows'))">true</BuiltInComInteropSupport>
+    <ApplicationManifest Condition="$([MSBuild]::IsOSPlatform('Windows'))">app.manifest</ApplicationManifest>
 
     <!-- Define Linux macro for Linux -->
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('linux'))">$(DefineConstants);LINUX</DefineConstants>
