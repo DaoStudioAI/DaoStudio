@@ -29,6 +29,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
 
     - name: Get version
       id: get_version
@@ -49,11 +51,17 @@ jobs:
       matrix:
         include:
           - os: windows-latest
+            runtime: win-x86
+            artifact_name: DaoStudio-Windows-x86
+          - os: windows-latest
             runtime: win-x64
             artifact_name: DaoStudio-Windows-x64
           - os: windows-latest
             runtime: win-arm64
             artifact_name: DaoStudio-Windows-ARM64
+          - os: ubuntu-latest
+            runtime: linux-x86
+            artifact_name: DaoStudio-Linux-x86
           - os: ubuntu-latest
             runtime: linux-x64
             artifact_name: DaoStudio-Linux-x64
@@ -70,6 +78,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -116,6 +126,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
 
     - name: Download all artifacts
       uses: actions/download-artifact@v4
@@ -136,9 +148,11 @@ jobs:
           
           ### Downloads
           Choose the appropriate package for your platform:
-          - **Windows x64**: DaoStudio-Windows-x64-v${{ needs.get-version.outputs.version }}.zip
+          - **Windows x86 (32-bit)**: DaoStudio-Windows-x86-v${{ needs.get-version.outputs.version }}.zip
+          - **Windows x64 (64-bit)**: DaoStudio-Windows-x64-v${{ needs.get-version.outputs.version }}.zip
           - **Windows ARM64**: DaoStudio-Windows-ARM64-v${{ needs.get-version.outputs.version }}.zip
-          - **Linux x64**: DaoStudio-Linux-x64-v${{ needs.get-version.outputs.version }}.zip
+          - **Linux x86 (32-bit)**: DaoStudio-Linux-x86-v${{ needs.get-version.outputs.version }}.zip
+          - **Linux x64 (64-bit)**: DaoStudio-Linux-x64-v${{ needs.get-version.outputs.version }}.zip
           - **Linux ARM64**: DaoStudio-Linux-ARM64-v${{ needs.get-version.outputs.version }}.zip
           - **macOS Intel (x64)**: DaoStudio-macOS-x64-v${{ needs.get-version.outputs.version }}.zip
           - **macOS Apple Silicon (ARM64)**: DaoStudio-macOS-ARM64-v${{ needs.get-version.outputs.version }}.zip
