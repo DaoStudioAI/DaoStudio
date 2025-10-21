@@ -10,17 +10,20 @@ on:
         description: 'Version to release (e.g., 1.0.0)'
         required: true
 
+permissions:
+  contents: write
+  pull-requests: write
+
 env:
   DOTNET_VERSION: '9.0.x'
   SOLUTION_PATH: 'src/DaoStudio.sln'
   BUILD_CONFIGURATION: 'Release'
 
 jobs:
-  create-release:
-    name: Create Release
+  get-version:
+    name: Get Version
     runs-on: ubuntu-latest
     outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
       version: ${{ steps.get_version.outputs.version }}
     
     steps:
@@ -38,20 +41,9 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
         fi
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v${{ steps.get_version.outputs.version }}
-        release_name: DaoStudio v${{ steps.get_version.outputs.version }}
-        draft: true
-        prerelease: false
-
   build-and-publish:
     name: Build and Publish
-    needs: create-release
+    needs: get-version
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -59,12 +51,21 @@ jobs:
           - os: windows-latest
             runtime: win-x64
             artifact_name: DaoStudio-Windows-x64
+          - os: windows-latest
+            runtime: win-arm64
+            artifact_name: DaoStudio-Windows-ARM64
           - os: ubuntu-latest
             runtime: linux-x64
             artifact_name: DaoStudio-Linux-x64
+          - os: ubuntu-latest
+            runtime: linux-arm64
+            artifact_name: DaoStudio-Linux-ARM64
           - os: macos-latest
             runtime: osx-x64
             artifact_name: DaoStudio-macOS-x64
+          - os: macos-latest
+            runtime: osx-arm64
+            artifact_name: DaoStudio-macOS-ARM64
 
     steps:
     - name: Checkout code
@@ -87,7 +88,7 @@ jobs:
           --output ./publish/${{ matrix.runtime }} \
           -p:PublishSingleFile=false \
           -p:PublishTrimmed=false \
-          -p:Version=${{ needs.create-release.outputs.version }}
+          -p:Version=${{ needs.get-version.outputs.version }}
 
     - name: Create archive (Windows)
       if: matrix.os == 'windows-latest'
@@ -101,18 +102,50 @@ jobs:
         zip -r ../../${{ matrix.artifact_name }}.zip .
         cd ../..
 
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: ./${{ matrix.artifact_name }}.zip
-        asset_name: ${{ matrix.artifact_name }}-v${{ needs.create-release.outputs.version }}.zip
-        asset_content_type: application/zip
-
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.artifact_name }}
         path: ./${{ matrix.artifact_name }}.zip
+
+  create-release:
+    name: Create Release
+    needs: [get-version, build-and-publish]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./artifacts
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ needs.get-version.outputs.version }}
+        name: DaoStudio v${{ needs.get-version.outputs.version }}
+        draft: true
+        prerelease: false
+        files: |
+          ./artifacts/**/*.zip
+        body: |
+          ## DaoStudio v${{ needs.get-version.outputs.version }}
+          
+          ### Downloads
+          Choose the appropriate package for your platform:
+          - **Windows x64**: DaoStudio-Windows-x64-v${{ needs.get-version.outputs.version }}.zip
+          - **Windows ARM64**: DaoStudio-Windows-ARM64-v${{ needs.get-version.outputs.version }}.zip
+          - **Linux x64**: DaoStudio-Linux-x64-v${{ needs.get-version.outputs.version }}.zip
+          - **Linux ARM64**: DaoStudio-Linux-ARM64-v${{ needs.get-version.outputs.version }}.zip
+          - **macOS Intel (x64)**: DaoStudio-macOS-x64-v${{ needs.get-version.outputs.version }}.zip
+          - **macOS Apple Silicon (ARM64)**: DaoStudio-macOS-ARM64-v${{ needs.get-version.outputs.version }}.zip
+          
+          ### Installation
+          1. Download the appropriate package for your platform
+          2. Extract the archive
+          3. Run the DaoStudio executable
+          
+          For more information, see the [README](https://github.com/${{ github.repository }}/blob/main/README.md).
