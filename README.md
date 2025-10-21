@@ -4,7 +4,7 @@ Dao Studio is the originator and runtime of Natural Language Programming (NLP) â
 
 ## Table of Contents
 
-- [What is Natural Language Programming?](#what-is-natural-language-programming)
+- [Natural Language Programming?](#natural-language-programming)
   - [Core Concept: Naming](#core-concept-naming)
   - [Capabilities](#capabilities)
 - [Use Cases](#use-cases)
@@ -17,7 +17,7 @@ Dao Studio is the originator and runtime of Natural Language Programming (NLP) â
 - [License](#license)
 - [Links](#links)
 
-## What is Natural Language Programming?
+## Natural Language Programming?
 
 Natural Language Programming in DaoStudio isn't about "English is the new programming language" â€” it's a structured approach to running natural language scripts on LLMs (which act as processors) using APIs provided by Dao Studio, similar to JavaScript Programming or Python Programming.
 
@@ -91,13 +91,6 @@ Natural Language Programming is ideal for:
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
----
-
-## Versioning
-
-DaoStudio uses [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning) for version management. The version is defined in `version.json` at the repository root.
-
-For details on versioning and releases, see [VERSIONING.md](VERSIONING.md).
 
 ---
 

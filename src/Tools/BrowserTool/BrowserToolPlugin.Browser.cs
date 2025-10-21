@@ -1,6 +1,7 @@
 using DaoStudio.Common.Plugins;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using Serilog;
 using DaoStudio.Interfaces.Plugins;
 using DaoStudio.Interfaces;
@@ -938,8 +939,8 @@ public partial class BrowserToolPluginFactory : IPluginFactory
                 {"firefox", BrowserType.Firefox},
                 {"google-chrome", BrowserType.Chrome},
                 {"chromium-browser", BrowserType.Chrome},
-                {"epiphany", BrowserType.Default},
-                {"konqueror", BrowserType.Default},
+                {"epiphany", BrowserType.Unknown},
+                {"konqueror", BrowserType.Unknown},
                 {"brave-browser", BrowserType.Brave}
             };
             
@@ -1029,6 +1030,8 @@ public partial class BrowserToolPluginFactory : IPluginFactory
         {
             Log.Error(ex, "Error in ultimate Linux fallback");
         }
+        
+        return new BrowserInfo { Path = string.Empty, Type = BrowserType.Unknown };
 #else
         return new BrowserInfo { Path = string.Empty, Type = BrowserType.Unknown };
 #endif
