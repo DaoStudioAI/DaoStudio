@@ -87,15 +87,7 @@ jobs:
       run: dotnet restore ${{ env.SOLUTION_PATH }}
 
     - name: Publish application
-      run: |
-        dotnet publish src/DaoStudioUI/DesktopUI.csproj \
-          --configuration ${{ env.BUILD_CONFIGURATION }} \
-          --runtime ${{ matrix.runtime }} \
-          --self-contained true \
-          --output ./publish/${{ matrix.runtime }} \
-          -p:PublishSingleFile=false \
-          -p:PublishTrimmed=false \
-          -p:Version=${{ needs.get-version.outputs.version }}
+      run: dotnet publish src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --self-contained true --output ./publish/${{ matrix.runtime }} -p:PublishSingleFile=false -p:PublishTrimmed=false -p:Version=${{ needs.get-version.outputs.version }}
 
     - name: Create archive (Windows)
       if: matrix.os == 'windows-latest'
