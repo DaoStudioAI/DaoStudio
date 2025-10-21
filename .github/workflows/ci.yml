@@ -59,7 +59,7 @@ jobs:
 
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'windows-latest'
       with:
         name: coverage-reports
         path: '**/TestResults/**/coverage.cobertura.xml'
@@ -91,7 +91,7 @@ jobs:
 
   publish-coverage:
     name: Publish Coverage
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build-and-test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
