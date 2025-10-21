@@ -89,25 +89,29 @@ jobs:
     - name: Run code analysis
       run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore /p:EnforceCodeStyleInBuild=true /p:TreatWarningsAsErrors=false
 
-  publish-coverage:
-    name: Publish Coverage
-    runs-on: windows-latest
-    needs: build-and-test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-
-    - name: Download coverage reports
-      uses: actions/download-artifact@v5
-      with:
-        name: coverage-reports
-        path: coverage
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5
-      with:
-        files: coverage/**/coverage.cobertura.xml
-        fail_ci_if_error: false
-        verbose: true
+  # The publish-coverage job is commented out temporarily. To re-enable,
+  # remove the leading '#' characters from this block and restore the
+  # original `if:` condition (for example: github.event_name == 'push' && github.ref == 'refs/heads/main').
+  #
+  #publish-coverage:
+  #  name: Publish Coverage
+  #  runs-on: windows-latest
+  #  needs: build-and-test
+  #  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #
+  #  steps:
+  #  - name: Checkout code
+  #    uses: actions/checkout@v5
+  #
+  #  - name: Download coverage reports
+  #    uses: actions/download-artifact@v5
+  #    with:
+  #      name: coverage-reports
+  #      path: coverage
+  #
+  #  - name: Upload coverage to Codecov
+  #    uses: codecov/codecov-action@v5
+  #    with:
+  #      files: coverage/**/coverage.cobertura.xml
+  #      fail_ci_if_error: false
+  #      verbose: true
