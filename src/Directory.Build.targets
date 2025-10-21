@@ -18,14 +18,4 @@
   <PropertyGroup Condition="'$(IsToolProject)' == 'true'">
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
-
-  <!-- Clean up PluginCommon output after build (it's a library, not a plugin) -->
-  <!-- This runs as the last step after the entire build completes -->
-  <Target Name="CleanupPluginCommonOutput" AfterTargets="Build" Condition="'$(MSBuildProjectName)' == 'DesktopUI'">
-    <PropertyGroup>
-      <PluginCommonOutputPath>$(SolutionDir)BuildOutput\Build\Plugins\PluginCommon\</PluginCommonOutputPath>
-    </PropertyGroup>
-    <RemoveDir Directories="$(PluginCommonOutputPath)" Condition="Exists('$(PluginCommonOutputPath)')" />
-    <Message Text="Removed PluginCommon output directory: $(PluginCommonOutputPath)" Importance="high" Condition="Exists('$(PluginCommonOutputPath)')" />
-  </Target>
 </Project>

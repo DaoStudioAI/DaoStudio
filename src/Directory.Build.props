@@ -21,12 +21,15 @@
 
   <!-- Output path configuration based on project type -->
   <PropertyGroup>
+    <!-- PluginCommon is a library, not a plugin - output to obj folder -->
+    <OutputPath Condition="'$(MSBuildProjectName)' == 'PluginCommon'">$(SolutionDir)BuildOutput\obj\$(MSBuildProjectName)\</OutputPath>
+    
     <!-- Tools projects go to Plugins folder -->
-    <OutputPath Condition="'$(IsToolProject)' == 'true'">$(BaseOutputPath)Plugins\$(MSBuildProjectName)\</OutputPath>
+    <OutputPath Condition="'$(IsToolProject)' == 'true' AND '$(OutputPath)' == ''">$(BaseOutputPath)Plugins\$(MSBuildProjectName)\</OutputPath>
     
     <!-- Test projects go to Tests folder -->
     <!-- Route all test projects to Output/Tests -->
-    <OutputPath Condition="$([System.String]::Copy('$(MSBuildProjectDirectory)').Contains('\Test\'))">$(SolutionDir)BuildOutput\Tests\</OutputPath>
+    <OutputPath Condition="$([System.String]::Copy('$(MSBuildProjectDirectory)').Contains('\Test\')) AND '$(OutputPath)' == ''">$(SolutionDir)BuildOutput\Tests\</OutputPath>
     
     <!-- All other projects (DesktopUI and its core dependencies) go to Output/Build root -->
     <OutputPath Condition="'$(OutputPath)' == ''">$(BaseOutputPath)</OutputPath>
