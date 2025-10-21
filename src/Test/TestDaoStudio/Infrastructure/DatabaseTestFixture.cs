@@ -34,8 +34,8 @@ public class DatabaseTestFixture : IDisposable, IAsyncDisposable
         var logFilePath = Path.Combine(logDirectory, $"database-test-{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}.log");
         
         var serilogLogger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Infinite)
+            .MinimumLevel.Error()
+            //.WriteTo.File(logFilePath, rollingInterval: RollingInterval.Infinite)
             .CreateLogger();
         
         var loggerFactory = new SerilogLoggerFactory(serilogLogger, dispose: true);

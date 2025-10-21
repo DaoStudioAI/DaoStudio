@@ -41,8 +41,8 @@ public class DaoStudioTests : IDisposable
         var logFilePath = Path.Combine(logDirectory, $"agentstudio-test-{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}.log");
         
         var serilogLogger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Infinite)
+            .MinimumLevel.Error()
+            //.WriteTo.File(logFilePath, rollingInterval: RollingInterval.Infinite)
             .CreateLogger();
         
         container.RegisterInstance<ILoggerFactory>(new SerilogLoggerFactory(serilogLogger, dispose: true));
@@ -153,8 +153,8 @@ public class DaoStudioTests : IDisposable
         var logFilePath = Path.Combine(logDirectory, $"agentstudio-path-test-{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}.log");
         
         var serilogLogger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Infinite)
+            .MinimumLevel.Error()
+            //.WriteTo.File(logFilePath, rollingInterval: RollingInterval.Infinite)
             .CreateLogger();
         
         container.RegisterInstance<ILoggerFactory>(new SerilogLoggerFactory(serilogLogger, dispose: true));
