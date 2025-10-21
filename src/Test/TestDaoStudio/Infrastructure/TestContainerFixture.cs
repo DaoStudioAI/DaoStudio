@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using System.Reflection;
 using Moq;
 using DaoStudio.Engines.MEAI;
+using Serilog;
+using Serilog.Extensions.Logging;
 
 namespace TestDaoStudio.Infrastructure;
 
@@ -38,11 +40,17 @@ public class TestContainerFixture : IDisposable
         // Register the container itself so it can be injected
         _container.RegisterInstance(_container);
         
-        // Setup logging
-        _loggerFactory = LoggerFactory.Create(builder =>
-        {
-            builder.AddConsole().SetMinimumLevel(LogLevel.Debug);
-        });
+        // Setup logging with Serilog file sink
+        var logDirectory = Path.Combine(Path.GetTempPath(), "DaoStudio", "Tests", "Logs");
+        Directory.CreateDirectory(logDirectory);
+        var logFilePath = Path.Combine(logDirectory, $"test-{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}.log");
+        
+        var serilogLogger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Infinite)
+            .CreateLogger();
+        
+        _loggerFactory = new SerilogLoggerFactory(serilogLogger, dispose: true);
         
         _container.RegisterInstance(_loggerFactory);
 

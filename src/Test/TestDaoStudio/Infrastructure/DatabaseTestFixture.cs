@@ -1,6 +1,8 @@
 using DaoStudio.DBStorage.Factory;
 using Microsoft.Extensions.Logging;
 using System.Data.SQLite;
+using Serilog;
+using Serilog.Extensions.Logging;
 
 namespace TestDaoStudio.Infrastructure;
 
@@ -27,7 +29,16 @@ public class DatabaseTestFixture : IDisposable, IAsyncDisposable
     /// <param name="testName">Optional test name to create unique database file</param>
     public DatabaseTestFixture(bool useInMemoryDatabase = true, string? testName = null)
     {
-        var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Debug));
+        var logDirectory = Path.Combine(Path.GetTempPath(), "DaoStudio", "Tests", "Logs");
+        Directory.CreateDirectory(logDirectory);
+        var logFilePath = Path.Combine(logDirectory, $"database-test-{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}.log");
+        
+        var serilogLogger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Infinite)
+            .CreateLogger();
+        
+        var loggerFactory = new SerilogLoggerFactory(serilogLogger, dispose: true);
         _logger = loggerFactory.CreateLogger<DatabaseTestFixture>();
 
         if (useInMemoryDatabase)

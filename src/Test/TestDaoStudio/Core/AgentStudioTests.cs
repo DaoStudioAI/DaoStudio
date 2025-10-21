@@ -7,6 +7,8 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TestDaoStudio.Infrastructure;
+using Serilog;
+using Serilog.Extensions.Logging;
 
 namespace TestDaoStudio.Core;
 
@@ -32,11 +34,18 @@ public class DaoStudioTests : IDisposable
 
         // Act
         DaoStudio.DaoStudioService.RegisterServices(container);
-        //register ILoggerFactory
-        container.RegisterInstance<ILoggerFactory>(LoggerFactory.Create(builder =>
-        {
-            builder.AddConsole().SetMinimumLevel(LogLevel.Debug);
-        }));
+        
+        // Register ILoggerFactory with file logging
+        var logDirectory = Path.Combine(Path.GetTempPath(), "DaoStudio", "Tests", "Logs");
+        Directory.CreateDirectory(logDirectory);
+        var logFilePath = Path.Combine(logDirectory, $"agentstudio-test-{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}.log");
+        
+        var serilogLogger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Infinite)
+            .CreateLogger();
+        
+        container.RegisterInstance<ILoggerFactory>(new SerilogLoggerFactory(serilogLogger, dispose: true));
 
         // Assert - Verify key services are registered
         container.IsRegistered<StorageFactory>().Should().BeTrue();
@@ -137,10 +146,18 @@ public class DaoStudioTests : IDisposable
 
         // Arrange
         var container = new Container();
-        container.RegisterInstance<ILoggerFactory>(LoggerFactory.Create(builder =>
-        {
-            builder.AddConsole().SetMinimumLevel(LogLevel.Debug);
-        }));
+        
+        // Register ILoggerFactory with file logging
+        var logDirectory = Path.Combine(Path.GetTempPath(), "DaoStudio", "Tests", "Logs");
+        Directory.CreateDirectory(logDirectory);
+        var logFilePath = Path.Combine(logDirectory, $"agentstudio-path-test-{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}.log");
+        
+        var serilogLogger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Infinite)
+            .CreateLogger();
+        
+        container.RegisterInstance<ILoggerFactory>(new SerilogLoggerFactory(serilogLogger, dispose: true));
 
         // Act
         DaoStudio.DaoStudioService.RegisterServices(container);
