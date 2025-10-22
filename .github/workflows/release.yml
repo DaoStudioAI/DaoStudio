@@ -86,9 +86,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ${{ env.SOLUTION_PATH }}
 
-    - name: Build solution
-      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
-
     - name: Publish application
       run: dotnet publish src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --self-contained true --output ./publish/${{ matrix.runtime }} -p:PublishSingleFile=false -p:PublishTrimmed=false -p:Version=${{ needs.get-version.outputs.version }}
 
@@ -114,11 +111,11 @@ jobs:
             
             # Check if this is BrowserTool which needs platform-specific framework
             if ($tool.Name -eq "BrowserTool" -and $isWindowsRuntime) {
-              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0-windows --no-self-contained --output $outputPath
+              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0-windows --no-self-contained --output $outputPath -p:Version=${{ needs.get-version.outputs.version }}
             } elseif ($tool.Name -eq "BrowserTool") {
-              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0 --no-self-contained --output $outputPath
+              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0 --no-self-contained --output $outputPath -p:Version=${{ needs.get-version.outputs.version }}
             } else {
-              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --no-self-contained --output $outputPath
+              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --no-self-contained --output $outputPath -p:Version=${{ needs.get-version.outputs.version }}
             }
             
             if ($LASTEXITCODE -ne 0) {
