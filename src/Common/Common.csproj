@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>DaoStudio.$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>DaoStudio.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-    <Platforms>x64</Platforms>
+    <Platforms>x64;ARM64;x86</Platforms>
 	  <Nullable>enable</Nullable>
   </PropertyGroup>
 

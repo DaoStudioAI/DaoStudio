@@ -3,7 +3,7 @@
   <PropertyGroup>
 	  <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <Platforms>x64</Platforms>
+    <Platforms>x64;ARM64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

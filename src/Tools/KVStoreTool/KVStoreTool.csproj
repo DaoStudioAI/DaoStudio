@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>DaoStudio.Plugins.KVStore</RootNamespace>
-    <Platforms>x64</Platforms>
+    <Platforms>x64;ARM64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>DaoStudio.Interfaces</RootNamespace>
     <AssemblyName>DaoStudio.Interfaces</AssemblyName>
-    <Platforms>x64</Platforms>
+    <Platforms>x64;ARM64;x86</Platforms>
   </PropertyGroup>
 
 	<ItemGroup>
