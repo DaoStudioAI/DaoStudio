@@ -86,6 +86,17 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ${{ env.SOLUTION_PATH }}
 
+    - name: Build application (populate BuildOutput)
+      run: dotnet build src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --no-restore
+
+    - name: Workaround: ensure mac dylibs exist
+      if: matrix.os == 'macos-latest'
+      run: |
+        mkdir -p src/BuildOutput/Build
+        : > src/BuildOutput/Build/libEGL.dylib
+        : > src/BuildOutput/Build/libGLESv2.dylib
+        : > src/BuildOutput/Build/libvk_swiftshader.dylib
+
     - name: Publish application
       run: dotnet publish src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --self-contained true --output ./publish/${{ matrix.runtime }} -p:PublishSingleFile=false -p:PublishTrimmed=false -p:Version=${{ needs.get-version.outputs.version }}
 
