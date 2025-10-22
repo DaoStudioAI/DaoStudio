@@ -109,9 +109,14 @@ jobs:
           if (Test-Path $projectPath) {
             Write-Host "Publishing plugin: $($tool.Name)"
             
+            # Restore dependencies for the specific runtime
+            dotnet restore $projectPath --runtime $runtime
+            
             # Check if this is BrowserTool which needs platform-specific framework
             if ($tool.Name -eq "BrowserTool" -and $isWindowsRuntime) {
               dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0-windows --no-self-contained --output $outputPath
+            } elseif ($tool.Name -eq "BrowserTool") {
+              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0 --no-self-contained --output $outputPath
             } else {
               dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --no-self-contained --output $outputPath
             }
