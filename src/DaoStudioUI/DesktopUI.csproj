@@ -7,7 +7,7 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
-    <Platforms>x64</Platforms>
+    <Platforms>x64;ARM64;x86</Platforms>
 
     <!-- Platform-specific settings -->
     <BuiltInComInteropSupport Condition="$([MSBuild]::IsOSPlatform('Windows'))">true</BuiltInComInteropSupport>
