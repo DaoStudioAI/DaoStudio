@@ -80,13 +80,18 @@ namespace DaoStudio.Services
             // Get shared assemblies that plugins should use from the host
             var sharedAssemblies = GetSharedAssemblies();
 
+            logger.LogInformation("Scanning plugin folder {PluginFolderPath}", pluginFolderPath);
+
             // Get all subdirectories (each represents a plugin)
             var pluginDirectories = Directory.GetDirectories(pluginFolderPath);
+            logger.LogInformation("Found {PluginDirectoryCount} plugin directories", pluginDirectories.Length);
 
             foreach (var pluginDir in pluginDirectories)
             {
                 var pluginName = Path.GetFileName(pluginDir);
                 var pluginDllPath = Path.Combine(pluginDir, $"{pluginName}.dll");
+
+                logger.LogInformation("Processing plugin directory {PluginDirectory}", pluginDir);
 
                 if (!File.Exists(pluginDllPath))
                 {
@@ -116,23 +121,72 @@ namespace DaoStudio.Services
 
                     // Load the plugin assembly
                     var pluginAssembly = loader.LoadDefaultAssembly();
+                    logger.LogInformation("Loaded plugin assembly {AssemblyName} from {AssemblyLocation}", pluginAssembly.FullName, pluginAssembly.Location);
 
-                    // Find types implementing IPlugin
-                    var pluginTypes = pluginAssembly.GetTypes()
-                        .Where(t => typeof(IPluginFactory).IsAssignableFrom(t) && !t.IsAbstract);
+                    // Find types implementing IPluginFactory
+                    List<Type> pluginTypes;
+                    try
+                    {
+                        pluginTypes = pluginAssembly.GetTypes()
+                            .Where(t => typeof(IPluginFactory).IsAssignableFrom(t) && !t.IsAbstract)
+                            .ToList();
+                    }
+                    catch (ReflectionTypeLoadException ex)
+                    {
+                        var loaderExceptions = ex.LoaderExceptions?.Select(le => le?.Message ?? string.Empty)?.ToArray() ?? Array.Empty<string>();
+                        logger.LogError(ex, "Failed to resolve plugin factory types in assembly {AssemblyName}. Loader exceptions: {LoaderExceptions}", pluginAssembly.FullName, string.Join(" | ", loaderExceptions));
+                        continue;
+                    }
+
+                    logger.LogInformation("Discovered {PluginFactoryCount} plugin factory types in assembly {AssemblyName}", pluginTypes.Count, pluginAssembly.FullName);
 
                     foreach (var pluginType in pluginTypes)
                     {
-                        // Create instance
-                        var instance = Activator.CreateInstance(pluginType) as IPluginFactory;
+                        logger.LogDebug("Creating plugin factory instance from type {PluginType}", pluginType.FullName);
+
+                        IPluginFactory? instance;
+                        try
+                        {
+                            instance = Activator.CreateInstance(pluginType) as IPluginFactory;
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, "Failed to instantiate plugin factory type {PluginType}", pluginType.FullName);
+                            continue;
+                        }
+
                         if (instance != null)
                         {
-                            // Initialize plugin with host
-                            await instance.SetHost(DaoStudio); // Pass DaoStudio as host
+                            try
+                            {
+                                logger.LogDebug("Setting host for plugin factory {PluginType}", pluginType.FullName);
+                                await instance.SetHost(DaoStudio);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.LogError(ex, "Failed to set host for plugin factory type {PluginType}", pluginType.FullName);
+                                continue;
+                            }
+
                             plugins.Add(instance);
 
-                            var plugInfo = instance.GetPluginInfo();
-                            logger.LogInformation($"Loaded plugin: {plugInfo.DisplayName} v{plugInfo.Version}");
+                            try
+                            {
+                                var plugInfo = instance.GetPluginInfo();
+                                logger.LogInformation("Loaded plugin: {DisplayName} v{Version} (StaticId: {StaticId}, Type: {PluginType})",
+                                    plugInfo.DisplayName,
+                                    plugInfo.Version,
+                                    plugInfo.StaticId,
+                                    pluginType.FullName);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.LogError(ex, "Failed to retrieve plugin info for type {PluginType}", pluginType.FullName);
+                            }
+                        }
+                        else
+                        {
+                            logger.LogWarning("Activator returned null for plugin factory type {PluginType}", pluginType.FullName);
                         }
                     }
                 }
