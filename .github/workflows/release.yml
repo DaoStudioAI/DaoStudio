@@ -86,8 +86,24 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ${{ env.SOLUTION_PATH }}
 
+    - name: Build solution
+      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+
     - name: Publish application
-      run: dotnet publish src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --self-contained true --output ./publish/${{ matrix.runtime }} -p:PublishSingleFile=false -p:PublishTrimmed=false -p:Version=${{ needs.get-version.outputs.version }}
+      run: dotnet publish src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --self-contained true --output ./publish/${{ matrix.runtime }} --no-build -p:PublishSingleFile=false -p:PublishTrimmed=false -p:Version=${{ needs.get-version.outputs.version }}
+
+    - name: Copy plugins to publish directory
+      shell: pwsh
+      run: |
+        $pluginsSource = "src/BuildOutput/Build/Plugins"
+        $pluginsDest = "publish/${{ matrix.runtime }}/Plugins"
+        if (Test-Path $pluginsSource) {
+          New-Item -ItemType Directory -Force -Path $pluginsDest
+          Copy-Item -Path "$pluginsSource/*" -Destination $pluginsDest -Recurse -Force
+          Write-Host "Copied plugins from $pluginsSource to $pluginsDest"
+        } else {
+          Write-Warning "Plugins directory not found at $pluginsSource"
+        }
 
     - name: Create archive (Windows)
       if: matrix.os == 'windows-latest'
