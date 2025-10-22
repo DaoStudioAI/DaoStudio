@@ -92,18 +92,40 @@ jobs:
     - name: Publish application
       run: dotnet publish src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --self-contained true --output ./publish/${{ matrix.runtime }} -p:PublishSingleFile=false -p:PublishTrimmed=false -p:Version=${{ needs.get-version.outputs.version }}
 
-    - name: Copy plugins to publish directory
+    - name: Publish plugins
       shell: pwsh
       run: |
-        $pluginsSource = "src/BuildOutput/Build/Plugins"
-        $pluginsDest = "publish/${{ matrix.runtime }}/Plugins"
-        if (Test-Path $pluginsSource) {
-          New-Item -ItemType Directory -Force -Path $pluginsDest
-          Copy-Item -Path "$pluginsSource/*" -Destination $pluginsDest -Recurse -Force
-          Write-Host "Copied plugins from $pluginsSource to $pluginsDest"
-        } else {
-          Write-Warning "Plugins directory not found at $pluginsSource"
+        $toolsDir = "src/Tools"
+        $runtime = "${{ matrix.runtime }}"
+        $isWindows = $runtime.StartsWith("win-")
+        
+        # Get all tool directories (exclude PluginCommon as it's a library, not a plugin)
+        $toolProjects = Get-ChildItem -Path $toolsDir -Directory | Where-Object { $_.Name -ne "PluginCommon" }
+        
+        foreach ($tool in $toolProjects) {
+          $projectPath = Join-Path $tool.FullName "$($tool.Name).csproj"
+          $outputPath = "./publish/$runtime/Plugins/$($tool.Name)"
+          
+          if (Test-Path $projectPath) {
+            Write-Host "Publishing plugin: $($tool.Name)"
+            
+            # Check if this is BrowserTool which needs platform-specific framework
+            if ($tool.Name -eq "BrowserTool" -and $isWindows) {
+              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0-windows --no-self-contained --output $outputPath
+            } else {
+              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --no-self-contained --output $outputPath
+            }
+            
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "Failed to publish plugin: $($tool.Name)"
+              exit 1
+            }
+          } else {
+            Write-Warning "Project file not found: $projectPath"
+          }
         }
+        
+        Write-Host "Successfully published $($toolProjects.Count) plugins"
 
     - name: Create archive (Windows)
       if: matrix.os == 'windows-latest'
