@@ -7,6 +7,7 @@ using DaoStudioUI.ViewModels;
 using DaoStudioUI.Views;
 using DaoStudioUI.Extensions;
 using DaoStudioUI.Services;
+using DaoStudioUI.Utilities;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -36,10 +37,7 @@ namespace DaoStudioUI
             // Create a Serilog logger factory
             loggerFactory = LoggerFactory.Create(builder =>
             {
-#if DEBUG
-                builder.SetMinimumLevel(LogLevel.Trace);
-#else
-#endif
+                builder.SetMinimumLevel(LogLevelHelper.GetMicrosoftLogLevel());
             }).AddSerilog(Log.Logger);
 
             Container.RegisterInstance(Container);

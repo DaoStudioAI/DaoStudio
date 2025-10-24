@@ -19,9 +19,6 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
-    <AvaloniaXaml Remove="Utilities\**" />
-    <Compile Remove="Utilities\**" />
-    <None Remove="Utilities\**" />
     <Content Include="Assets\logo.ico" />
     <EmbeddedResource Include="Resources\Strings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

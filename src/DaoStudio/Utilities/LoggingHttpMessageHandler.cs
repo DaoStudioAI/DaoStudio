@@ -116,7 +116,7 @@ public class LoggingHttpMessageHandler : DelegatingHandler
             builder.AppendLine(content);
         }
 
-        _logger.LogInformation(builder.ToString());
+        _logger.LogDebug(builder.ToString());
     }
 
     private async Task LogResponseAsync(HttpResponseMessage response, string requestId, long elapsedMs)
@@ -154,6 +154,6 @@ public class LoggingHttpMessageHandler : DelegatingHandler
             builder.AppendLine("Content: [Streaming enabled - content not logged to avoid buffering]");
         }
 
-        _logger.LogInformation(builder.ToString());
+        _logger.LogDebug(builder.ToString());
     }
 }

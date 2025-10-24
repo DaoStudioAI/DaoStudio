@@ -5,6 +5,7 @@ using Serilog;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using DaoStudioUI.Utilities;
 
 namespace DaoStudioUI
 {
@@ -53,21 +54,21 @@ namespace DaoStudioUI
                 Log.Warning("Could not write to exe directory logs. Using local app data instead. Error: {Error}", ex.Message);
             }
             
+            // Determine log level from environment variable or build configuration
+            var logLevel = LogLevelHelper.GetSerilogLogLevel();
+            
             // Configure Serilog
-            Log.Logger = new LoggerConfiguration()
-#if DEBUG
-                .MinimumLevel.Verbose()
-#else
-                .MinimumLevel.Information() 
-#endif
+            var logConfig = new LoggerConfiguration()
+                .MinimumLevel.Is(logLevel)
                 .WriteTo.File(
                     Path.Combine(logDirectory, "DaoStudio.log"),
                     rollingInterval: RollingInterval.Day,
                     retainedFileCountLimit: 7)
-                .Enrich.FromLogContext()
-                .CreateLogger();
+                .Enrich.FromLogContext();
             
-            Log.Information("DaoStudio starting up with log directory: {LogDirectory}", logDirectory);
+            Log.Logger = logConfig.CreateLogger();
+            
+            Log.Information("DaoStudio starting up with log directory: {LogDirectory} and log level: {LogLevel}", logDirectory, logLevel);
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.
