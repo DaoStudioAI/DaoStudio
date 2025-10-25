@@ -8,6 +8,7 @@ using DaoStudio.Common.Plugins;
 using DaoStudio.Interfaces;
 using DaoStudio.DBStorage.Interfaces;
 using DaoStudio.DBStorage.Models;
+using DaoStudio.Properties;
 
 namespace DaoStudio.Services
 {
@@ -27,6 +28,12 @@ namespace DaoStudio.Services
         private readonly ILoggerFactory loggerFactory;
 
         public event EventHandler<ISession>? SubsessionCreated;
+
+        /// <summary>
+        /// Internal event that forwards message change notifications to sessions
+        /// Sessions subscribe to this event to receive notifications about messages created/updated in their session
+        /// </summary>
+        internal event EventHandler<MessageChangedEventArgs>? InternalMessageChanged;
 
         public SessionService(IMessageService messageService,
             ISessionRepository sessionRepository,
@@ -78,7 +85,7 @@ namespace DaoStudio.Services
 
             // Create the session directly using the created session with proper ID
             var session = new Session(messageService, sessionRepository,
-                toolService, createdSession, person, loggerFactory.CreateLogger<Session>(), pluginService, engineService, peopleService);
+                toolService, createdSession, person, loggerFactory.CreateLogger<Session>(), pluginService, engineService, peopleService, this);
             await session.InitializeAsync();
 
             // If this is a child session, initialize parent filters
@@ -95,7 +102,7 @@ namespace DaoStudio.Services
                 
                 // Create subsession information message using IMessageService
                 var subsessionMessage = await messageService.CreateMessageAsync(
-                    "Subsession created", 
+                    Resources.InformationMessage_SubsessionCreated, 
                     Interfaces.MessageRole.User, 
                     Interfaces.MessageType.Information,
                     parentSessionId.Value,
@@ -110,8 +117,8 @@ namespace DaoStudio.Services
                 // Save the message
                 await messageService.SaveMessageAsync(subsessionMessage, true);
 
-                // Notify the parent session's listeners about the new information message
-                await parentSession.FireMessageChangedAsync(subsessionMessage, MessageChangeType.New);
+                // Raise the InternalMessageChanged event so all session instances with this ID can receive it
+                RaiseMessageChanged(subsessionMessage, Interfaces.MessageChangeType.New);
 
                 // Update parent's last modified timestamp
                 await parentSession.UpdateSessionLastModifiedAsync();
@@ -170,7 +177,7 @@ namespace DaoStudio.Services
                 await sessionRepository.SaveSessionAsync(dbSession);
             }
 
-            var session = new Session(messageService, sessionRepository, toolService, dbSession, person, loggerFactory.CreateLogger<Session>(), pluginService, engineService, peopleService);
+            var session = new Session(messageService, sessionRepository, toolService, dbSession, person, loggerFactory.CreateLogger<Session>(), pluginService, engineService, peopleService, this);
             await session.InitializeAsync();
 
             return session;
@@ -393,6 +400,34 @@ namespace DaoStudio.Services
             {
                 logger.LogError(ex, "Error deleting session {SessionId}", sessionId);
                 return false;
+            }
+        }
+
+        #endregion
+
+        #region Message Event Forwarding
+
+        /// <summary>
+        /// Raises the InternalMessageChanged event to notify all sessions about a message change
+        /// This allows session instances with the same ID to receive message notifications even if they didn't create the message
+        /// </summary>
+        /// <param name="message">The message that was changed</param>
+        /// <param name="changeType">The type of change (New, Updated, Finished)</param>
+        internal void RaiseMessageChanged(IMessage message, MessageChangeType changeType)
+        {
+            if (message == null)
+            {
+                return;
+            }
+
+            try
+            {
+                InternalMessageChanged?.Invoke(this, new MessageChangedEventArgs(message, changeType));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error raising InternalMessageChanged event for message {MessageId} in session {SessionId}", 
+                    message.Id, message.SessionId);
             }
         }
 

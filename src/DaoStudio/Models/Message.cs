@@ -167,12 +167,10 @@ namespace DaoStudio
             var binaryData = new MsgBinaryData
             {
                 Name = name,
-                Data = data
+                Data = data,
+                Type = (int)type
             };
             
-            // Set the Type through the interface property
-            ((IMsgBinaryData)binaryData).Type = type;
-
             BinaryContents.Add(binaryData);
         }
     }

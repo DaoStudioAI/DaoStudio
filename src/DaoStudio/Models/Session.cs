@@ -25,6 +25,7 @@ internal partial class Session : ISession
     private IEngineService engineService;
     private IPeopleService peopleService;
     private IEngine? engine;
+    private Services.SessionService? sessionService;
 
     private bool disposedValue;
     private bool _isInitialized = false;
@@ -110,7 +111,7 @@ internal partial class Session : ISession
         IToolService toolService,
         DaoStudio.DBStorage.Models.Session sess, IPerson person, 
         ILogger<Session> logger, IPluginService pluginService, IEngineService engineService,
-        IPeopleService peopleService)
+        IPeopleService peopleService, Services.SessionService? sessionService = null)
     {
         this.messageService = messageService ?? throw new ArgumentNullException(nameof(messageService));
         this.sessionRepository = sessionRepository ?? throw new ArgumentNullException(nameof(sessionRepository));
@@ -121,6 +122,7 @@ internal partial class Session : ISession
         this.pluginService = pluginService;
         this.engineService = engineService;
         this.peopleService = peopleService ?? throw new ArgumentNullException(nameof(peopleService));
+        this.sessionService = sessionService;
         MsgMaxLoopCount = 100;
         
         // Subscribe to tool events to automatically refresh available tools
@@ -129,6 +131,12 @@ internal partial class Session : ISession
         
         // Subscribe to person changes to reload person when parameters change
         this.peopleService.PersonChanged += OnPersonChanged;
+        
+        // Subscribe to SessionService's message forwarding event if available
+        if (this.sessionService != null)
+        {
+            this.sessionService.InternalMessageChanged += OnSessionServiceMessageChanged;
+        }
     }
 
     /// <summary>
@@ -294,6 +302,32 @@ internal partial class Session : ISession
         }
     }
 
+    /// <summary>
+    /// Handles message change events from SessionService and forwards them to this session's OnMessageChanged
+    /// if they belong to this session ID. This allows multiple session instances with the same ID to stay synchronized.
+    /// </summary>
+    /// <param name="sender">The event sender (SessionService)</param>
+    /// <param name="e">The message changed event arguments</param>
+    private void OnSessionServiceMessageChanged(object? sender, MessageChangedEventArgs e)
+    {
+        try
+        {
+            // Only forward messages that belong to this session
+            if (e.Message != null && e.Message.SessionId == this.Id)
+            {
+                logger.LogDebug("Forwarding message {MessageId} change ({Change}) to session {SessionId}", 
+                    e.Message.Id, e.Change, Id);
+                    
+                // Fire this session's OnMessageChanged event
+                OnMessageChanged?.Invoke(this, e);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error forwarding message change to session {SessionId}", Id);
+        }
+    }
+
 
 
     protected virtual void Dispose(bool disposing)
@@ -312,6 +346,12 @@ internal partial class Session : ISession
                     
                     // Unsubscribe from person events
                     peopleService.PersonChanged -= OnPersonChanged;
+                    
+                    // Unsubscribe from SessionService message events
+                    if (sessionService != null)
+                    {
+                        sessionService.InternalMessageChanged -= OnSessionServiceMessageChanged;
+                    }
 
                     // Unsubscribe from engine events regardless of disposability
                     if (engine != null)
