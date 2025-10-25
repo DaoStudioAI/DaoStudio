@@ -26,6 +26,8 @@ namespace DaoStudio.Services
         private readonly ILogger<SessionService> logger;
         private readonly ILoggerFactory loggerFactory;
 
+        public event EventHandler<ISession>? SubsessionCreated;
+
         public SessionService(IMessageService messageService,
             ISessionRepository sessionRepository,
             IToolService toolService,
@@ -115,7 +117,7 @@ namespace DaoStudio.Services
                 await parentSession.UpdateSessionLastModifiedAsync();
 
                 // Fire the SubsessionCreated event
-                parentSession.FireSubsessionCreated(session);
+                SubsessionCreated?.Invoke(parentSession, session);
             }
 
             return session;

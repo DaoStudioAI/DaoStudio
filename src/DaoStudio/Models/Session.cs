@@ -41,20 +41,6 @@ internal partial class Session : ISession
     /// </summary>
     public event EventHandler<PropertyChangeNotification>? PropertyChanged;
 
-    /// <summary>
-    /// Event fired when a subsession is created.
-    /// </summary>
-    public event EventHandler<ISession>? SubsessionCreated;
-
-    /// <summary>
-    /// Fires the SubsessionCreated event when a subsession is created.
-    /// </summary>
-    /// <param name="subsession">The subsession that was created</param>
-    public void FireSubsessionCreated(ISession subsession)
-    {
-        SubsessionCreated?.Invoke(this, subsession);
-    }
-
     // Add Id property that exposes the underlying database session Id
     public long Id => dbsess.Id;
 

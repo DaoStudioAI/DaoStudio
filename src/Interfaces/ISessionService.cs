@@ -1,3 +1,5 @@
+using System;
+
 namespace DaoStudio.Interfaces
 {
     /// <summary>
@@ -6,6 +8,11 @@ namespace DaoStudio.Interfaces
     public interface ISessionService : IDisposable
     {
         #region Session Management
+
+        /// <summary>
+        /// Event fired when a subsession is created for any session.
+        /// </summary>
+        event EventHandler<ISession>? SubsessionCreated;
 
         /// <summary>
         /// Create a new session for a person

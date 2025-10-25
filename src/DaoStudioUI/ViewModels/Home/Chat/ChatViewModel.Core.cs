@@ -151,8 +151,8 @@ public partial class ChatViewModel : ObservableObject
         };
         Session.OnMessageChanged += _messageChangedHandler;
 
-        // Subscribe to the SubsessionCreated event
-        Session.SubsessionCreated += OnSubsessionCreated;
+    // Subscribe to subsession notifications from the session service
+    _sessionService.SubsessionCreated += OnSubsessionCreated;
 
         // Subscribe to the consolidated person event
         _peopleService.PersonChanged += OnPersonChanged;
@@ -302,8 +302,8 @@ public partial class ChatViewModel : ObservableObject
             _messageChangedHandler = null;
         }
 
-        // Unsubscribe from the SubsessionCreated event
-        Session.SubsessionCreated -= OnSubsessionCreated;
+    // Unsubscribe from the subsession notification event
+    _sessionService.SubsessionCreated -= OnSubsessionCreated;
 
         // Cleanup step debugging if active
         if (_stepDebuggingFilter != null)
@@ -628,6 +628,11 @@ public partial class ChatViewModel : ObservableObject
     {
         try
         {
+            if (sender is not ISession parentSession || parentSession.Id != Session.Id)
+            {
+                return;
+            }
+
             Log.Information("SubsessionCreated event fired for session {SessionId}, creating subsession window for {SubsessionId}",
                 Session.Id, subsession.Id);
 

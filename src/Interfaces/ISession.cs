@@ -128,7 +128,6 @@ namespace DaoStudio.Interfaces
 
 
         #region Session management
-        event EventHandler<ISession>? SubsessionCreated;
 
         event EventHandler<PropertyChangeNotification>? PropertyChanged;
 
@@ -136,7 +135,6 @@ namespace DaoStudio.Interfaces
 
 
         Task UpdateSessionLastModifiedAsync();
-        void FireSubsessionCreated(ISession subsession);
         #endregion
 
         #region tool calls

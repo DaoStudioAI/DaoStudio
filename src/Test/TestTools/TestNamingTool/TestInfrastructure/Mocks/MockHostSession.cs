@@ -78,8 +78,7 @@ namespace TestNamingTool.TestInfrastructure.Mocks
 
         // Session management
 #pragma warning disable CS0067 // Event is never used - this is a mock implementation
-        public event EventHandler<ISession>? SubsessionCreated;
-        public event EventHandler<PropertyChangeNotification>? PropertyChanged;
+    public event EventHandler<PropertyChangeNotification>? PropertyChanged;
 #pragma warning restore CS0067
 
         public SessionStatus SessionStatus => SessionStatus.Idle;
@@ -235,11 +234,6 @@ namespace TestNamingTool.TestInfrastructure.Mocks
                 }
             }
             return Task.CompletedTask;
-        }
-
-        public void FireSubsessionCreated(ISession subsession)
-        {
-            SubsessionCreated?.Invoke(this, subsession);
         }
 
         // Helper classes
