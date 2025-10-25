@@ -203,40 +203,33 @@
 				</Grid>
 			</Border>
 
-			<!-- Transitioning content for session navigation -->
-			<TransitioningContentControl Grid.Row="1"
-											Content="{Binding CurrentSessionContent}"
-											IsEnabled="{Binding !IsNavigating}">
-				<TransitioningContentControl.DataTemplates>
-					<DataTemplate DataType="navModels:ChatSessionContent">
-						<!-- Chat messages area -->
-						<ScrollViewer VerticalScrollBarVisibility="Auto"
-									 HorizontalScrollBarVisibility="Disabled"
-									 Padding="16"
-									 Name="MessageScroller"
-									 Loaded="OnMessageScrollerLoaded"
-									 Unloaded="OnMessageScrollerUnloaded">
-							<ItemsControl ItemsSource="{Binding ViewModel.Messages}">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<StackPanel Spacing="16" />
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-								<ItemsControl.DataTemplates>
-									<selectors:ChatMessageTemplateSelector
-										x:DataType="models:ChatMessage"
-										TimeMessageTemplate="{StaticResource TimeMessageTemplate}"
-										SystemMessageTemplate="{StaticResource SystemMessageTemplate}"
-										UserToolMessageTemplate="{StaticResource UserToolMessageTemplate}"
-										UserMessageTemplate="{StaticResource UserMessageTemplate}"
-										InformationMessageTemplate="{StaticResource InformationMessageTemplate}"
-										DefaultTemplate="{StaticResource UserMessageTemplate}"/>
-								</ItemsControl.DataTemplates>
-							</ItemsControl>
-						</ScrollViewer>
-					</DataTemplate>
-				</TransitioningContentControl.DataTemplates>
-			</TransitioningContentControl>
+			<!-- Session content without animated transitions -->
+			<ScrollViewer Grid.Row="1"
+						 DataContext="{Binding CurrentSessionContent.ViewModel}"
+						 VerticalScrollBarVisibility="Auto"
+						 HorizontalScrollBarVisibility="Disabled"
+						 Padding="16"
+						 Name="MessageScroller"
+						 Loaded="OnMessageScrollerLoaded"
+						 Unloaded="OnMessageScrollerUnloaded">
+				<ItemsControl ItemsSource="{Binding Messages}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Spacing="16" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.DataTemplates>
+						<selectors:ChatMessageTemplateSelector
+							x:DataType="models:ChatMessage"
+							TimeMessageTemplate="{StaticResource TimeMessageTemplate}"
+							SystemMessageTemplate="{StaticResource SystemMessageTemplate}"
+							UserToolMessageTemplate="{StaticResource UserToolMessageTemplate}"
+							UserMessageTemplate="{StaticResource UserMessageTemplate}"
+							InformationMessageTemplate="{StaticResource InformationMessageTemplate}"
+							DefaultTemplate="{StaticResource UserMessageTemplate}"/>
+					</ItemsControl.DataTemplates>
+				</ItemsControl>
+			</ScrollViewer>
 
 			<!-- Input area -->
 			<Border Grid.Row="2"

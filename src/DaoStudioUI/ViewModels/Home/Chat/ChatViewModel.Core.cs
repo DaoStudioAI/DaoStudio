@@ -88,9 +88,6 @@ public partial class ChatViewModel : ObservableObject
     private ObservableCollection<BreadcrumbItem> _breadcrumbItems = new();
 
     [ObservableProperty]
-    private bool _isNavigating;
-
-    [ObservableProperty]
     private NavigationDirection _navigationDirection = NavigationDirection.Forward;
 
     [ObservableProperty]
@@ -440,7 +437,7 @@ public partial class ChatViewModel : ObservableObject
     [RelayCommand]
     private async Task NavigateToSessionAsync(int sessionIndex)
     {
-        if (NavigationStack == null || IsNavigating)
+        if (NavigationStack == null)
             return;
 
         var currentIndex = NavigationStack.CurrentIndex;
@@ -467,7 +464,7 @@ public partial class ChatViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanNavigateBack))]
     private async Task NavigateBackAsync()
     {
-        if (NavigationStack == null || !NavigationStack.CanNavigateBack || IsNavigating)
+        if (NavigationStack == null || !NavigationStack.CanNavigateBack)
             return;
 
         await NavigateToSessionAsync(NavigationStack.CurrentIndex - 1);
@@ -484,7 +481,7 @@ public partial class ChatViewModel : ObservableObject
     [RelayCommand]
     private async Task NavigateToChildSessionAsync(SessionNavigationItem childItem)
     {
-        if (NavigationStack == null || IsNavigating)
+        if (NavigationStack == null)
             return;
 
         await PerformNavigationAsync(childItem, NavigationDirection.Forward);
@@ -497,7 +494,6 @@ public partial class ChatViewModel : ObservableObject
     {
         try
         {
-            IsNavigating = true;
             NavigationDirection = direction;
 
             // Save current session state
@@ -524,8 +520,6 @@ public partial class ChatViewModel : ObservableObject
         }
         finally
         {
-            IsNavigating = false;
-            // Notify that navigation state changed
             NavigateBackCommand?.NotifyCanExecuteChanged();
         }
     }
