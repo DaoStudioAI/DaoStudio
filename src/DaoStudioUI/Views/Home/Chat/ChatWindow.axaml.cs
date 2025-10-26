@@ -73,12 +73,14 @@ namespace DaoStudioUI.Views
                 if (_messageScroller != null)
                 {
                     _messageScroller.PropertyChanged -= OnMessageScrollerPropertyChanged;
+                    _messageScroller.DataContextChanged -= OnMessageScrollerDataContextChanged;
                 }
 
                 _messageScroller = scroller;
             }
 
             _messageScroller.PropertyChanged += OnMessageScrollerPropertyChanged;
+            _messageScroller.DataContextChanged += OnMessageScrollerDataContextChanged;
             RestoreScrollPosition();
         }
 
@@ -87,12 +89,19 @@ namespace DaoStudioUI.Views
             if (sender is ScrollViewer scroller)
             {
                 scroller.PropertyChanged -= OnMessageScrollerPropertyChanged;
+                scroller.DataContextChanged -= OnMessageScrollerDataContextChanged;
 
                 if (ReferenceEquals(_messageScroller, scroller))
                 {
                     _messageScroller = null;
                 }
             }
+        }
+
+        private void OnMessageScrollerDataContextChanged(object? sender, EventArgs e)
+        {
+            // When DataContext changes (e.g., when navigating between sessions), restore scroll position
+            RestoreScrollPosition();
         }
 
         private void OnMessageScrollerPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
