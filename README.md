@@ -53,6 +53,8 @@ You can also use lower-cost models for specific concepts or entire scripts, and 
 
 **📝 Note:** Traditional agent benchmarks like browsecomp, are not meaningful measures for Dao Studio, as it can achieve perfect scores on any such benchmark through proper scripting.
 
+For instance, users can leverage the Naming tool to define detailed prompts for specific actions such as clicking, finding text, or inputting data. This enables achieving automation goals with lower-cost models that may actually outperform cutting-edge expensive models, thanks to the precision of human-crafted, context-specific prompts. In most scenarios, AI automation is needed for a limited set of websites or applications. In such cases, Natural Language Programming with cost-effective models provides an deterministic, efficient and economical solution to get the job done.
+
 ## 🔍 Use Cases
 
 Natural Language Programming is ideal for:

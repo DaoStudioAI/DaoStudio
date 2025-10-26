@@ -1,4 +1,3 @@
-using DaoStudioUI.Services;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -6,20 +5,25 @@ using CommunityToolkit.Mvvm.Input;
 using DaoStudio;
 using DaoStudio.Common.Plugins;
 using DaoStudio.Interfaces;
-using DesktopUI.Resources;
+using DaoStudioUI.Services;
 using DesktopUI.Models;
+using DesktopUI.Resources;
 using DesktopUI.ViewModels.Home.Chat;
 using DryIoc;
 using Serilog;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DaoStudioUI.ViewModels;
 
 public partial class ChatViewModel : ObservableObject
 {
+    // Lock for subsession navigation to prevent concurrent access issues
+    private readonly SemaphoreSlim _subsessionNavigationLock = new SemaphoreSlim(1, 1);
+
     // Event for session deletion notification (changed from static to instance)
     public event EventHandler<long>? SessionDeleted;
 
@@ -627,68 +631,103 @@ public partial class ChatViewModel : ObservableObject
                 return;
             }
 
-            Log.Information("SubsessionCreated event fired for session {SessionId}, creating subsession window for {SubsessionId}",
-                Session.Id, subsession.Id);
-
-            await Dispatcher.UIThread.InvokeAsync(async () =>
+            if (NavigationStack == null)
             {
-                try
-                {
-                    // Get the person/model for the subsession
-                    var currentPerson = subsession.CurrentPerson;
+                Log.Warning("Navigation stack not initialized; skipping automatic subsession navigation for {SubsessionId}", subsession.Id);
+                return;
+            }
 
-                    // Convert IPerson to Person by fetching from DaoStudio
-                    var person = await _peopleService.GetPersonAsync(currentPerson.Name);
-                    if (person == null)
+            await _subsessionNavigationLock.WaitAsync();
+            try
+            {
+
+                // Check if the subsession's parent is the currently active session
+                // This ensures we only navigate when the direct parent is active, not when a sibling or ancestor is active
+                var currentSessionId = NavigationStack.CurrentSession?.Session.Id;
+                if (currentSessionId != subsession.ParentSessionId)
+                {
+                    Log.Debug("Subsession {SubsessionId} created with parent {ParentId} but current session is {CurrentId}; no automatic navigation",
+                        subsession.Id, subsession.ParentSessionId, currentSessionId);
+                    return;
+                }
+
+                await Dispatcher.UIThread.InvokeAsync(async () =>
+                {
+                    try
                     {
-                        Log.Warning("Could not find person {PersonName} for subsession", currentPerson.Name);
-                        return;
+                        var existingItem = FindNavigationItem(subsession.Id);
+                        if (existingItem != null)
+                        {
+                            await PerformNavigationAsync(existingItem, NavigationDirection.Forward);
+                            return;
+                        }
+
+                        var navigationItem = await CreateSubsessionNavigationItemAsync(subsession);
+                        if (navigationItem == null)
+                        {
+                            return;
+                        }
+
+                        NavigationStack.PushSession(navigationItem);
+                        await PerformNavigationAsync(navigationItem, NavigationDirection.Forward);
+
+                        Log.Information("Navigated to subsession {SubsessionId} within current window", subsession.Id);
                     }
-
-                    // Create a new ChatViewModel for the subsession using factory
-                    var getChatViewModel = App.GetContainer().Resolve<Func<ISession, IPerson, Avalonia.Controls.Window?, ChatViewModel>>();
-                    var subsessionViewModel = getChatViewModel(subsession, person, _currentWindow);
-
-                    // Subscribe to session events to keep parent updated
-                    subsessionViewModel.SessionDeleted += (s, sessionId) =>
+                    catch (Exception ex)
                     {
-                        // Handle subsession deletion if needed
-                        Log.Information("Subsession {SubsessionId} deleted", sessionId);
-                    };
-
-                    subsessionViewModel.SessionUpdated += (s, sessionId) =>
-                    {
-                        // Handle subsession updates if needed
-                        Log.Information("Subsession {SubsessionId} updated", sessionId);
-                    };
-
-                    // Create and show the subsession window
-                    var subsessionWindow = new Views.ChatWindow();
-                    subsessionWindow.SetViewModel(subsessionViewModel);
-
-                    // Set window title to indicate it's a subsession
-                    subsessionWindow.Title = $"Subsession - {person.Name}";
-
-                    // Show the window
-                    subsessionWindow.Show();
-
-                    Log.Information("Successfully opened subsession window for session {SubsessionId}", subsession.Id);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Failed to create subsession window for session {SubsessionId}", subsession.Id);
-
-                    // Show error to user
-                    await DialogService.ShowExceptionAsync(
-                        ex,
-                        "Failed to open subsession window",
-                        _currentWindow);
-                }
-            });
+                        Log.Error(ex, "Failed to navigate to subsession {SubsessionId}", subsession.Id);
+                        await DialogService.ShowExceptionAsync(
+                            ex,
+                            "Failed to open subsession",
+                            _currentWindow);
+                    }
+                });
+            }
+            finally
+            {
+                _subsessionNavigationLock.Release();
+            }
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Error in OnSubsessionCreated event handler for session {SessionId}", Session.Id);
         }
+    }
+
+    private SessionNavigationItem? FindNavigationItem(long sessionId)
+    {
+        return NavigationStack?.Sessions.FirstOrDefault(item => item.Session.Id == sessionId);
+    }
+
+    private async Task<SessionNavigationItem?> CreateSubsessionNavigationItemAsync(ISession subsession)
+    {
+        var currentPerson = subsession.CurrentPerson;
+        var person = await _peopleService.GetPersonAsync(currentPerson.Name);
+        if (person == null)
+        {
+            Log.Warning("Could not find person {PersonName} for subsession {SubsessionId}", currentPerson.Name, subsession.Id);
+            return null;
+        }
+
+        var getChatViewModel = App.GetContainer().Resolve<Func<ISession, IPerson, Window?, ChatViewModel>>();
+        var subsessionViewModel = getChatViewModel(subsession, person, _currentWindow);
+
+        subsessionViewModel.NavigationStack = NavigationStack;
+
+        subsessionViewModel.SessionDeleted += (s, sessionId) =>
+        {
+            Log.Information("Subsession {SubsessionId} deleted", sessionId);
+        };
+
+        subsessionViewModel.SessionUpdated += (s, sessionId) =>
+        {
+            Log.Information("Subsession {SubsessionId} updated", sessionId);
+        };
+
+        return new SessionNavigationItem(subsession, person)
+        {
+            ViewModel = subsessionViewModel,
+            Title = person.Name
+        };
     }
 }
