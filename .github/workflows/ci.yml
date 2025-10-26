@@ -37,8 +37,6 @@ jobs:
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json', '**/*.csproj') }}
-        restore-path: |
-          ~/.nuget/packages
 
     - name: Restore dependencies
       run: dotnet restore ${{ env.SOLUTION_PATH }}
@@ -47,7 +45,7 @@ jobs:
       run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
 
     - name: Run unit tests
-      if: matrix.os == 'windows-latest'
+      if:  always()
       run: dotnet test ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" --filter "FullyQualifiedName!~Performance"
 
     - name: Upload test results

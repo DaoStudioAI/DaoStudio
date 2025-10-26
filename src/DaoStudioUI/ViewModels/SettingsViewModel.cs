@@ -243,12 +243,13 @@ namespace DaoStudioUI.ViewModels
                 if (_updateService == null)
                     return;
 
-                var summary = await _updateService.GetAppcastSummaryAsync(CurrentVersion);
-                if (summary == null)
-                    return;
 
-                Dispatcher.UIThread.Post(() =>
+                await Dispatcher.UIThread.InvokeAsync(async() =>
                 {
+                    var summary = await _updateService.GetAppcastSummaryAsync(CurrentVersion);
+                    if (summary == null)
+                        return;
+
                     AppCastUrl = summary.AppCastUrl ?? string.Empty;
                     LatestVersion = summary.LatestVersion ?? string.Empty;
                     BuildTime = FormatDate(summary.CurrentPublishedOn);

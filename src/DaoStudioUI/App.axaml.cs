@@ -9,6 +9,7 @@ using DaoStudioUI.Extensions;
 using DaoStudioUI.Services;
 using DaoStudioUI.Utilities;
 using Avalonia;
+using Avalonia.Threading;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
@@ -101,11 +102,15 @@ namespace DaoStudioUI
                     var updateService = Container.Resolve<UpdateService>();
                     updateService.Initialize(desktop.MainWindow);
                     
-                    // Start automatic update checking after a short delay
+                    // Start automatic update checking after a short delay and ensure it runs on the UI thread
                     Task.Run(async () =>
                     {
-                        await Task.Delay(5000); // Wait 5 seconds after startup
-                        updateService.StartAutomaticUpdateCheck();
+                        await Task.Delay(2000); // Wait 2 seconds after startup
+                        // Ensure StartAutomaticUpdateCheck runs on the UI thread
+                        _ = Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            updateService.StartAutomaticUpdateCheck();
+                        });
                     });
                     
                     // Handle window closing to minimize to tray instead of closing

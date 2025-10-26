@@ -227,7 +227,7 @@ namespace DaoStudioUI.Services
             {
                 _logger.LogInformation("Starting automatic update check loop");
                 // Start the automatic update check loop
-                _sparkleUpdater.StartLoop(true); // true = check immediately on start
+                _sparkleUpdater.StartLoop(true, true); // true = check immediately on start
             }
             catch (Exception ex)
             {
