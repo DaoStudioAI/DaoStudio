@@ -151,10 +151,12 @@ namespace DaoStudioUI.Services
             {
                 _logger.LogInformation("Initializing UpdateService");
                 
-                // Using the specified GitHub releases URL
-                // Note: For a real app, you would use your own app cast XML/JSON file
-                // This example uses unsafe mode for simplicity - in production, use proper signatures
-                _appCastUrl = "https://github.com/DaoStudioAI/DaoStudio/releases.atom";
+                // NetSparkle doesn't support GitHub Atom feeds directly
+                // We need to use a proper appcast format or GitHub releases integration
+                // For now, using a generated appcast URL that points to a NetSparkle-compatible format
+                // Alternative: Create appcast.xml in your repo or use a service like sparkle-project.org
+                _appCastUrl = "https://raw.githubusercontent.com/DaoStudioAI/DaoStudio/main/appcast.xml";
+                
                 _sparkleUpdater = new SparkleUpdater(
                     _appCastUrl, // App cast URL
                     new Ed25519Checker(SecurityMode.Unsafe) // In production, use proper Ed25519 signatures

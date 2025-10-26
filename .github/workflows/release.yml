@@ -175,6 +175,7 @@ jobs:
         path: ./artifacts
 
     - name: Create Release
+      id: create_release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: v${{ needs.get-version.outputs.version }}
@@ -202,3 +203,18 @@ jobs:
           3. Run the DaoStudio executable
           
           For more information, see the [README](https://github.com/${{ github.repository }}/blob/main/README.md).
+    
+    - name: Generate appcast file
+      shell: pwsh
+      run: |
+        $version = "${{ needs.get-version.outputs.version }}"
+        $releaseUrl = "https://github.com/${{ github.repository }}/releases/tag/v$version"
+        .github/scripts/generate-appcast.ps1 -Version $version -ReleaseUrl $releaseUrl -OutputFile appcast.xml
+    
+    - name: Commit and push appcast file
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add appcast.xml
+        git diff --staged --quiet || git commit -m "Update appcast.xml for v${{ needs.get-version.outputs.version }}"
+        git push origin HEAD:main
