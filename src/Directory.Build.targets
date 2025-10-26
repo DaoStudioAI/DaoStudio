@@ -9,6 +9,14 @@
     </ProjectReference>
   </ItemGroup>
 
+  <!-- For test projects, ensure all project references are copied -->
+  <ItemGroup Condition="$([System.String]::Copy('$(MSBuildProjectDirectory)').Contains('\Test\'))">
+    <ProjectReference Update="@(ProjectReference)">
+      <!-- Force copy all dependencies to test output directory -->
+      <Private>true</Private>
+    </ProjectReference>
+  </ItemGroup>
+
   <!-- Post-build event for DesktopUI to ensure plugin dependencies are available -->
   <Target Name="EnsurePluginDependencies" AfterTargets="Build" Condition="'$(MSBuildProjectName)' == 'DesktopUI'">
     <Message Text="Tool outputs are located in $(BaseOutputPath)Plugins\" Importance="high" />

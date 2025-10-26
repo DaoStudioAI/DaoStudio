@@ -12,6 +12,13 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
+  <!-- Additional properties for test projects to ensure all dependencies are copied -->
+  <PropertyGroup Condition="$([System.String]::Copy('$(MSBuildProjectDirectory)').Contains('\Test\'))">
+    <!-- Force copy of project references for test projects -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <PrivateAssets></PrivateAssets>
+  </PropertyGroup>
+
   <!-- Check if this is a Tool project based on path -->
   <PropertyGroup>
     <!-- Detect tool projects (must live directly under $(SolutionDir)Tools\) -->
@@ -28,8 +35,8 @@
     <OutputPath Condition="'$(IsToolProject)' == 'true' AND '$(OutputPath)' == ''">$(BaseOutputPath)Plugins\$(MSBuildProjectName)\</OutputPath>
     
     <!-- Test projects go to Tests folder -->
-    <!-- Route all test projects to Output/Tests -->
-    <OutputPath Condition="$([System.String]::Copy('$(MSBuildProjectDirectory)').Contains('\Test\')) AND '$(OutputPath)' == ''">$(SolutionDir)BuildOutput\Tests\</OutputPath>
+    <!-- Route all test projects to Output/Tests with unique subdirectories -->
+    <OutputPath Condition="$([System.String]::Copy('$(MSBuildProjectDirectory)').Contains('\Test\')) AND '$(OutputPath)' == ''">$(SolutionDir)BuildOutput\Tests\$(MSBuildProjectName)\</OutputPath>
     
     <!-- All other projects (DesktopUI and its core dependencies) go to Output/Build root -->
     <OutputPath Condition="'$(OutputPath)' == ''">$(BaseOutputPath)</OutputPath>
