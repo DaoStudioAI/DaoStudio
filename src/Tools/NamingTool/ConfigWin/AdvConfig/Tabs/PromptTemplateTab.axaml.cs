@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Naming.AdvConfig.ViewModels;
 using Naming.AdvConfig.Events;
@@ -218,6 +219,24 @@ namespace Naming.AdvConfig.Tabs
                 Lines = _viewModel.TemplateLines,
                 ParameterCount = _viewModel.ParameterCount
             };
+        }
+
+        /// <summary>
+        /// Handle GotFocus event for the prompt template text box
+        /// Auto-populate with input parameter placeholders when text box is empty
+        /// </summary>
+        private void OnPromptTemplateGotFocus(object? sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox textBox && string.IsNullOrWhiteSpace(textBox.Text))
+            {
+                _viewModel?.AutoPopulateTemplate();
+                
+                // Set cursor position at the end
+                if (_viewModel != null && !string.IsNullOrEmpty(_viewModel.PromptTemplate))
+                {
+                    textBox.CaretIndex = _viewModel.PromptTemplate.Length;
+                }
+            }
         }
     }
 

@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Naming.AdvConfig.Events;
+using Naming.ParallelExecution;
 
 namespace Naming.AdvConfig.ViewModels
 {
@@ -130,6 +131,166 @@ namespace Naming.AdvConfig.ViewModels
             PromptTemplate = string.Empty;
         }
 
+        /// <summary>
+        /// Auto-populate the template with appropriate parameter placeholders based on configuration
+        /// </summary>
+        public void AutoPopulateTemplate()
+        {
+            var placeholders = new List<string>();
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+
+            void AddPlaceholder(string value)
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    return;
+                }
+
+                if (seen.Add(value))
+                {
+                    placeholders.Add(value);
+                }
+            }
+
+            void AddBlankLine()
+            {
+                if (placeholders.Count == 0)
+                {
+                    return;
+                }
+
+                if (placeholders[placeholders.Count - 1].Length == 0)
+                {
+                    return;
+                }
+
+                placeholders.Add(string.Empty);
+            }
+
+            bool isParallelEnabled = _config.ParallelConfig != null &&
+                                     _config.ParallelConfig.ExecutionType != ParallelExecutionType.None;
+
+            if (isParallelEnabled)
+            {
+                AddPlaceholder("{{_Parameter.Name}}");
+                AddPlaceholder("{{_Parameter.Value}}");
+
+                var parallelConfig = _config.ParallelConfig!;
+
+                switch (parallelConfig.ExecutionType)
+                {
+                    case ParallelExecutionType.ParameterBased:
+                        foreach (var parameter in _config.InputParameters ?? Enumerable.Empty<ParameterConfig>())
+                        {
+                            foreach (var nested in EnumerateParallelValuePlaceholders(parameter, "_Parameter.Value"))
+                            {
+                                AddPlaceholder(nested);
+                            }
+                        }
+                        break;
+
+                    case ParallelExecutionType.ListBased:
+                        var listParameter = _config.InputParameters?.FirstOrDefault(p =>
+                            p != null &&
+                            !string.IsNullOrWhiteSpace(p.Name) &&
+                            string.Equals(p.Name, parallelConfig.ListParameterName, StringComparison.Ordinal));
+
+                        if (listParameter != null)
+                        {
+                            var elementConfig = listParameter.ArrayElementConfig ?? listParameter;
+                            foreach (var nested in EnumerateParallelValuePlaceholders(elementConfig, "_Parameter.Value"))
+                            {
+                                AddPlaceholder(nested);
+                            }
+                        }
+                        break;
+
+                    case ParallelExecutionType.ExternalList:
+                        // Value is a string; no additional placeholders beyond _Parameter.Value
+                        break;
+                }
+            }
+
+            if (_config.InputParameters != null && _config.InputParameters.Count > 0)
+            {
+                if (placeholders.Count > 0)
+                {
+                    AddBlankLine();
+                }
+
+                foreach (var parameter in _config.InputParameters)
+                {
+                    foreach (var placeholder in EnumerateParameterPlaceholders(parameter))
+                    {
+                        AddPlaceholder(placeholder);
+                    }
+                }
+            }
+
+            if (placeholders.Count > 0)
+            {
+                PromptTemplate = string.Join("\n", placeholders);
+            }
+        }
+
+        private static IEnumerable<string> EnumerateParameterPlaceholders(ParameterConfig? parameter, string? parentPath = null)
+        {
+            if (parameter == null || string.IsNullOrWhiteSpace(parameter.Name))
+            {
+                yield break;
+            }
+
+            var currentPath = string.IsNullOrEmpty(parentPath) ? parameter.Name : $"{parentPath}.{parameter.Name}";
+            yield return $"{{{{{currentPath}}}}}";
+
+            if (parameter.IsObject && parameter.ObjectProperties != null)
+            {
+                foreach (var property in parameter.ObjectProperties)
+                {
+                    foreach (var nested in EnumerateParameterPlaceholders(property, currentPath))
+                    {
+                        yield return nested;
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<string> EnumerateParallelValuePlaceholders(ParameterConfig? parameter, string basePath)
+        {
+            if (parameter == null)
+            {
+                yield break;
+            }
+
+            if (parameter.IsArray && parameter.ArrayElementConfig != null)
+            {
+                foreach (var nested in EnumerateParallelValuePlaceholders(parameter.ArrayElementConfig, basePath))
+                {
+                    yield return nested;
+                }
+                yield break;
+            }
+
+            if (parameter.IsObject && parameter.ObjectProperties != null)
+            {
+                foreach (var property in parameter.ObjectProperties)
+                {
+                    if (string.IsNullOrWhiteSpace(property.Name))
+                    {
+                        continue;
+                    }
+
+                    var currentPath = $"{basePath}.{property.Name}";
+                    yield return $"{{{{{currentPath}}}}}";
+
+                    foreach (var nested in EnumerateParallelValuePlaceholders(property, currentPath))
+                    {
+                        yield return nested;
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Helper Methods
@@ -173,17 +334,6 @@ namespace Naming.AdvConfig.ViewModels
             return _config.InputParameters?.Any(p => p.Name.Equals(parameterName, StringComparison.OrdinalIgnoreCase)) ?? false;
         }
 
-        private bool AreParameterBracesBalanced(string template)
-        {
-            int openCount = 0;
-            foreach (char c in template)
-            {
-                if (c == '{') openCount++;
-                else if (c == '}') openCount--;
-                if (openCount < 0) return false;
-            }
-            return openCount == 0;
-        }
 
         private void OnParameterCountChanged()
         {
