@@ -161,7 +161,7 @@ public class SessionServiceMessageForwardingTests : IDisposable
     }
 
     [Fact]
-    public async Task CreateSession_WithParentSession_FiresSubsessionCreatedEvent()
+    public async Task CreateSession_WithParentSession_FiresSessionEventForSubsession()
     {
         // Arrange
         var parentSessionId = 1L;
@@ -211,23 +211,22 @@ public class SessionServiceMessageForwardingTests : IDisposable
         _mockMessageService.Setup(ms => ms.SaveMessageAsync(It.IsAny<IMessage>(), It.IsAny<bool>()))
             .ReturnsAsync(true);
 
-        ISession? capturedParentSession = null;
-        ISession? capturedChildSession = null;
+        SessionEventArgs? capturedEventArgs = null;
 
-        _sessionService.SubsessionCreated += (sender, childSession) =>
+        _sessionService.SessionEvent += (sender, e) =>
         {
-            capturedParentSession = sender as ISession;
-            capturedChildSession = childSession;
+            capturedEventArgs = e;
         };
 
         // Act
         var session = await _sessionService.CreateSession(person, parentSessionId);
 
         // Assert
-        capturedParentSession.Should().NotBeNull("SubsessionCreated event should fire");
-        capturedChildSession.Should().NotBeNull("Child session should be passed in event");
-        capturedChildSession.Should().Be(session);
-        capturedParentSession!.Id.Should().Be(parentSessionId);
+        capturedEventArgs.Should().NotBeNull("SessionEvent should fire");
+        capturedEventArgs!.EventType.Should().Be(SessionEventType.Created);
+        capturedEventArgs.Session.Should().Be(session);
+        capturedEventArgs.ParentSession.Should().NotBeNull();
+        capturedEventArgs.ParentSession!.Id.Should().Be(parentSessionId);
     }
 
     [Fact]

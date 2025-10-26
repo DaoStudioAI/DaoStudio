@@ -27,7 +27,7 @@ namespace DaoStudio.Services
         private readonly ILogger<SessionService> logger;
         private readonly ILoggerFactory loggerFactory;
 
-        public event EventHandler<ISession>? SubsessionCreated;
+        public event EventHandler<SessionEventArgs>? SessionEvent;
 
         /// <summary>
         /// Internal event that forwards message change notifications to sessions
@@ -123,8 +123,13 @@ namespace DaoStudio.Services
                 // Update parent's last modified timestamp
                 await parentSession.UpdateSessionLastModifiedAsync();
 
-                // Fire the SubsessionCreated event
-                SubsessionCreated?.Invoke(parentSession, session);
+                // Fire the SessionEvent for subsession creation
+                SessionEvent?.Invoke(this, new SessionEventArgs(SessionEventType.Created, session, parentSession));
+            }
+            else
+            {
+                // Fire the SessionEvent for regular session creation
+                SessionEvent?.Invoke(this, new SessionEventArgs(SessionEventType.Created, session));
             }
 
             return session;

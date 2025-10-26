@@ -10,9 +10,9 @@ namespace DaoStudio.Interfaces
         #region Session Management
 
         /// <summary>
-        /// Event fired when a subsession is created for any session.
+        /// Event fired when a session is created, a subsession is created, or a session is closed.
         /// </summary>
-        event EventHandler<ISession>? SubsessionCreated;
+        event EventHandler<SessionEventArgs>? SessionEvent;
 
         /// <summary>
         /// Create a new session for a person

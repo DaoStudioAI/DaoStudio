@@ -152,8 +152,8 @@ public partial class ChatViewModel : ObservableObject
         };
         Session.OnMessageChanged += _messageChangedHandler;
 
-    // Subscribe to subsession notifications from the session service
-    _sessionService.SubsessionCreated += OnSubsessionCreated;
+    // Subscribe to session event notifications from the session service
+    _sessionService.SessionEvent += OnSessionEvent;
 
         // Subscribe to the consolidated person event
         _peopleService.PersonChanged += OnPersonChanged;
@@ -303,8 +303,8 @@ public partial class ChatViewModel : ObservableObject
             _messageChangedHandler = null;
         }
 
-    // Unsubscribe from the subsession notification event
-    _sessionService.SubsessionCreated -= OnSubsessionCreated;
+    // Unsubscribe from the session event notification
+    _sessionService.SessionEvent -= OnSessionEvent;
 
         // Cleanup step debugging if active
         if (_stepDebuggingFilter != null)
@@ -618,19 +618,28 @@ public partial class ChatViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Handles the SubsessionCreated event by opening a new chat window for the subsession
+    /// Handles the SessionEvent by processing different session event types
     /// </summary>
-    /// <param name="sender">The parent session that created the subsession</param>
-    /// <param name="subsession">The newly created subsession</param>
-    private async void OnSubsessionCreated(object? sender, ISession subsession)
+    /// <param name="sender">The session service that raised the event</param>
+    /// <param name="e">The session event arguments</param>
+    private async void OnSessionEvent(object? sender, SessionEventArgs e)
     {
+        // Only handle subsession creation events (Created with ParentSession)
+        if (e.EventType != SessionEventType.Created || e.ParentSession == null)
+        {
+            return;
+        }
+
+        // Only process if the parent session matches our current session
+        if (e.ParentSession.Id != Session.Id)
+        {
+            return;
+        }
+
+        var subsession = e.Session;
+
         try
         {
-            if (sender is not ISession parentSession || parentSession.Id != Session.Id)
-            {
-                return;
-            }
-
             if (NavigationStack == null)
             {
                 Log.Warning("Navigation stack not initialized; skipping automatic subsession navigation for {SubsessionId}", subsession.Id);
@@ -690,7 +699,7 @@ public partial class ChatViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error in OnSubsessionCreated event handler for session {SessionId}", Session.Id);
+            Log.Error(ex, "Error in OnSessionEvent handler for session {SessionId}", Session.Id);
         }
     }
 

@@ -45,6 +45,7 @@ The foundation of our NLP is **Naming** — the ability to arbitrarily redefine 
 If you're familiar with philosophy, this is somewhat similar to Wittgenstein's language games or the Chinese concept of 名家 (School of Names).
 
 NLP is simple and intuitive, making it ideal for domain experts who want to automate tasks and solve problems without traditional programming.
+Users don't need to understand concepts like agent, subagent, workflow, orchestration, agent protocol, or multiple agents to use NLP effectively.
 
 #### 🎯 Capabilities
 
