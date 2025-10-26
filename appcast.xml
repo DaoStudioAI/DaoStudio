@@ -6,64 +6,62 @@
     <description>DaoStudio Updates</description>
     <language>en</language>
     
-    <!-- v0.1.1 removed; will be re-added when you re-run the release workflow -->
-    
     <item>
-      <title>DaoStudio v0.1.0</title>
-      <link>https://github.com/DaoStudioAI/DaoStudio/releases/tag/v0.1.0</link>
-      <sparkle:version>0.1.0</sparkle:version>
+      <title>DaoStudio v0.1.1</title>
+      <link>https://github.com/DaoStudioAI/DaoStudio/releases/tag/v0.1.1</link>
+      <sparkle:version>0.1.1</sparkle:version>
       <description><![CDATA[
-        <h2>DaoStudio v0.1.0</h2>
-        <p>Download the appropriate package for your platform from the <a href="https://github.com/DaoStudioAI/DaoStudio/releases/tag/v0.1.0">release page</a>.</p>
+        <h2>DaoStudio v0.1.1</h2>
+        <p>Download the appropriate package for your platform from the <a href="https://github.com/DaoStudioAI/DaoStudio/releases/tag/v0.1.1">release page</a>.</p>
       ]]></description>
-      <pubDate>Thu, 23 Oct 2025 17:51:38 GMT</pubDate>
+      <pubDate>Sun, 26 Oct 2025 15:27:56 GMT</pubDate>
       
       <!-- Windows x64 -->
       <enclosure 
-        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.0/DaoStudio-Windows-x64-v0.1.0.zip"
-        sparkle:version="0.1.0"
+        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.1/DaoStudio-Windows-x64-v0.1.1.zip"
+        sparkle:version="0.1.1"
         sparkle:os="windows"
         type="application/zip" />
       
       <!-- Windows x86 -->
       <enclosure 
-        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.0/DaoStudio-Windows-x86-v0.1.0.zip"
-        sparkle:version="0.1.0"
+        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.1/DaoStudio-Windows-x86-v0.1.1.zip"
+        sparkle:version="0.1.1"
         sparkle:os="windows"
         type="application/zip" />
       
       <!-- Windows ARM64 -->
       <enclosure 
-        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.0/DaoStudio-Windows-ARM64-v0.1.0.zip"
-        sparkle:version="0.1.0"
+        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.1/DaoStudio-Windows-ARM64-v0.1.1.zip"
+        sparkle:version="0.1.1"
         sparkle:os="windows"
         type="application/zip" />
       
       <!-- Linux x64 -->
       <enclosure 
-        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.0/DaoStudio-Linux-x64-v0.1.0.zip"
-        sparkle:version="0.1.0"
+        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.1/DaoStudio-Linux-x64-v0.1.1.zip"
+        sparkle:version="0.1.1"
         sparkle:os="linux"
         type="application/zip" />
       
       <!-- Linux ARM64 -->
       <enclosure 
-        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.0/DaoStudio-Linux-ARM64-v0.1.0.zip"
-        sparkle:version="0.1.0"
+        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.1/DaoStudio-Linux-ARM64-v0.1.1.zip"
+        sparkle:version="0.1.1"
         sparkle:os="linux"
         type="application/zip" />
       
       <!-- macOS x64 -->
       <enclosure 
-        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.0/DaoStudio-macOS-x64-v0.1.0.zip"
-        sparkle:version="0.1.0"
+        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.1/DaoStudio-macOS-x64-v0.1.1.zip"
+        sparkle:version="0.1.1"
         sparkle:os="macos"
         type="application/zip" />
       
       <!-- macOS ARM64 -->
       <enclosure 
-        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.0/DaoStudio-macOS-ARM64-v0.1.0.zip"
-        sparkle:version="0.1.0"
+        url="https://github.com/DaoStudioAI/DaoStudio/releases/download/v0.1.1/DaoStudio-macOS-ARM64-v0.1.1.zip"
+        sparkle:version="0.1.1"
         sparkle:os="macos"
         type="application/zip" />
     </item>
