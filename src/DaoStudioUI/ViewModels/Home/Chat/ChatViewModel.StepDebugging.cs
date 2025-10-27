@@ -54,6 +54,7 @@ public partial class ChatViewModel
         // Update on UI thread
         Dispatcher.UIThread.Post(() =>
         {
+            IsWaitingForStep = isWaiting;
             Log.Information("Step debugging waiting state changed to {IsWaiting} for session {SessionId}", 
                 isWaiting, Session.Id);
         });

@@ -380,15 +380,25 @@
 					HorizontalAlignment="Center"
 					Margin="0,0,0,16"
 					IsVisible="{Binding IsStreaming}">
-				<Button Command="{Binding CancelStreamingCommand}"
-						HorizontalAlignment="Center"
-						Classes="accent"
-						Padding="16,8">
-					<StackPanel Orientation="Horizontal" Spacing="8">
-						<ui:SymbolIcon Symbol="Cancel"/>
-						<TextBlock Text="{res:Localization Chat_CancelStreaming}"/>
-					</StackPanel>
-				</Button>
+				<StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center">
+					<!-- Waiting prompt - only visible when waiting for step -->
+					<TextBlock Text="{res:Localization Chat_WaitingForStep}"
+							   FontSize="14"
+							   FontWeight="SemiBold"
+							   HorizontalAlignment="Center"
+							   Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
+							   IsVisible="{Binding IsWaitingForStep}"/>
+					
+					<Button Command="{Binding CancelStreamingCommand}"
+							HorizontalAlignment="Center"
+							Classes="accent"
+							Padding="16,8">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<ui:SymbolIcon Symbol="Cancel"/>
+							<TextBlock Text="{res:Localization Chat_CancelStreaming}"/>
+						</StackPanel>
+					</Button>
+				</StackPanel>
 			</Border>
 
 			<!-- Voice recording indicator -->
