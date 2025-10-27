@@ -53,6 +53,15 @@
 		<Style Selector="Button.breadcrumb:pointerover /template/ ContentPresenter">
 			<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
 		</Style>
+
+		<!-- Step debugging button style - no hover animation -->
+		<Style Selector="Button.step-debug:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{TemplateBinding Background}"/>
+		</Style>
+		
+		<Style Selector="Button.step-debug:pressed /template/ ContentPresenter">
+			<Setter Property="Background" Value="{TemplateBinding Background}"/>
+		</Style>
 	</Window.Styles>
 
 	<Design.DataContext>
@@ -115,19 +124,19 @@
 								HorizontalAlignment="Right"
 								VerticalAlignment="Top"
 								Spacing="0">
-						<!-- Step Debugging Toggle Button -->
-						<Button Command="{Binding ToggleStepDebuggingCommand}"
-								Width="42" Height="42"
-								Margin="0,0,0,0"
-								ToolTip.Tip="{res:Localization Chat_EnableStepDebugging}">
-							<Image Source="/Assets/step-debug.png"
-											Width="24" Height="24"
-											VerticalAlignment="Center"
-											HorizontalAlignment="Center"
-											Stretch="Uniform"/>
-						</Button>
-
-					<!-- Step Next Button (always visible, always enabled, only works when waiting) -->
+					<!-- Step Debugging Toggle Button -->
+					<Button Command="{Binding ToggleStepDebuggingCommand}"
+							Width="42" Height="42"
+							Margin="0,0,0,0"
+							Classes="step-debug"
+							Background="{Binding IsStepDebuggingEnabled, Converter={StaticResource StepDebuggingButtonBackgroundConverter}}"
+							ToolTip.Tip="{res:Localization Chat_EnableStepDebugging}">
+						<Image Source="/Assets/step-debug.png"
+										Width="24" Height="24"
+										VerticalAlignment="Center"
+										HorizontalAlignment="Center"
+										Stretch="Uniform"/>
+					</Button>					<!-- Step Next Button (always visible, always enabled, only works when waiting) -->
 					<Button Command="{Binding StepNextCommand}"
 							Width="42" Height="42"
 							Margin="0,0,0,0"
@@ -138,7 +147,8 @@
 										VerticalAlignment="Center"
 										HorizontalAlignment="Center"
 										Stretch="Uniform"/>
-					</Button>						<!-- Separator before tools button -->
+					</Button>
+					<!-- Separator before tools button -->
 						<Border Width="1"
 							Height="28"
 							Margin="8,7,8,7"
