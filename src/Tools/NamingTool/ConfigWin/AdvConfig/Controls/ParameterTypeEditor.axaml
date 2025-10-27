@@ -47,7 +47,7 @@
         </Style>
     </UserControl.Styles>
 
-    <Border Classes="ParameterGroup">
+    <Border Classes="ParameterGroup" BoxShadow="0 2 8 0 #25000000">
         <StackPanel Spacing="16">
             
             <!-- Parameter Basic Info -->

@@ -103,6 +103,9 @@ public partial class ChatViewModel : ObservableObject
     [ObservableProperty]
     private bool _isStepDebuggingEnabled = false;
 
+    [ObservableProperty]
+    private bool _isWaitingForStep = false;
+
 
     // Injected dependencies
     private readonly IPeopleService _peopleService;

@@ -483,6 +483,10 @@
   <data name="Chat_StepDebuggingActive" xml:space="preserve">
     <value>Step debugging is active. Click Step Next to send the next message.</value>
   </data>
+  <data name="Chat_WaitingForStep" xml:space="preserve">
+    <value>Press Step Next (F11) to continue</value>
+    <comment>Prompt shown when waiting for user to press step next button</comment>
+  </data>
   <data name="Settings_ConfirmDeleteProvider" xml:space="preserve">
     <value>Delete Provider</value>
     <comment>Title for provider deletion confirmation dialog</comment>

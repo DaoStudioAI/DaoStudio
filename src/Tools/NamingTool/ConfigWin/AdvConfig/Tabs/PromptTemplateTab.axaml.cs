@@ -238,6 +238,29 @@ namespace Naming.AdvConfig.Tabs
                 }
             }
         }
+
+        /// <summary>
+        /// Handle InsertParameters button click
+        /// Insert parameter placeholders at the current cursor position
+        /// </summary>
+        private void OnInsertParametersClick(object? sender, RoutedEventArgs e)
+        {
+            if (_viewModel == null) return;
+            
+            var textBox = this.FindControl<TextBox>("PromptTemplateTextBox");
+            if (textBox != null)
+            {
+                int caretPosition = textBox.CaretIndex;
+                int newCaretPosition = _viewModel.InsertInputParameters(caretPosition);
+                
+                // Update cursor position after insertion
+                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                {
+                    textBox.CaretIndex = newCaretPosition;
+                    textBox.Focus();
+                }, Avalonia.Threading.DispatcherPriority.Render);
+            }
+        }
     }
 
     /// <summary>

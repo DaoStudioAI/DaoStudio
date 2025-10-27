@@ -88,42 +88,57 @@ namespace Naming.AdvConfig.ViewModels
 
         #region Command Implementations
 
-        private void InsertInputParameters()
+        /// <summary>
+        /// Insert input parameters at the specified cursor position
+        /// </summary>
+        public int InsertInputParameters(int caretPosition)
         {
-            if (_config.InputParameters == null || _config.InputParameters.Count == 0)
-            {
-                return;
-            }
+            var placeholders = GenerateParameterPlaceholders();
 
-            var parametersToInsert = new List<string>();
-            
-            foreach (var parameter in _config.InputParameters)
+            if (placeholders.Count > 0)
             {
-                if (!string.IsNullOrWhiteSpace(parameter.Name))
+                var currentTemplate = _promptTemplate ?? string.Empty;
+                
+                // Ensure valid caret position
+                if (caretPosition < 0) caretPosition = 0;
+                if (caretPosition > currentTemplate.Length) caretPosition = currentTemplate.Length;
+                
+                // Add newline before if not at start and previous char is not newline
+                string prefix = "";
+                if (caretPosition > 0 && caretPosition <= currentTemplate.Length)
                 {
-                    var placeholder = $"{{{{{parameter.Name}}}}}";
-                    // Only add if not already present in the template
-                    if (!_promptTemplate.Contains(placeholder))
+                    if (currentTemplate[caretPosition - 1] != '\n')
                     {
-                        parametersToInsert.Add(placeholder);
+                        prefix = "\n";
                     }
                 }
-            }
-
-            if (parametersToInsert.Count > 0)
-            {
-                var currentTemplate = _promptTemplate;
                 
-                // Add a separator if the template is not empty
-                if (!string.IsNullOrEmpty(currentTemplate) && !currentTemplate.EndsWith("\n"))
+                // Add newline after if not at end and next char is not newline
+                string suffix = "";
+                if (caretPosition < currentTemplate.Length)
                 {
-                    currentTemplate += "\n";
+                    if (currentTemplate[caretPosition] != '\n')
+                    {
+                        suffix = "\n";
+                    }
                 }
                 
-                // Insert parameters as placeholders, each on a new line for readability
-                var parametersText = string.Join("\n", parametersToInsert);
-                PromptTemplate = currentTemplate + parametersText;
+                // Insert parameters as placeholders, each on a new line
+                var parametersText = prefix + string.Join("\n", placeholders) + suffix;
+                var newTemplate = currentTemplate.Insert(caretPosition, parametersText);
+                PromptTemplate = newTemplate;
+                
+                // Return new caret position (after inserted text)
+                return caretPosition + parametersText.Length;
             }
+            
+            return caretPosition;
+        }
+
+        private void InsertInputParameters()
+        {
+            // Fallback for command binding - insert at end
+            InsertInputParameters(_promptTemplate?.Length ?? 0);
         }
 
         private void ResetTemplate()
@@ -135,6 +150,19 @@ namespace Naming.AdvConfig.ViewModels
         /// Auto-populate the template with appropriate parameter placeholders based on configuration
         /// </summary>
         public void AutoPopulateTemplate()
+        {
+            var placeholders = GenerateParameterPlaceholders();
+
+            if (placeholders.Count > 0)
+            {
+                PromptTemplate = string.Join("\n", placeholders);
+            }
+        }
+
+        /// <summary>
+        /// Generate all parameter placeholders based on current configuration
+        /// </summary>
+        private List<string> GenerateParameterPlaceholders()
         {
             var placeholders = new List<string>();
             var seen = new HashSet<string>(StringComparer.Ordinal);
@@ -167,6 +195,7 @@ namespace Naming.AdvConfig.ViewModels
                 placeholders.Add(string.Empty);
             }
 
+            // Include parallel execution parameters if enabled
             bool isParallelEnabled = _config.ParallelConfig != null &&
                                      _config.ParallelConfig.ExecutionType != ParallelExecutionType.None;
 
@@ -211,6 +240,7 @@ namespace Naming.AdvConfig.ViewModels
                 }
             }
 
+            // Add input parameters
             if (_config.InputParameters != null && _config.InputParameters.Count > 0)
             {
                 if (placeholders.Count > 0)
@@ -227,10 +257,7 @@ namespace Naming.AdvConfig.ViewModels
                 }
             }
 
-            if (placeholders.Count > 0)
-            {
-                PromptTemplate = string.Join("\n", placeholders);
-            }
+            return placeholders;
         }
 
         private static IEnumerable<string> EnumerateParameterPlaceholders(ParameterConfig? parameter, string? parentPath = null)

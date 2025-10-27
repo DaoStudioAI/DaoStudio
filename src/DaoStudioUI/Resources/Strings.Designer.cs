@@ -196,6 +196,15 @@ namespace DesktopUI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Press Step Next (F11) to continue.
+        /// </summary>
+        public static string Chat_WaitingForStep {
+            get {
+                return ResourceManager.GetString("Chat_WaitingForStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stop Recording.
         /// </summary>
         public static string Chat_StopRecordingButton {

@@ -9,4 +9,5 @@
 	<converters:RecordingButtonTooltipConverter x:Key="RecordingButtonTooltipConverter"/>
 	<converters:CountNotEqualsConverter x:Key="CountNotEqualsConverter"/>
 	<converters:CountGreaterThanConverter x:Key="CountGreaterThanConverter"/>
+	<converters:StepDebuggingButtonBackgroundConverter x:Key="StepDebuggingButtonBackgroundConverter"/>
 </ResourceDictionary>
