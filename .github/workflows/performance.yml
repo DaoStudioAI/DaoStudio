@@ -60,7 +60,7 @@ jobs:
           --logger trx
 
     - name: Upload performance test results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: performance-test-results
@@ -96,7 +96,7 @@ jobs:
           -- --filter '*' --exporters json
 
     - name: Upload benchmark results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: benchmark-results
