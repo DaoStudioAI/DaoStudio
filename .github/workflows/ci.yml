@@ -60,8 +60,34 @@ jobs:
       run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore -p:Platform=${{ matrix.buildPlatform }}
 
     - name: Run unit tests
-      if:  always()
-      run: dotnet test ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" --filter "FullyQualifiedName!~Performance" -p:Platform=${{ matrix.buildPlatform }}
+      if: always()
+      shell: pwsh
+      env:
+        BUILD_PLATFORM: ${{ matrix.buildPlatform }}
+      run: |
+        $testProjects = Get-ChildItem -Path "src/Test" -Filter *.csproj -Recurse |
+          Where-Object { $_.FullName -notmatch '[\/]Performance[\/]' }
+
+        if (-not $testProjects) {
+          Write-Error "No test projects found to execute."
+          exit 1
+        }
+
+        foreach ($proj in $testProjects) {
+          Write-Host "Running tests for $($proj.FullName)"
+          dotnet test $proj.FullName `
+            --configuration $env:BUILD_CONFIGURATION `
+            --no-build `
+            --verbosity normal `
+            --logger trx `
+            --collect:"XPlat Code Coverage" `
+            --filter "FullyQualifiedName!~Performance" `
+            -p:Platform=$env:BUILD_PLATFORM
+
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+        }
 
     - name: Upload test results
       uses: actions/upload-artifact@v5
