@@ -26,7 +26,7 @@ jobs:
         fetch-depth: 0
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -47,7 +47,7 @@ jobs:
           -p:PublishSingleFile=false
 
     - name: Upload nightly artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: nightly-${{ matrix.os }}-${{ github.run_number }}
         path: ./nightly-build
