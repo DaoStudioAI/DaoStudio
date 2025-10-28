@@ -53,24 +53,31 @@ jobs:
           - os: windows-latest
             runtime: win-x86
             artifact_name: DaoStudio-Windows-x86
+            buildPlatform: x86
           - os: windows-latest
             runtime: win-x64
             artifact_name: DaoStudio-Windows-x64
+            buildPlatform: x64
           - os: windows-latest
             runtime: win-arm64
             artifact_name: DaoStudio-Windows-ARM64
+            buildPlatform: ARM64
           - os: ubuntu-latest
             runtime: linux-x64
             artifact_name: DaoStudio-Linux-x64
+            buildPlatform: x64
           - os: ubuntu-latest
             runtime: linux-arm64
             artifact_name: DaoStudio-Linux-ARM64
+            buildPlatform: ARM64
           - os: macos-latest
             runtime: osx-x64
             artifact_name: DaoStudio-macOS-x64
+            buildPlatform: x64
           - os: macos-latest
             runtime: osx-arm64
             artifact_name: DaoStudio-macOS-ARM64
+            buildPlatform: ARM64
 
     steps:
     - name: Checkout code
@@ -83,11 +90,20 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
+    - name: Install x64 .NET SDK (macOS x64 target)
+      if: matrix.os == 'macos-latest' && matrix.buildPlatform == 'x64'
+      run: |
+        curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
+        chmod +x dotnet-install.sh
+        ./dotnet-install.sh --channel 9.0 --install-dir $HOME/.dotnet/x64 --architecture x64
+        echo "DOTNET_ROOT=$HOME/.dotnet/x64" >> $GITHUB_ENV
+        echo "PATH=$HOME/.dotnet/x64:$PATH" >> $GITHUB_ENV
+
     - name: Restore dependencies
       run: dotnet restore ${{ env.SOLUTION_PATH }} --runtime ${{ matrix.runtime }}
 
     - name: Build application (populate BuildOutput)
-      run: dotnet build src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --no-restore
+      run: dotnet build src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --no-restore -p:Platform=${{ matrix.buildPlatform }}
 
     - name: Ensure mac dylibs exist
       if: matrix.os == 'macos-latest'
@@ -98,10 +114,12 @@ jobs:
         touch src/BuildOutput/Build/libvk_swiftshader.dylib
 
     - name: Publish application
-      run: dotnet publish src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --self-contained true --output ./publish/${{ matrix.runtime }} -p:PublishSingleFile=false -p:PublishTrimmed=false -p:Version=${{ needs.get-version.outputs.version }}
+      run: dotnet publish src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --self-contained true --output ./publish/${{ matrix.runtime }} -p:PublishSingleFile=false -p:PublishTrimmed=false -p:Version=${{ needs.get-version.outputs.version }} -p:Platform=${{ matrix.buildPlatform }}
 
     - name: Publish plugins
       shell: pwsh
+      env:
+        BUILD_PLATFORM: ${{ matrix.buildPlatform }}
       run: |
         $toolsDir = "src/Tools"
         $runtime = "${{ matrix.runtime }}"
@@ -118,15 +136,15 @@ jobs:
             Write-Host "Publishing plugin: $($tool.Name)"
             
             # Restore dependencies for the specific runtime
-            dotnet restore $projectPath --runtime $runtime
+            dotnet restore $projectPath --runtime $runtime -p:Platform=$env:BUILD_PLATFORM
             
             # Check if this is BrowserTool which needs platform-specific framework
             if ($tool.Name -eq "BrowserTool" -and $isWindowsRuntime) {
-              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0-windows --no-self-contained --output $outputPath -p:Version=${{ needs.get-version.outputs.version }}
+              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0-windows --no-self-contained --output $outputPath -p:Version=${{ needs.get-version.outputs.version }} -p:Platform=$env:BUILD_PLATFORM
             } elseif ($tool.Name -eq "BrowserTool") {
-              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0 --no-self-contained --output $outputPath -p:Version=${{ needs.get-version.outputs.version }}
+              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0 --no-self-contained --output $outputPath -p:Version=${{ needs.get-version.outputs.version }} -p:Platform=$env:BUILD_PLATFORM
             } else {
-              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --no-self-contained --output $outputPath -p:Version=${{ needs.get-version.outputs.version }}
+              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --no-self-contained --output $outputPath -p:Version=${{ needs.get-version.outputs.version }} -p:Platform=$env:BUILD_PLATFORM
             }
             
             if ($LASTEXITCODE -ne 0) {
