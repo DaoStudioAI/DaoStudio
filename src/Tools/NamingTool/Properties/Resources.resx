@@ -340,6 +340,30 @@
   <data name="Button_SaveAndClose" xml:space="preserve">
     <value>Save and Close</value>
   </data>
+  <data name="InputParameters_Header" xml:space="preserve">
+    <value>Input Parameters</value>
+  </data>
+  <data name="InputParameters_NoParametersTitle" xml:space="preserve">
+    <value>No Parameters Configured</value>
+  </data>
+  <data name="InputParameters_NoParametersDescription" xml:space="preserve">
+    <value>Add input parameters to define the data your tool accepts</value>
+  </data>
+  <data name="Button_AddFirstParameter" xml:space="preserve">
+    <value>Add First Parameter</value>
+  </data>
+  <data name="Button_AddParameter" xml:space="preserve">
+    <value>Add Parameter</value>
+  </data>
+  <data name="Tooltip_AddParameter" xml:space="preserve">
+    <value>Add a new input parameter</value>
+  </data>
+  <data name="Button_ClearAllParameters" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="Tooltip_ClearAllParameters" xml:space="preserve">
+    <value>Clear all parameters</value>
+  </data>
   <data name="Window_Title" xml:space="preserve">
     <value>Naming Configuration</value>
   </data>

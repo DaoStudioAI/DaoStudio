@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="using:Naming.AdvConfig.Controls"
              xmlns:fluent="using:FluentAvalonia.UI.Controls"
+            xmlns:res="clr-namespace:NamingTool.Properties"
              xmlns:vm="using:Naming.AdvConfig.ViewModels"
              xmlns:naming="using:Naming"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
@@ -29,22 +30,22 @@
                         VerticalAlignment="Center">
                     <StackPanel Orientation="Vertical" Spacing="16" HorizontalAlignment="Center">
                         <fluent:SymbolIcon Symbol="{x:Static fluent:Symbol.Add}" FontSize="48" Foreground="{DynamicResource AccentTextFillColorSecondaryBrush}" />
-                        <TextBlock Text="No Parameters Configured"
+            <TextBlock Text="{x:Static res:Resources.InputParameters_NoParametersTitle}"
                                    FontSize="18"
                                    FontWeight="SemiBold"
                                    HorizontalAlignment="Center"
                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-                        <TextBlock Text="Add input parameters to define the data your tool accepts"
+            <TextBlock Text="{x:Static res:Resources.InputParameters_NoParametersDescription}"
                                    FontSize="14"
                                    HorizontalAlignment="Center"
                                    TextWrapping="Wrap"
                                    MaxWidth="300"
                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        <Button Content="Add First Parameter"
-                                Classes="accent"
-                                Command="{Binding AddParameterCommand}"
-                                HorizontalAlignment="Center"
-                                Padding="20,10" />
+            <Button Classes="accent"
+                Command="{Binding AddParameterCommand}"
+                HorizontalAlignment="Center"
+                Padding="20,10"
+                Content="{x:Static res:Resources.Button_AddFirstParameter}" />
                     </StackPanel>
                 </Border>
             </DataTemplate>
@@ -68,22 +69,21 @@
                 
                 <!-- Header Actions -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                    <Button Content="Add Parameter"
-                            Classes="accent"
+                    <Button Classes="accent"
                             Command="{Binding AddParameterCommand}"
-                            ToolTip.Tip="Add a new input parameter">
+                            ToolTip.Tip="{x:Static res:Resources.Tooltip_AddParameter}">
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <fluent:SymbolIcon Symbol="{x:Static fluent:Symbol.Add}" FontSize="16" />
-                            <TextBlock Text="Add Parameter" />
+                            <TextBlock Text="{x:Static res:Resources.Button_AddParameter}" />
                         </StackPanel>
                     </Button>
-                    
+
                     <Button Command="{Binding ClearAllParametersCommand}"
                             IsEnabled="{Binding HasParameters}"
-                            ToolTip.Tip="Clear all parameters">
+                            ToolTip.Tip="{x:Static res:Resources.Tooltip_ClearAllParameters}">
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <fluent:SymbolIcon Symbol="{x:Static fluent:Symbol.Delete}" FontSize="14" />
-                            <TextBlock Text="Clear All" />
+                            <TextBlock Text="{x:Static res:Resources.Button_ClearAllParameters}" />
                         </StackPanel>
                     </Button>
                 </StackPanel>
