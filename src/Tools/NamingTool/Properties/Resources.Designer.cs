@@ -239,6 +239,78 @@ namespace NamingTool.Properties {
                 return ResourceManager.GetString("Button_SaveAndClose", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Input Parameters.
+        /// </summary>
+        public static string InputParameters_Header {
+            get {
+                return ResourceManager.GetString("InputParameters_Header", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No Parameters Configured.
+        /// </summary>
+        public static string InputParameters_NoParametersTitle {
+            get {
+                return ResourceManager.GetString("InputParameters_NoParametersTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add input parameters to define the data your tool accepts.
+        /// </summary>
+        public static string InputParameters_NoParametersDescription {
+            get {
+                return ResourceManager.GetString("InputParameters_NoParametersDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add First Parameter.
+        /// </summary>
+        public static string Button_AddFirstParameter {
+            get {
+                return ResourceManager.GetString("Button_AddFirstParameter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add Parameter.
+        /// </summary>
+        public static string Button_AddParameter {
+            get {
+                return ResourceManager.GetString("Button_AddParameter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add a new input parameter.
+        /// </summary>
+        public static string Tooltip_AddParameter {
+            get {
+                return ResourceManager.GetString("Tooltip_AddParameter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Clear All.
+        /// </summary>
+        public static string Button_ClearAllParameters {
+            get {
+                return ResourceManager.GetString("Button_ClearAllParameters", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Clear all parameters.
+        /// </summary>
+        public static string Tooltip_ClearAllParameters {
+            get {
+                return ResourceManager.GetString("Tooltip_ClearAllParameters", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Cancel.

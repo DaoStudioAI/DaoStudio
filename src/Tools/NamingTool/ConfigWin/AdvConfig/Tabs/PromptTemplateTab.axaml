@@ -31,7 +31,8 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Grid RowDefinitions="Auto,*">
+	<Grid RowDefinitions="Auto,*" 
+				Margin="5">
 		<!-- Header -->
 		<Border Grid.Row="0"
                 CornerRadius="8,8,0,0"
@@ -72,7 +73,8 @@
 			<TextBox Text="{Binding PromptTemplate}"
 					 x:Name="PromptTemplateTextBox"
 					 AcceptsReturn="True"
-					 TextWrapping="Wrap"
+				 TextWrapping="Wrap"
+			Margin="0"
 					 Background="Transparent"
 					 BorderThickness="0"
 					 MinHeight="500"

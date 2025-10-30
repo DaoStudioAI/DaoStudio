@@ -18,7 +18,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        include:
+          - os: windows-latest
+            buildPlatform: x64
+          - os: ubuntu-latest
+            buildPlatform: x64
+          - os: macos-latest
+            buildPlatform: x64
       fail-fast: false
 
     steps:
@@ -28,9 +34,18 @@ jobs:
         fetch-depth: 0
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install x64 .NET SDK (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
+        chmod +x dotnet-install.sh
+        ./dotnet-install.sh --channel 9.0 --install-dir $HOME/.dotnet/x64 --architecture x64
+        echo "DOTNET_ROOT=$HOME/.dotnet/x64" >> $GITHUB_ENV
+        echo "PATH=$HOME/.dotnet/x64:$PATH" >> $GITHUB_ENV
 
     - name: Cache NuGet packages
       uses: actions/cache@v4
@@ -39,24 +54,50 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json', '**/*.csproj') }}
 
     - name: Restore dependencies
-      run: dotnet restore ${{ env.SOLUTION_PATH }}
+      run: dotnet restore ${{ env.SOLUTION_PATH }} -p:Platform=${{ matrix.buildPlatform }}
 
     - name: Build solution
-      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+      run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore -p:Platform=${{ matrix.buildPlatform }}
 
     - name: Run unit tests
-      if:  always()
-      run: dotnet test ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage" --filter "FullyQualifiedName!~Performance"
+      if: always()
+      shell: pwsh
+      env:
+        BUILD_PLATFORM: ${{ matrix.buildPlatform }}
+      run: |
+        $testProjects = Get-ChildItem -Path "src/Test" -Filter *.csproj -Recurse |
+          Where-Object { $_.FullName -notmatch '[\/]Performance[\/]' }
+
+        if (-not $testProjects) {
+          Write-Error "No test projects found to execute."
+          exit 1
+        }
+
+        foreach ($proj in $testProjects) {
+          Write-Host "Running tests for $($proj.FullName)"
+          dotnet test $proj.FullName `
+            --configuration $env:BUILD_CONFIGURATION `
+            --no-build `
+            --verbosity normal `
+            --logger trx `
+            --collect:"XPlat Code Coverage" `
+            --filter "FullyQualifiedName!~Performance" `
+            -p:Platform=$env:BUILD_PLATFORM
+
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+        }
 
     - name: Upload test results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: test-results-${{ matrix.os }}
         path: '**/TestResults/**/*.trx'
 
     - name: Upload coverage reports
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: matrix.os == 'windows-latest'
       with:
         name: coverage-reports
@@ -74,7 +115,7 @@ jobs:
         fetch-depth: 0
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
