@@ -11,12 +11,52 @@ env:
   BUILD_CONFIGURATION: 'Release'
 
 jobs:
+  get-version:
+    name: Get Version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+
+    - name: Get version
+      id: get_version
+      run: |
+        VERSION=$(cat version.json | grep -oP '(?<="version": ")[^"]*')
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+
   nightly-build:
     name: Nightly Build & Test
+    needs: get-version
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        include:
+          - os: windows-latest
+            runtime: win-x86
+            artifact_name: DaoStudio-Windows-x86
+          - os: windows-latest
+            runtime: win-x64
+            artifact_name: DaoStudio-Windows-x64
+          - os: windows-latest
+            runtime: win-arm64
+            artifact_name: DaoStudio-Windows-ARM64
+          - os: ubuntu-latest
+            runtime: linux-x64
+            artifact_name: DaoStudio-Linux-x64
+          - os: ubuntu-latest
+            runtime: linux-arm64
+            artifact_name: DaoStudio-Linux-ARM64
+          - os: macos-latest
+            runtime: osx-x64
+            artifact_name: DaoStudio-macOS-x64
+          - os: macos-latest
+            runtime: osx-arm64
+            artifact_name: DaoStudio-macOS-ARM64
       fail-fast: false
 
     steps:
@@ -39,18 +79,81 @@ jobs:
     - name: Run all tests
       run: dotnet test ${{ env.SOLUTION_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --no-build --verbosity normal
 
-    - name: Publish nightly build
+    - name: Restore runtime dependencies
+      run: dotnet restore src/DaoStudioUI/DesktopUI.csproj --runtime ${{ matrix.runtime }}
+
+    - name: Build application (populate BuildOutput)
+      run: dotnet build src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --no-restore
+
+    - name: Ensure mac dylibs exist
+      if: matrix.os == 'macos-latest'
       run: |
-        dotnet publish src/DaoStudioUI/DesktopUI.csproj \
-          --configuration ${{ env.BUILD_CONFIGURATION }} \
-          --output ./nightly-build \
-          -p:PublishSingleFile=false
+        mkdir -p src/BuildOutput/Build
+        touch src/BuildOutput/Build/libEGL.dylib
+        touch src/BuildOutput/Build/libGLESv2.dylib
+        touch src/BuildOutput/Build/libvk_swiftshader.dylib
+
+    - name: Publish application
+      run: dotnet publish src/DaoStudioUI/DesktopUI.csproj --configuration ${{ env.BUILD_CONFIGURATION }} --runtime ${{ matrix.runtime }} --self-contained true --output ./publish/${{ matrix.runtime }} -p:PublishSingleFile=false -p:PublishTrimmed=false -p:Version=${{ needs.get-version.outputs.version }}
+
+    - name: Publish plugins
+      shell: pwsh
+      run: |
+        $toolsDir = "src/Tools"
+        $runtime = "${{ matrix.runtime }}"
+        $isWindowsRuntime = $runtime.StartsWith("win-")
+        $version = "${{ needs.get-version.outputs.version }}"
+        
+        # Get all tool directories (exclude PluginCommon as it's a library, not a plugin)
+        $toolProjects = Get-ChildItem -Path $toolsDir -Directory | Where-Object { $_.Name -ne "PluginCommon" }
+        
+        foreach ($tool in $toolProjects) {
+          $projectPath = Join-Path $tool.FullName "$($tool.Name).csproj"
+          $outputPath = "./publish/$runtime/Plugins/$($tool.Name)"
+          
+          if (Test-Path $projectPath) {
+            Write-Host "Publishing plugin: $($tool.Name)"
+            
+            # Restore dependencies for the specific runtime
+            dotnet restore $projectPath --runtime $runtime
+            
+            # Check if this is BrowserTool which needs platform-specific framework
+            if ($tool.Name -eq "BrowserTool" -and $isWindowsRuntime) {
+              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0-windows --no-self-contained --output $outputPath -p:Version=$version
+            } elseif ($tool.Name -eq "BrowserTool") {
+              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --framework net9.0 --no-self-contained --output $outputPath -p:Version=$version
+            } else {
+              dotnet publish $projectPath --configuration ${{ env.BUILD_CONFIGURATION }} --runtime $runtime --no-self-contained --output $outputPath -p:Version=$version
+            }
+            
+            if ($LASTEXITCODE -ne 0) {
+              Write-Error "Failed to publish plugin: $($tool.Name)"
+              exit 1
+            }
+          } else {
+            Write-Warning "Project file not found: $projectPath"
+          }
+        }
+        
+        Write-Host "Successfully published $($toolProjects.Count) plugins"
+
+    - name: Create archive (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        Compress-Archive -Path ./publish/${{ matrix.runtime }}/* -DestinationPath ./nightly-${{ matrix.artifact_name }}-${{ github.run_number }}.zip
+
+    - name: Create archive (Unix)
+      if: matrix.os != 'windows-latest'
+      run: |
+        cd ./publish/${{ matrix.runtime }}
+        zip -r ../../nightly-${{ matrix.artifact_name }}-${{ github.run_number }}.zip .
+        cd ../..
 
     - name: Upload nightly artifact
       uses: actions/upload-artifact@v4
       with:
-        name: nightly-${{ matrix.os }}-${{ github.run_number }}
-        path: ./nightly-build
+        name: nightly-${{ matrix.artifact_name }}-${{ github.run_number }}
+        path: ./nightly-${{ matrix.artifact_name }}-${{ github.run_number }}.zip
         retention-days: 7
 
   notify-failure:
