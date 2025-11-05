@@ -45,13 +45,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.3.7" />
+    <PackageReference Include="Avalonia" Version="11.3.8" />
     <PackageReference Include="Avalonia.Controls.ItemsRepeater" Version="11.1.5" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.7" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.7" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.7" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.8" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.7">
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.8">
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
@@ -70,8 +70,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Xaml.Behaviors.Interactions" Version="11.3.6.5" />
-    <PackageReference Include="Xaml.Behaviors.Interactivity" Version="11.3.6.5" />
+    <PackageReference Include="Xaml.Behaviors.Interactions" Version="11.3.6.6" />
+    <PackageReference Include="Xaml.Behaviors.Interactivity" Version="11.3.6.6" />
   </ItemGroup>
 
   <ItemGroup>
