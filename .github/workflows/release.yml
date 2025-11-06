@@ -51,10 +51,6 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            runtime: win-x86
-            artifact_name: DaoStudio-Windows-x86
-            buildPlatform: x86
-          - os: windows-latest
             runtime: win-x64
             artifact_name: DaoStudio-Windows-x64
             buildPlatform: x64
@@ -207,7 +203,6 @@ jobs:
           
           ### Downloads
           Choose the appropriate package for your platform:
-          - **Windows x86 (32-bit)**: DaoStudio-Windows-x86-v${{ needs.get-version.outputs.version }}.zip
           - **Windows x64 (64-bit)**: DaoStudio-Windows-x64-v${{ needs.get-version.outputs.version }}.zip
           - **Windows ARM64**: DaoStudio-Windows-ARM64-v${{ needs.get-version.outputs.version }}.zip
           - **Linux x64 (64-bit)**: DaoStudio-Linux-x64-v${{ needs.get-version.outputs.version }}.zip

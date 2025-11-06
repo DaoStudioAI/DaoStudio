@@ -37,9 +37,6 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            runtime: win-x86
-            artifact_name: DaoStudio-Windows-x86
-          - os: windows-latest
             runtime: win-x64
             artifact_name: DaoStudio-Windows-x64
           - os: windows-latest
