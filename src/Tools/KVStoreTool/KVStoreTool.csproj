@@ -17,7 +17,7 @@
   <ItemGroup>
     <PackageReference Include="LiteDB" Version="5.0.21" />
     <PackageReference Include="Serilog" Version="4.3.0" />
-	  <PackageReference Include="Avalonia" Version="11.3.7" />
+	  <PackageReference Include="Avalonia" Version="11.3.8" />
 	  <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.7" />
 	  <PackageReference Include="FluentAvaloniaUI" Version="2.4.0" />
   </ItemGroup>
