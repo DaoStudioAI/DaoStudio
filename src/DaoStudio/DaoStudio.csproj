@@ -24,8 +24,8 @@
 		<PackageReference Include="Microsoft.Extensions.AI" Version="9.10.1" />
 		<PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.6.0-preview.1.25310.2" />
 		<PackageReference Include="System.ClientModel" Version="1.7.0" />
-		<PackageReference Include="Google_GenerativeAI.Microsoft" Version="3.3.0" />
-		<PackageReference Include="Google_GenerativeAI" Version="3.4.0" />
+		<PackageReference Include="Google_GenerativeAI.Microsoft" Version="3.4.1" />
+		<PackageReference Include="Google_GenerativeAI" Version="3.4.1" />
 		<PackageReference Include="Mscc.GenerativeAI" Version="2.8.23" />
 		<PackageReference Include="Mscc.GenerativeAI.Microsoft" Version="2.8.23" />
 		<PackageReference Include="OllamaSharp" Version="5.4.8" />
