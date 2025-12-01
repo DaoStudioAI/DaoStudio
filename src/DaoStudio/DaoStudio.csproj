@@ -17,7 +17,7 @@
 	<ItemGroup>
     <PackageReference Include="DryIoc.dll" Version="5.4.3" />
 		<PackageReference Include="McMaster.NETCore.Plugins" Version="2.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.10" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Include="OpenAI" Version="2.6.0" />
@@ -26,7 +26,7 @@
 		<PackageReference Include="System.ClientModel" Version="1.7.0" />
 		<PackageReference Include="Google_GenerativeAI.Microsoft" Version="3.3.0" />
 		<PackageReference Include="Google_GenerativeAI" Version="3.4.0" />
-		<PackageReference Include="Mscc.GenerativeAI" Version="2.8.23" />
+		<PackageReference Include="Mscc.GenerativeAI" Version="2.9.3" />
 		<PackageReference Include="Mscc.GenerativeAI.Microsoft" Version="2.8.23" />
 		<PackageReference Include="OllamaSharp" Version="5.4.8" />
 		<PackageReference Include="Anthropic.SDK" Version="5.8.0" />
