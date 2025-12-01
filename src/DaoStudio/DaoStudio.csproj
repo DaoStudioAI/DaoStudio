@@ -28,7 +28,7 @@
 		<PackageReference Include="Google_GenerativeAI" Version="3.4.0" />
 		<PackageReference Include="Mscc.GenerativeAI" Version="2.8.23" />
 		<PackageReference Include="Mscc.GenerativeAI.Microsoft" Version="2.8.23" />
-		<PackageReference Include="OllamaSharp" Version="5.4.8" />
+		<PackageReference Include="OllamaSharp" Version="5.4.11" />
 		<PackageReference Include="Anthropic.SDK" Version="5.8.0" />
 		<PackageReference Include="AWSSDK.Bedrock" Version="4.0.13.1" />
 		<PackageReference Include="AWSSDK.BedrockRuntime" Version="4.0.9" />
