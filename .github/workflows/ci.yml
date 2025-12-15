@@ -90,14 +90,14 @@ jobs:
         }
 
     - name: Upload test results
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: always()
       with:
         name: test-results-${{ matrix.os }}
         path: '**/TestResults/**/*.trx'
 
     - name: Upload coverage reports
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       if: matrix.os == 'windows-latest'
       with:
         name: coverage-reports
