@@ -17,7 +17,7 @@
 	<ItemGroup>
     <PackageReference Include="DryIoc.dll" Version="5.4.3" />
 		<PackageReference Include="McMaster.NETCore.Plugins" Version="2.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.11" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.11" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 		<PackageReference Include="OpenAI" Version="2.8.0" />
