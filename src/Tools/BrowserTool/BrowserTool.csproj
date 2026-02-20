@@ -25,7 +25,7 @@
 		<PackageReference Include="FluentAvaloniaUI" Version="2.4.1" />
 		<PackageReference Condition="$([MSBuild]::IsOSPlatform('Windows'))" Include="FlaUI.UIA3" Version="5.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-		<PackageReference Include="Serilog" Version="4.3.0" />
+		<PackageReference Include="Serilog" Version="4.3.1" />
 		<!--<PackageReference Include="Microsoft.Playwright" Version="1.51.0" />-->
 	</ItemGroup>
 
