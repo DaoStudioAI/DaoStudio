@@ -71,7 +71,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Xaml.Behaviors.Interactions" Version="11.3.9.3" />
-    <PackageReference Include="Xaml.Behaviors.Interactivity" Version="11.3.9.3" />
+    <PackageReference Include="Xaml.Behaviors.Interactivity" Version="11.3.9.5" />
   </ItemGroup>
 
   <ItemGroup>
