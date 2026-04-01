@@ -30,7 +30,7 @@
 		<PackageReference Include="Mscc.GenerativeAI.Microsoft" Version="2.8.23" />
 		<PackageReference Include="OllamaSharp" Version="5.4.18" />
 		<PackageReference Include="Anthropic.SDK" Version="5.10.0" />
-		<PackageReference Include="AWSSDK.Bedrock" Version="4.0.21" />
+		<PackageReference Include="AWSSDK.Bedrock" Version="4.0.23.4" />
 		<PackageReference Include="AWSSDK.BedrockRuntime" Version="4.0.16.1" />
 		<PackageReference Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.0.5.8" />
 		<PackageReference Include="AWSSDK.Extensions.CrtIntegration" Version="4.0.0.24" />
